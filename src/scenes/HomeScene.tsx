@@ -9,7 +9,7 @@ import { play } from '../platform/audio';
 import { useGame } from '../state/store';
 import { Button, Sheet, Tabs } from '../ui/kit';
 import { regular } from '../content/cafe';
-import { Character, FurnitureThumb, MainDock, PetFigure, TopBar } from './common';
+import { Character, FurnitureThumb, MainDock, PetFigure, ShellSpots, TopBar } from './common';
 
 const CHAR_H = 1316; // 52% of the 2532 scene height (visual-design §7.2)
 
@@ -64,6 +64,7 @@ export function HomeScene() {
 
   return (
     <section className="scene" aria-label="Home">
+      <ShellSpots scene="home" />
       <div className="scene-art">
         <HarbourLoft
           room={room}

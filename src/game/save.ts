@@ -85,6 +85,10 @@ export interface Progress {
   stickers: string[];
   /** A friend visiting the player's home, or null. */
   visitor: string | null;
+  /** Wave B (game-systems §9): Starlight Stage shows walked, and the best stars per show theme. */
+  shows: { done: number; best: Record<string, number> };
+  /** Secret shell ids found, in order. */
+  shells: string[];
 }
 
 export interface SaveGame {
@@ -133,6 +137,8 @@ export function newProgress(): Progress {
     mail: { lastWeek: -1, opened: 0 },
     stickers: [],
     visitor: null,
+    shows: { done: 0, best: {} },
+    shells: [],
   };
 }
 
@@ -291,6 +297,12 @@ function sanitizeProgress(raw: unknown): Progress {
     p.mail = { lastWeek: isNum(mail.lastWeek) ? Math.max(-1, Math.floor(mail.lastWeek)) : -1, opened: clampInt(mail.opened) };
   if (Array.isArray(raw.stickers)) p.stickers = [...new Set(raw.stickers.filter(isStr))];
   if (isStr(raw.visitor)) p.visitor = raw.visitor;
+  const shows = raw.shows;
+  if (isObj(shows)) {
+    p.shows.done = clampInt(shows.done);
+    if (isObj(shows.best)) for (const [id, n] of Object.entries(shows.best)) if (isNum(n)) p.shows.best[id] = clampInt(n, 3);
+  }
+  if (Array.isArray(raw.shells)) p.shells = [...new Set(raw.shells.filter(isStr))];
   return p;
 }
 

@@ -9,6 +9,9 @@ import { petAccessory, petColor } from '../content/pets';
 import { CoinPill, Dock, IconButton } from '../ui/kit';
 import { useGame, type SceneId } from '../state/store';
 import { play } from '../platform/audio';
+import { ShellArt } from '../art/shells';
+import { regular } from '../content/cafe';
+import { SHELLS, shellsIn, type ShellScene } from '../content/show';
 
 const DOCK = [
   { id: 'town', label: 'Town', icon: 'map' },
@@ -109,4 +112,50 @@ export function PetThumb({ pet, label, mood }: { pet: Pick<PetState, 'kind' | 'c
       <PetFigure pet={pet} mood={mood} />
     </svg>
   );
+}
+
+/** Picks up a secret shell with a chime and a toast (game-systems §9.2). */
+export function useFindShell(): (id: string) => void {
+  const findShell = useGame((s) => s.findShell);
+  const showToast = useGame((s) => s.showToast);
+  return (id) => {
+    const n = findShell(id);
+    if (n === null) return;
+    play('chime');
+    showToast(n === SHELLS.length ? `You found every secret shell!` : `Secret shell found! ${n} of ${SHELLS.length}`, 'sparkle');
+  };
+}
+
+/** The scene's hidden shell(s), placed in percent of the nearest positioned parent. Gone once found. */
+export function ShellSpots({ scene }: { scene: ShellScene }) {
+  const found = useGame((s) => s.save.progress.shells);
+  const find = useFindShell();
+  return (
+    <>
+      {shellsIn(scene)
+        .filter((sh) => !found.includes(sh.id))
+        .map((sh) => (
+          <button
+            key={sh.id}
+            type="button"
+            className="shell-spot shell-btn"
+            aria-label="A shiny shell"
+            data-testid={`shell-${sh.id}`}
+            style={{ left: `${sh.x}%`, top: `${sh.y}%` }}
+            onClick={() => find(sh.id)}
+          >
+            <svg viewBox="0 0 100 100" aria-hidden="true">
+              <ShellArt kind={sh.kind} color={sh.color} />
+            </svg>
+          </button>
+        ))}
+    </>
+  );
+}
+
+/** A townsfolk friend's face, cropped from the rig. */
+export function FriendFace({ id }: { id: string }) {
+  const r = regular(id);
+  if (!r) return null;
+  return <Character appearance={r.appearance} outfit={r.outfit} crop="100 50 200 190" animate={false} title={r.name} />;
 }

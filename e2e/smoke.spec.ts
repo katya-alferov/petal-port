@@ -75,7 +75,7 @@ test('every tappable thing on Home responds', async ({ page }) => {
 
 test('no serious accessibility violations on each main scene', async ({ page }) => {
   test.setTimeout(120_000);
-  for (const scene of ['title', 'town', 'me', 'home', 'cafe', 'boutique', 'kitchen', 'petshop', 'board', 'album', 'gallery']) {
+  for (const scene of ['title', 'town', 'me', 'home', 'cafe', 'boutique', 'kitchen', 'petshop', 'board', 'album', 'show', 'gallery']) {
     await page.goto(`./?fixture=fresh&scene=${scene}`);
     await page.waitForTimeout(300);
     const results = await new AxeBuilder({ page }).disableRules(['color-contrast']).analyze();
@@ -308,4 +308,39 @@ test('post box and album: open this week’s letter once, and see the sticker it
   await expect(page.getByTestId('sticker-sticker.mail')).toHaveAttribute('data-earned', 'true');
   await expect(page.getByTestId('sticker-sticker.pen-pal')).toHaveAttribute('data-earned', 'false');
   await shot(page, '15-album');
+});
+
+test('starlight stage: dress for the theme, walk the runway, and the judges cheer', async ({ page }) => {
+  await page.goto('./?fixture=fresh&scene=town');
+  const stage = page.getByTestId('place-stage');
+  await stage.evaluate((e) => e.scrollIntoView({ block: 'center' }));
+  await stage.click({ force: true });
+  await page.getByTestId('place-go').click();
+  await expect(page.getByTestId('show-theme-name')).toContainText('Sunny Picnic');
+  await page.getByTestId('show-another').click();
+  await expect(page.getByTestId('show-theme-name')).toContainText('Party Princess');
+  await page.getByTestId('show-another').click();
+  await page.getByTestId('show-another').click();
+  await expect(page.getByTestId('show-theme-name')).toContainText('Harbour Stroll');
+  await page.getByTestId('show-dress').click();
+  // The starter look already has harbour and casual pieces.
+  await expect(page.getByTestId('show-meter')).toHaveAttribute('data-stars', '3');
+  await shot(page, '16-show-dress');
+  await page.getByTestId('show-walk').click();
+  await expect(page.getByTestId('show-result')).toHaveAttribute('data-stars', '3', { timeout: 10_000 });
+  await expect(page.getByTestId('show-result')).toContainText('+50');
+  await shot(page, '17-show-result');
+  await page.getByTestId('show-again').click();
+  await expect(page.getByTestId('show-theme-name')).toContainText('Party Princess');
+});
+
+test('secret shells: pick one up and see it on the album’s Shells page', async ({ page }) => {
+  await page.goto('./?fixture=fresh&scene=boutique');
+  await page.getByTestId('shell-shell.boutique').click();
+  await expect(page.getByTestId('shell-shell.boutique')).toHaveCount(0);
+  await page.getByTestId('activity-back').click();
+  await page.getByTestId('album-open').click();
+  await page.getByRole('tab', { name: 'Shells' }).click();
+  await expect(page.getByTestId('album-count')).toContainText('1 of 10 secret shells');
+  await expect(page.getByTestId('album-shell.boutique')).toHaveAttribute('data-earned', 'true');
 });

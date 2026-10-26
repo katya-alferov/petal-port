@@ -1,15 +1,20 @@
 // Sticker album (game-systems §8.5): earned stickers shine; the rest show a silhouette and a hint.
+// The Shells page (§9.2) shows the secret shells found so far, with a "where to look" hint for the rest.
 import { useState } from 'react';
+import { ShellArt } from '../art/shells';
 import { StickerArt } from '../art/stickers';
+import { SHELLS } from '../content/show';
 import { STICKERS } from '../content/town';
 import { play } from '../platform/audio';
 import { useGame } from '../state/store';
-import { Sheet } from '../ui/kit';
+import { Sheet, Tabs } from '../ui/kit';
 import { ActivityBar } from './common';
 
 export function AlbumScene() {
   const setScene = useGame((s) => s.setScene);
   const earned = useGame((s) => s.save.progress.stickers);
+  const shells = useGame((s) => s.save.progress.shells);
+  const [page, setPage] = useState<'stickers' | 'shells'>('stickers');
   const [open, setOpen] = useState<string | null>(null);
   const def = STICKERS.find((d) => d.id === open);
   const have = new Set(earned);
@@ -17,34 +22,60 @@ export function AlbumScene() {
   return (
     <section className="scene" aria-label="Sticker album" style={{ background: 'linear-gradient(#E9DEFF, #FFF0F6 60%)' }}>
       <ActivityBar title="Sticker Album" onBack={() => setScene('town')} />
-      <p
-        className="panel"
-        style={{ margin: '0 12px', padding: '6px 12px', textAlign: 'center', fontWeight: 800 }}
-        data-testid="album-count"
-      >
-        {have.size} of {STICKERS.length} stickers
-      </p>
+      <div style={{ padding: '0 12px', display: 'grid', gap: 8 }}>
+        <Tabs<'stickers' | 'shells'>
+          label="Album pages"
+          value={page}
+          onChange={(p) => (play('pop'), setPage(p))}
+          tabs={[
+            { id: 'stickers', label: 'Stickers' },
+            { id: 'shells', label: 'Shells' },
+          ]}
+        />
+        <p className="panel" style={{ margin: 0, padding: '6px 12px', textAlign: 'center', fontWeight: 800 }} data-testid="album-count">
+          {page === 'stickers' ? `${have.size} of ${STICKERS.length} stickers` : `${shells.length} of ${SHELLS.length} secret shells`}
+        </p>
+      </div>
       <div className="scroll-y" style={{ flex: 1, minHeight: 0, padding: 12 }}>
-        <div className="album-grid">
-          {STICKERS.map((s) => {
-            const got = have.has(s.id);
-            return (
-              <button
-                key={s.id}
-                type="button"
-                className="album-slot"
-                data-testid={`sticker-${s.id}`}
-                data-earned={got}
-                onClick={() => (play('pop'), setOpen(s.id))}
-              >
-                <svg viewBox="0 0 100 100" aria-hidden="true">
-                  <StickerArt motif={s.motif} color={s.color} locked={!got} />
-                </svg>
-                <span>{got ? s.name : '???'}</span>
-              </button>
-            );
-          })}
-        </div>
+        {page === 'stickers' ? (
+          <div className="album-grid">
+            {STICKERS.map((s) => {
+              const got = have.has(s.id);
+              return (
+                <button
+                  key={s.id}
+                  type="button"
+                  className="album-slot"
+                  data-testid={`sticker-${s.id}`}
+                  data-earned={got}
+                  onClick={() => (play('pop'), setOpen(s.id))}
+                >
+                  <svg viewBox="0 0 100 100" aria-hidden="true">
+                    <StickerArt motif={s.motif} color={s.color} locked={!got} />
+                  </svg>
+                  <span>{got ? s.name : '???'}</span>
+                </button>
+              );
+            })}
+          </div>
+        ) : (
+          <>
+            <p style={{ margin: '0 0 10px', textAlign: 'center' }}>Shiny shells are hidden all around Petalport. Tap one to pick it up!</p>
+            <ul className="album-grid" style={{ listStyle: 'none', margin: 0, padding: 0 }}>
+              {SHELLS.map((sh) => {
+                const got = shells.includes(sh.id);
+                return (
+                  <li key={sh.id} className="album-slot" data-testid={`album-${sh.id}`} data-earned={got}>
+                    <svg viewBox="0 0 100 100" aria-hidden="true" style={got ? undefined : { opacity: 0.3 }}>
+                      <ShellArt kind={sh.kind} color={got ? sh.color : '#B4ABBF'} />
+                    </svg>
+                    <span>{got ? sh.name : sh.hint}</span>
+                  </li>
+                );
+              })}
+            </ul>
+          </>
+        )}
       </div>
       {def && (
         <Sheet title={have.has(def.id) ? def.name : 'Still to find'} onClose={() => setOpen(null)}>

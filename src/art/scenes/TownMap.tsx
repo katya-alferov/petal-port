@@ -2,8 +2,9 @@
 import type { ReactNode } from 'react';
 import type { Shade } from '../../content/palette';
 import { OUTLINE, Shaded, scallopCircle } from '../kit';
+import { ShellArt } from '../shells';
 
-export type PlaceId = 'boutique' | 'park' | 'cafe' | 'home' | 'airport' | 'cottage' | 'petshop' | 'board' | 'postbox';
+export type PlaceId = 'boutique' | 'park' | 'cafe' | 'home' | 'airport' | 'cottage' | 'petshop' | 'board' | 'postbox' | 'stage';
 
 export const MAP_W = 1170;
 export const MAP_H = 3200;
@@ -18,6 +19,7 @@ export const PLACE_Y: Record<PlaceId, number> = {
   cafe: 1880,
   home: 2160,
   postbox: 2160,
+  stage: 2480,
   airport: 2860,
 };
 
@@ -164,9 +166,12 @@ export interface TownMapProps {
   pet?: ReactNode;
   /** A letter is waiting: the Post Box flag is up. */
   mail?: boolean;
+  /** Secret shells still to find on the map (game-systems §9.2). */
+  shells?: readonly { id: string; kind: string; color: string; x: number; y: number }[];
+  onShell?: (id: string) => void;
 }
 
-export function TownMap({ onTap, onCat, badges = {}, homeName = 'Harbour Loft', pet, mail = false }: TownMapProps) {
+export function TownMap({ onTap, onCat, badges = {}, homeName = 'Harbour Loft', pet, mail = false, shells = [], onShell }: TownMapProps) {
   return (
     <svg
       viewBox={`0 0 ${MAP_W} ${MAP_H}`}
@@ -420,6 +425,57 @@ export function TownMap({ onTap, onCat, badges = {}, homeName = 'Harbour Loft', 
         <path d="M92,2012 L140,1970 L188,2012 Z" fill={SEA.base} stroke={OUTLINE} strokeWidth={5} strokeLinejoin="round" />
       </g>
 
+      {/* Starlight Stage: a little show stage on a pier (game-systems §9.1) */}
+      <Place
+        id="stage"
+        hit={[60, 2330, 500, 360]}
+        label="Starlight Stage"
+        onTap={onTap}
+        badge={badges.stage && <Badge x={500} y={2370} kind={badges.stage} />}
+      >
+        {[110, 230, 370, 490].map((x) => (
+          <rect key={x} x={x - 10} y={2580} width={20} height={70} fill={WOOD.shadow} stroke={OUTLINE} strokeWidth={4} />
+        ))}
+        <Shaded d={rect(70, 2520, 460, 70)} shade={WOOD} depth={6} />
+        <Shaded d="M110,2524 L110,2430 C110,2340 490,2340 490,2430 L490,2524 Z" shade={LILAC} depth={8} />
+        <path d="M150,2524 L150,2440 C150,2390 450,2390 450,2440 L450,2524 Z" fill="#3A2E4F" stroke={OUTLINE} strokeWidth={4} />
+        {[0, 1].map((side) => (
+          <path
+            key={side}
+            transform={side ? 'translate(600 0) scale(-1 1)' : undefined}
+            d="M150,2524 L150,2440 C150,2410 180,2396 226,2392 C206,2436 196,2484 214,2524 Z"
+            fill={PINK.base}
+            stroke={OUTLINE}
+            strokeWidth={4}
+            strokeLinejoin="round"
+          />
+        ))}
+        <path d="M232,2400 L272,2524 L328,2524 L368,2400 Z" fill="#FFE08A" opacity={0.35} />
+        <path d="M272,2524 L328,2524 L348,2588 L252,2588 Z" fill={PINK.highlight} stroke={OUTLINE} strokeWidth={4} strokeLinejoin="round" />
+        {Array.from({ length: 9 }, (_, i) => {
+          const a = Math.PI * (0.08 + (i * 0.84) / 8);
+          return (
+            <circle
+              key={i}
+              cx={300 - Math.cos(a) * 172}
+              cy={2440 - Math.sin(a) * 74}
+              r={9}
+              fill="#FFE08A"
+              stroke={OUTLINE}
+              strokeWidth={3}
+            />
+          );
+        })}
+        <path
+          d="M300,2304 L310,2328 L336,2330 L316,2346 L322,2372 L300,2358 L278,2372 L284,2346 L264,2330 L290,2328 Z"
+          fill={SUN.base}
+          stroke={OUTLINE}
+          strokeWidth={4}
+          strokeLinejoin="round"
+        />
+        <Sign x={270} y={2650} label="Starlight Stage" color="#FF7BA9" />
+      </Place>
+
       {/* Sunny Café */}
       <Place
         id="cafe"
@@ -526,6 +582,26 @@ export function TownMap({ onTap, onCat, badges = {}, homeName = 'Harbour Loft', 
         </g>
         <Sign x={650} y={2700} label="Airport" color="#B39DFF" />
       </Place>
+
+      {/* Secret shells: small treasures with a big invisible hit area (game-systems §9.2) */}
+      {shells.map((sh) => (
+        <g
+          key={sh.id}
+          role="button"
+          tabIndex={0}
+          aria-label="A shiny shell"
+          data-testid={`shell-${sh.id}`}
+          className="shell-spot"
+          style={{ cursor: 'pointer' }}
+          onClick={() => onShell?.(sh.id)}
+          onKeyDown={(e) => (e.key === 'Enter' || e.key === ' ') && onShell?.(sh.id)}
+        >
+          <rect x={sh.x - 70} y={sh.y - 70} width={140} height={140} rx={70} fill="transparent" />
+          <g transform={`translate(${sh.x - 42} ${sh.y - 46}) scale(0.84)`}>
+            <ShellArt kind={sh.kind} color={sh.color} />
+          </g>
+        </g>
+      ))}
     </svg>
   );
 }

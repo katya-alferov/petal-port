@@ -113,7 +113,9 @@ export type StickerMotif =
   | 'note'
   | 'friends'
   | 'envelope'
-  | 'coin';
+  | 'coin'
+  | 'dress'
+  | 'shell';
 
 export interface StickerDef {
   id: string;
@@ -304,5 +306,46 @@ export const STICKERS: StickerDef[] = [
     motif: 'coin',
     color: '#B39DFF',
     cond: { kind: 'coins', n: 2000 },
+  },
+  // Wave B (game-systems §9)
+  {
+    id: 'sticker.runway',
+    name: 'Runway Debut',
+    hint: 'Walk the Starlight Stage',
+    motif: 'dress',
+    color: '#FF7BA9',
+    cond: { kind: 'shows', n: 1 },
+  },
+  {
+    id: 'sticker.runway-star',
+    name: 'Fashion Star',
+    hint: 'Get 3 stars in a show',
+    motif: 'dress',
+    color: '#FFC94A',
+    cond: { kind: 'showStars', n: 1 },
+  },
+  {
+    id: 'sticker.style-icon',
+    name: 'Style Icon',
+    hint: 'Get 3 stars on every show theme',
+    motif: 'crown',
+    color: '#FF7BA9',
+    cond: { kind: 'showStars', n: 6 },
+  },
+  {
+    id: 'sticker.shell',
+    name: 'Beachcomber',
+    hint: 'Find a secret shell',
+    motif: 'shell',
+    color: '#FFADCA',
+    cond: { kind: 'shells', n: 1 },
+  },
+  {
+    id: 'sticker.all-shells',
+    name: 'Shell Seeker',
+    hint: 'Find every secret shell',
+    motif: 'shell',
+    color: '#3BB7C4',
+    cond: { kind: 'shells', n: 10 },
   },
 ];

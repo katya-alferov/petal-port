@@ -7,7 +7,7 @@ import type { DishTopping } from '../game/save';
 import { play } from '../platform/audio';
 import { useGame } from '../state/store';
 import { Button, ProgressRing } from '../ui/kit';
-import { ActivityBar } from './common';
+import { ActivityBar, ShellSpots } from './common';
 
 const MIX_TAPS = 6;
 const POUR_MS = 1600;
@@ -21,6 +21,7 @@ export function KitchenScene() {
   if (!recipe)
     return (
       <section className="scene" aria-label="Kitchen" style={{ background: 'linear-gradient(#DFF5EC, #FFF7EC 60%)' }}>
+        <ShellSpots scene="kitchen" />
         <ActivityBar title="Kitchen" onBack={() => setScene('home')} />
         <div style={{ padding: 16, display: 'grid', gap: 14, alignContent: 'start' }}>
           <h2 className="display" style={{ fontSize: '1.5rem' }}>

@@ -332,3 +332,10 @@ The owner asked for the look of the 2009 Israeli virtual-city "dolls". We keep c
 - **Hair:** a glossy halo of strand glints across the crown; "Doll curls" style with volume, ringlet ends and a flower clip (new default).
 - **Backdrops:** `GlamBackdrop` (glossy bubbles, hearts, twinkling sparkles; decorative, never tappable, reduced-motion aware) on Title, Me and the Boutique; pink-lilac gradients.
 - **Rooms:** Candy Doll (polka dots) and Lilac Dream (tufted quilting) themes.
+
+## 15. Layout guardrails from the Oct 2026 review
+
+- **Nothing covers a face or ears.** Speech bubbles sit in the layout flow above characters and pets, never absolutely on top of them. Areas where toasts appear (below the top bar) are kept clear of heads, or reserved as a bubble band.
+- **Characters stand on something.** A character drawn over a scene sits inside the scene SVG (via the rig's `frame` prop) so its feet stay on the floor at every screen shape. The title doll stands on the boardwalk, which is tall enough to show on 375×667 and 390×844; the title art is anchored to the bottom (`xMidYMax slice`).
+- **Grown-up details stay quiet.** The build version is a tiny, faint "v0.2" tag in a corner (full version in `data-version` and the debug overlay; press and hold opens the log).
+- **Secret shells** look like treasure (gloss, twinkle, gentle scale animation), never like scenery, and always have a 44 px+ target.

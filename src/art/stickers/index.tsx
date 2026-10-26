@@ -2,6 +2,7 @@
 // Locked stickers draw as a soft silhouette so the album shows what is still to find.
 import type { ReactElement } from 'react';
 import { OUTLINE, scallopCircle } from '../kit';
+import { ShellArt } from '../shells';
 
 const W = '#FFF7EC';
 const sw = { stroke: OUTLINE, strokeWidth: 3, strokeLinejoin: 'round' as const, strokeLinecap: 'round' as const };
@@ -129,6 +130,18 @@ const MOTIF: Record<string, (ink: string) => ReactElement> = {
       <circle cx={50} cy={50} r={26} fill={c} />
       <circle cx={50} cy={50} r={18} fill="none" stroke={W} strokeWidth={3} />
       <path d="M50,38 L53,46 L61,46 L55,51 L57,59 L50,54 L43,59 L45,51 L39,46 L47,46 Z" fill={W} strokeWidth={2} />
+    </g>
+  ),
+  dress: (c) => (
+    <g {...sw}>
+      <path d="M40,18 L46,26 L54,26 L60,18 L64,34 L58,42 L76,80 L24,80 L42,42 L36,34 Z" fill={c} />
+      <path d="M42,42 L58,42" fill="none" />
+      <path d="M50,52 L52,57 L57,58 L53,61 L54,66 L50,63 L46,66 L47,61 L43,58 L48,57 Z" fill={W} strokeWidth={1.5} />
+    </g>
+  ),
+  shell: (c) => (
+    <g transform="translate(14 12) scale(0.72)">
+      <ShellArt kind="scallop" color={c} />
     </g>
   ),
 };

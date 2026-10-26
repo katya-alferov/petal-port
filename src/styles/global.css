@@ -1269,3 +1269,158 @@ body {
   font: 700 0.8125rem/44px var(--font-body, inherit);
   -webkit-touch-callout: none;
 }
+
+/* Secret shells (game-systems §9.2): small, shiny, gently twinkling so they read as treasure. */
+.shell-btn {
+  position: absolute;
+  z-index: 4;
+  width: 48px;
+  height: 48px;
+  margin: -24px 0 0 -24px;
+  padding: 6px;
+  background: none;
+  border: none;
+  cursor: pointer;
+}
+.shell-btn svg {
+  width: 100%;
+  height: 100%;
+  display: block;
+}
+.shell-spot {
+  transform-box: fill-box;
+  transform-origin: 50% 50%;
+  animation: shell-twinkle 2.6s ease-in-out infinite;
+}
+@keyframes shell-twinkle {
+  0%,
+  100% {
+    transform: scale(1) rotate(0deg);
+  }
+  50% {
+    transform: scale(1.12) rotate(-6deg);
+  }
+}
+
+/* Starlight Stage (game-systems §9.1) */
+.show-stage {
+  position: relative;
+  min-height: 0;
+  overflow: hidden;
+}
+.show-doll {
+  position: absolute;
+  left: 50%;
+  bottom: 6%;
+  height: min(88%, 520px);
+  aspect-ratio: 1 / 2;
+  transform: translateX(-50%);
+  pointer-events: none;
+}
+.show-stage[data-on-stage='true'] .show-doll {
+  bottom: 13%;
+  height: min(74%, 520px);
+}
+.show-doll svg {
+  width: 100%;
+  height: 100%;
+}
+.runway-walk {
+  animation: runway-walk 1.8s ease-out both;
+}
+@keyframes runway-walk {
+  0% {
+    transform: translateX(-50%) translateY(-22%) scale(0.55);
+    opacity: 0;
+  }
+  15% {
+    opacity: 1;
+  }
+  30% {
+    transform: translateX(-50%) translateY(-14%) scale(0.68);
+  }
+  45% {
+    transform: translateX(-50%) translateY(-11%) scale(0.75) rotate(-2deg);
+  }
+  60% {
+    transform: translateX(-50%) translateY(-6%) scale(0.85) rotate(2deg);
+  }
+  80% {
+    transform: translateX(-50%) translateY(-2%) scale(0.95) rotate(-1deg);
+  }
+  100% {
+    transform: translateX(-50%) translateY(0) scale(1);
+  }
+}
+.judges {
+  position: absolute;
+  left: 8px;
+  right: 8px;
+  bottom: 8px;
+  display: flex;
+  gap: 8px;
+  justify-content: space-between;
+  pointer-events: none;
+}
+.judge-card {
+  display: grid;
+  justify-items: center;
+  gap: 2px;
+  padding: 6px 8px;
+  opacity: 0;
+  transform: translateY(20px) scale(0.8);
+  transition:
+    opacity 0.3s,
+    transform 0.35s var(--spring);
+}
+.judge-card[data-show='true'] {
+  opacity: 1;
+  transform: none;
+}
+.judge-card .face {
+  width: 56px;
+  height: 56px;
+}
+.show-stars {
+  display: inline-flex;
+  gap: 1px;
+  font-size: 1.3rem;
+  line-height: 1;
+  -webkit-text-stroke: 1.5px var(--outline);
+}
+.show-stars [data-on='true'] {
+  color: #ffc94a;
+}
+.show-stars [data-on='false'] {
+  color: #fff7ec;
+}
+.show-theme {
+  font-size: 1.7rem;
+  border-left: 10px solid;
+  padding-left: 10px;
+}
+.show-theme small {
+  display: block;
+  font: 800 1rem var(--font-body);
+}
+.card-low {
+  padding-top: calc(var(--safe-top) + 132px);
+  overflow-y: auto;
+}
+.show-meter {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 4px 10px;
+}
+.show-fit {
+  background: #fff1c2;
+}
+.judge-lines {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  gap: 4px;
+  text-align: left;
+}

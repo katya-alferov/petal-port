@@ -8,6 +8,9 @@ import { adopt, ballSpot, bowls, care, careToNextTrick, tricksKnown, wantedFood 
 import { addHeart, applyEvent, BOARD_SIZE, fillBoard, GIFT_AT, isReady, makeNote, VISIT_AT } from './requests';
 import { load, newSave, sanitize, type SaveGame } from './save';
 import { newStickers } from './stickers';
+import { FIRST_STARS_BONUS, fits, fitting, judgesFor, SHOW_PAY, showReward, showStars, themeFor } from './show';
+import { SHELLS, SHOW_THEMES } from '../content/show';
+import { WEARABLES } from '../content/wearables';
 
 const fresh = () => newSave(SAVE_CONTEXT, 1_700_000_000_000);
 const ctx = { hasPet: true, unlockedRecipes: ['recipe.pancakes'] };
@@ -156,7 +159,7 @@ describe('save: Wave A fields', () => {
   it('an old save without Wave A fields loads with safe defaults', () => {
     const s = fresh() as unknown as Record<string, unknown>;
     const old = structuredClone(s) as { progress: Record<string, unknown> };
-    for (const k of ['pet', 'friends', 'requests', 'mail', 'stickers', 'visitor']) delete old.progress[k];
+    for (const k of ['pet', 'friends', 'requests', 'mail', 'stickers', 'visitor', 'shows', 'shells']) delete old.progress[k];
     const r = load(JSON.stringify(old), SAVE_CONTEXT);
     expect(r.kind).toBe('ok');
     if (r.kind === 'ok') {
@@ -173,5 +176,57 @@ describe('save: Wave A fields', () => {
     const out = sanitize(s, SAVE_CONTEXT);
     expect(out.progress.friends).toEqual({ 'regular.mila': 10 });
     expect(out.progress.requests.board).toEqual([]);
+  });
+});
+
+describe('Starlight Stage (§9.1)', () => {
+  const theme = { id: 'show.sunny-picnic', tags: ['sunny', 'park'] };
+  it('counts only pieces that fit the theme, and every walk earns a star', () => {
+    const worn = [
+      { id: 'a', tags: ['sunny'] },
+      { id: 'b', tags: ['cozy'] },
+      { id: 'c', tags: ['park', 'casual'] },
+    ];
+    expect(fitting(worn, theme).map((w) => w.id)).toEqual(['a', 'c']);
+    expect([0, 1, 2, 3, 4, 8].map(showStars)).toEqual([1, 1, 2, 2, 3, 3]);
+  });
+  it('pays by stars, with a one-time bonus for the first three stars on a theme', () => {
+    expect(showReward(0, 1)).toEqual({ coins: SHOW_PAY[1], best: 1, firstStars: false });
+    expect(showReward(2, 3)).toEqual({ coins: SHOW_PAY[3] + FIRST_STARS_BONUS, best: 3, firstStars: true });
+    expect(showReward(3, 3)).toEqual({ coins: SHOW_PAY[3], best: 3, firstStars: false });
+    expect(showReward(3, 1).best).toBe(3);
+  });
+  it('themes rotate in order and judges are three different friends', () => {
+    expect(themeFor(0, 0, SHOW_THEMES)).toBe(SHOW_THEMES[0]);
+    expect(themeFor(4, 3, SHOW_THEMES)).toBe(SHOW_THEMES[1]);
+    for (let d = 0; d < 20; d++) expect(new Set(judgesFor(d, REQUEST_POOLS.friends)).size).toBe(3);
+  });
+  it('every theme can reach three stars with shop and starter clothes', () => {
+    const buyable = WEARABLES.filter((w) => w.source.kind === 'shop' || w.source.kind === 'starter');
+    for (const t of SHOW_THEMES) {
+      const slots = new Set(buyable.filter((w) => fits(w, t)).map((w) => w.slot));
+      // A dress takes the place of top + bottom, so count it as one piece.
+      const pieces = [...slots].filter((s) => s !== 'dress').length || 1;
+      expect(pieces, t.id).toBeGreaterThanOrEqual(4);
+    }
+  });
+});
+
+describe('secret shells (§9.2)', () => {
+  it('ids are unique and the album stickers match the content', () => {
+    expect(new Set(SHELLS.map((s) => s.id)).size).toBe(SHELLS.length);
+    const all = STICKERS.find((s) => s.id === 'sticker.all-shells')!;
+    expect(all.cond).toEqual({ kind: 'shells', n: SHELLS.length });
+    const icon = STICKERS.find((s) => s.id === 'sticker.style-icon')!;
+    expect(icon.cond).toEqual({ kind: 'showStars', n: SHOW_THEMES.length });
+  });
+  it('old saves get empty Wave B progress, and sanitize keeps it safe', () => {
+    const s = fresh();
+    const raw = s.progress as unknown as Record<string, unknown>;
+    delete raw.shows;
+    raw.shells = ['shell.pond', 'shell.pond', 7];
+    const out = sanitize(s, SAVE_CONTEXT);
+    expect(out.progress.shows).toEqual({ done: 0, best: {} });
+    expect(out.progress.shells).toEqual(['shell.pond']);
   });
 });

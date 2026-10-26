@@ -527,6 +527,36 @@ Healthy-engagement rules for everything in this section: nothing expires, nothin
 
 ### 8.5 Sticker album
 
-- 26 stickers, each earned by something the player did (café shifts and rank, recipes and 3-star dishes, items owned and placed, pet care and tricks, notes, hearts, friends, letters, lifetime coins 500 / 2000).
+- 26 stickers in Wave A (31 with Wave B, §9.4), each earned by something the player did (café shifts and rank, recipes and 3-star dishes, items owned and placed, pet care and tricks, notes, hearts, friends, letters, lifetime coins 500 / 2000).
 - Conditions only read counters that never go down, so stickers are never lost. A new sticker shows a toast once.
 - Locked stickers show a silhouette and a hint ("How to get it").
+
+## 9. Stage, shells and style (Wave B)
+
+Wave B adds a dress-up goal, an exploration collection and more doll-style clothes, chosen from what keeps girls aged 6–12 coming back in Dress to Impress, Toca Boca World, Avatar World, Adopt Me and Club Penguin: themed styling with a reveal, hidden things to find, and a big wardrobe. It keeps the same guardrails: no timers, no randomness in rewards, nothing to lose.
+
+### 9.1 Starlight Stage (fashion show)
+
+- A stage on a pier in the harbour. Flow: **theme → get dressed → walk the runway → three judges → result**.
+- 6 themes in a fixed order (Sunny Picnic, Party Princess, Cozy Day, Harbour Stroll, Smart & Chic, Sporty Star). "New theme" moves along the list at no cost; finishing a show moves to the next theme.
+- Each theme names item tags (e.g. Sunny Picnic: `sunny`, `park`). A worn piece **fits** if it has any of those tags.
+- **Stars:** 1 for walking, 2 for 2+ fitting pieces, 3 for 4+. The dress screen shows the stars live and says how many more pieces are needed, or that more fitting clothes are at the Boutique.
+- **Pay:** 10 / 20 / 30 coins for 1 / 2 / 3 stars, plus a one-time **+20** the first time a theme gets 3 stars. The best stars per theme are saved.
+- Judges are three different regulars, rotating with each show. Each praises a fitting piece by name; with no fitting pieces they cheer and give a tip naming the theme's tags. No one ever scores low or says anything unkind.
+- Every theme can reach 3 stars with shop and starter clothes (unit-tested).
+- Runway poses: the rig gains `hips` and `cheer` (both arms up).
+
+### 9.2 Secret shells
+
+- 10 shiny shells hidden around Petalport: 4 on the town map (beach, duck pond, hilltop, airport runway) and one each in Home, Ribbon Boutique, Sunny Café, Kitchen, Paw Parlour and Starlight Stage.
+- A shell twinkles gently, has a 44 px+ target and disappears once tapped (chime + toast "Secret shell found! n of 10"). Shells are permanent and never come back or move.
+- The album has a **Shells** page: found shells in color with their names; the rest as silhouettes with a "where to look" hint.
+
+### 9.3 New clothes and retags
+
+- New Boutique stock: Princess Gown **90**, Sparkle Tiara **40**, Kitty Ears **30**, Jelly Sandals **40**, Picnic Basket **35**, Star Leggings **40** (all inside the §6.4 price bands).
+- Retagged so every theme has enough pieces: Heart Sunglasses +`sunny`, Star Purse +`smart`, Ruffle Blouse +`smart`, Mary Janes +`smart`, Crossbody Bag +`sporty`, Bucket Hat +`sporty`.
+
+### 9.4 Stickers
+
+- 5 more (31 in all): Runway Debut (1 show), Fashion Star (3 stars in a show), Style Icon (3 stars on every theme), Beachcomber (1 shell), Shell Seeker (all 10 shells).

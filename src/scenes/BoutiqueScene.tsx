@@ -8,7 +8,7 @@ import { play } from '../platform/audio';
 import { useGame } from '../state/store';
 import { Button, GlamBackdrop, Tabs } from '../ui/kit';
 import { Icon } from '../ui/icons';
-import { ActivityBar, Character, FurnitureThumb, SLOT_CROP } from './common';
+import { ActivityBar, Character, FurnitureThumb, ShellSpots, SLOT_CROP } from './common';
 
 type Dept = 'clothes' | 'home';
 const SLOT_ORDER: WearSlot[] = ['dress', 'top', 'bottom', 'outerwear', 'shoes', 'headwear', 'neck', 'bag'];
@@ -56,6 +56,7 @@ export function BoutiqueScene() {
 
   return (
     <section className="scene" aria-label="Ribbon Boutique" style={{ background: 'linear-gradient(#FFD6E6, #FFF0F6 55%)' }}>
+      <ShellSpots scene="boutique" />
       <ActivityBar title="Ribbon Boutique" onBack={() => setScene('town')} />
       <div style={{ position: 'relative', flex: '0 0 38%', display: 'flex', alignItems: 'stretch', gap: 8, padding: '0 12px' }}>
         <GlamBackdrop />

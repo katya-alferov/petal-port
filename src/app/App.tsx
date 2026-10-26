@@ -9,6 +9,7 @@ import { MeScene } from '../scenes/MeScene';
 import { TitleScene } from '../scenes/TitleScene';
 import { TownScene } from '../scenes/TownScene';
 import { PetShopScene } from '../scenes/PetShopScene';
+import { ShowScene } from '../scenes/ShowScene';
 import { PetScene } from '../scenes/PetScene';
 import { BoardScene } from '../scenes/BoardScene';
 import { AlbumScene } from '../scenes/AlbumScene';
@@ -52,6 +53,7 @@ export function App() {
         {scene === 'me' && <MeScene />}
         {scene === 'home' && <HomeScene />}
         {scene === 'petshop' && <PetShopScene />}
+        {scene === 'show' && <ShowScene />}
         {scene === 'pet' && <PetScene />}
         {scene === 'board' && <BoardScene />}
         {scene === 'album' && <AlbumScene />}

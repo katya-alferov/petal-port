@@ -18,7 +18,10 @@ export type StickerCond =
   | { kind: 'hearts'; n: number }
   | { kind: 'friends'; n: number }
   | { kind: 'mail'; n: number }
-  | { kind: 'coins'; n: number };
+  | { kind: 'coins'; n: number }
+  | { kind: 'shows'; n: number }
+  | { kind: 'showStars'; n: number }
+  | { kind: 'shells'; n: number };
 
 export interface StickerFacts {
   journeySteps: number;
@@ -59,6 +62,12 @@ export function meets(save: SaveGame, c: StickerCond, facts: StickerFacts): bool
       return p.mail.opened >= c.n;
     case 'coins':
       return save.wallet.lifetimeEarned >= c.n;
+    case 'shows':
+      return p.shows.done >= c.n;
+    case 'showStars':
+      return Object.values(p.shows.best).filter((b) => b >= 3).length >= c.n;
+    case 'shells':
+      return p.shells.length >= c.n;
   }
 }
 

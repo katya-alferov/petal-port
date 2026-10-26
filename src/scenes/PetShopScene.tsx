@@ -6,7 +6,7 @@ import { play } from '../platform/audio';
 import { useGame } from '../state/store';
 import { Button } from '../ui/kit';
 import { Icon } from '../ui/icons';
-import { ActivityBar, PetThumb } from './common';
+import { ActivityBar, PetThumb, ShellSpots } from './common';
 
 type Step = 'kind' | 'color' | 'name';
 
@@ -15,6 +15,7 @@ export function PetShopScene() {
   const pet = useGame((s) => s.save.progress.pet);
   return (
     <section className="scene" aria-label="Paw Parlour" style={{ background: 'linear-gradient(#FFE3C9, #FFF7EC 60%)' }}>
+      <ShellSpots scene="petshop" />
       <ActivityBar title="Paw Parlour" onBack={() => setScene('town')} />
       {pet ? <Accessories /> : <Adopt />}
     </section>

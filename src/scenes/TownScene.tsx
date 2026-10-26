@@ -7,7 +7,8 @@ import { currentWeek, liveState, useGame, type SceneId } from '../state/store';
 import { Button, IconButton, Sheet } from '../ui/kit';
 import { isReady } from '../game/requests';
 import { regular } from '../content/cafe';
-import { Character, FurnitureThumb, MainDock, PetFigure, SLOT_CROP, TopBar } from './common';
+import { Character, FurnitureThumb, MainDock, PetFigure, SLOT_CROP, TopBar, useFindShell } from './common';
+import { shellsIn } from '../content/show';
 import { letterWaiting, type LetterDef } from '../game/mail';
 
 const PLACES: Record<PlaceId, { name: string; line: string; go?: SceneId; soon?: string }> = {
@@ -20,6 +21,7 @@ const PLACES: Record<PlaceId, { name: string; line: string; go?: SceneId; soon?:
   petshop: { name: 'Paw Parlour', line: 'Adopt a pet friend, and find cute accessories for them.', go: 'petshop' },
   board: { name: 'Petal Notes', line: 'Townsfolk pin notes here when they need a hand. Help them and make friends!', go: 'board' },
   postbox: { name: 'Post Box', line: 'Friends send a letter every week.' },
+  stage: { name: 'Starlight Stage', line: 'Dress up for a theme, walk the runway, and wow the judges!', go: 'show' },
 };
 
 let lastScroll: number | null = null;
@@ -37,6 +39,7 @@ export function TownScene() {
   const openMail = useGame((s) => s.openMail);
   const [letter, setLetter] = useState<{ letter: LetterDef; gift: { item: string } | { coins: number } } | null>(null);
   const mailWaiting = letterWaiting(save.progress.mail, currentWeek());
+  const findShell = useFindShell();
   const noteReady = save.progress.requests.board.some((n) => isReady(n, liveState(save)));
 
   useEffect(() => {
@@ -62,7 +65,10 @@ export function TownScene() {
             petshop: save.progress.pet ? undefined : 'new',
             board: noteReady || save.progress.requests.made === 0 ? 'new' : undefined,
             postbox: mailWaiting ? 'new' : undefined,
+            stage: save.progress.shows.done === 0 ? 'new' : undefined,
           }}
+          shells={shellsIn('town').filter((sh) => !save.progress.shells.includes(sh.id))}
+          onShell={findShell}
           mail={mailWaiting}
           pet={save.progress.pet && <PetFigure pet={save.progress.pet} mood="happy" />}
           onTap={(id) => {

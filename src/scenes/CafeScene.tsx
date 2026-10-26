@@ -8,7 +8,7 @@ import { play } from '../platform/audio';
 import { useGame } from '../state/store';
 import { Button, Tabs } from '../ui/kit';
 import { Icon } from '../ui/icons';
-import { ActivityBar, Character } from './common';
+import { ActivityBar, Character, ShellSpots } from './common';
 
 type TrayTab = 'drinks' | 'toppings' | 'bakery' | 'latte';
 const EMPTY: Built = { toppings: [] };
@@ -123,6 +123,7 @@ function CafeShift({ onAgain }: { onAgain: () => void }) {
 
   return (
     <section className="scene" aria-label="Sunny Café" style={{ background: '#FFE7C2' }}>
+      <ShellSpots scene="cafe" />
       <div className="scene-art">
         <CafeBackdrop />
       </div>

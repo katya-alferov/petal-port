@@ -9,8 +9,8 @@ import { Limb, OUTLINE, OUTLINE_W, polylineRange, polylineUpTo, Shaded, scallopC
 import { HAIR_BACK, HAIR_FRONT } from './parts/hair';
 import { WEAR_ART } from './wear';
 
-export type PoseId = 'idle' | 'wave';
-export const POSES: PoseId[] = ['idle', 'wave'];
+export type PoseId = 'idle' | 'wave' | 'hips' | 'cheer';
+export const POSES: PoseId[] = ['idle', 'wave', 'hips', 'cheer'];
 
 interface ArmPose {
   pts: [Pt, Pt, Pt]; // shoulder, elbow, wrist
@@ -55,6 +55,47 @@ const ARM_POSES: Record<PoseId, { left: ArmPose; right: ArmPose }> = {
         [238, 264],
         [292, 230],
         [304, 150],
+      ],
+      layer: 'back',
+      hand: 'open',
+    },
+  },
+  // Runway poses (game-systems §9.1): hands on hips, and both arms up.
+  hips: {
+    left: {
+      pts: [
+        [162, 264],
+        [116, 330],
+        [154, 394],
+      ],
+      layer: 'front',
+      hand: 'rest',
+    },
+    right: {
+      pts: [
+        [238, 264],
+        [284, 330],
+        [246, 394],
+      ],
+      layer: 'front',
+      hand: 'rest',
+    },
+  },
+  cheer: {
+    left: {
+      pts: [
+        [162, 264],
+        [118, 214],
+        [100, 140],
+      ],
+      layer: 'back',
+      hand: 'open',
+    },
+    right: {
+      pts: [
+        [238, 264],
+        [282, 214],
+        [300, 140],
       ],
       layer: 'back',
       hand: 'open',

@@ -15,6 +15,7 @@ import { cookReward, isRecipeUnlocked } from '../game/cooking';
 import { letterGift, letterWaiting, nextLetter, weekIndex, type LetterDef } from '../game/mail';
 import { adopt, care } from '../game/pets';
 import { addHeart, applyEvent, fillBoard, isReady, NOTE_PAY, type GameEvent } from '../game/requests';
+import { showReward } from '../game/show';
 import { newStickers } from '../game/stickers';
 import { earn, grant, purchase } from '../game/economy';
 import { load, newSave, validate, type Appearance, type Dish, type Outfit, type PetAction, type SaveGame } from '../game/save';
@@ -24,7 +25,7 @@ import { log } from '../platform/log';
 import { readSaves, requestPersist, scheduleWrite } from '../platform/storage';
 
 export type SceneId =
-  'title' | 'town' | 'me' | 'home' | 'cafe' | 'boutique' | 'kitchen' | 'petshop' | 'pet' | 'board' | 'album' | 'gallery' | 'spike';
+  'title' | 'town' | 'me' | 'home' | 'cafe' | 'boutique' | 'kitchen' | 'petshop' | 'pet' | 'board' | 'album' | 'show' | 'gallery' | 'spike';
 
 export interface ToastMsg {
   id: number;
@@ -64,6 +65,10 @@ interface GameStore {
   /** Opens this week's letter, if one is waiting. */
   openMail: () => { letter: LetterDef; gift: { item: string } | { coins: number } } | null;
   inviteFriend: (id: string | null) => void;
+  /** Wave B (game-systems §9). A finished runway walk; returns the coins paid. */
+  showDone: (themeId: string, stars: 1 | 2 | 3) => { coins: number; firstStars: boolean };
+  /** Picks up a secret shell; returns how many are found now, or null if it was already found. */
+  findShell: (id: string) => number | null;
   boot: (fixture?: string | null) => Promise<void>;
 }
 
@@ -256,6 +261,24 @@ export const useGame = create<GameStore>((setState, getState) => ({
   inviteFriend: (id) => {
     const s = getState().save;
     setState({ save: touch({ ...s, progress: { ...s.progress, visitor: id } }) });
+  },
+  showDone: (themeId, stars) => {
+    let s = getState().save;
+    const r = showReward(s.progress.shows.best[themeId] ?? 0, stars);
+    s = earn(s, r.coins);
+    s = {
+      ...s,
+      progress: { ...s.progress, shows: { done: s.progress.shows.done + 1, best: { ...s.progress.shows.best, [themeId]: r.best } } },
+    };
+    setState({ save: touch(s) });
+    return { coins: r.coins, firstStars: r.firstStars };
+  },
+  findShell: (id) => {
+    const s = getState().save;
+    if (s.progress.shells.includes(id)) return null;
+    const shells = [...s.progress.shells, id];
+    setState({ save: touch({ ...s, progress: { ...s.progress, shells } }) });
+    return shells.length;
   },
   boot: async (fixture) => {
     if (fixture === 'fresh') {
