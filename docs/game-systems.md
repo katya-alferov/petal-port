@@ -491,3 +491,42 @@ Map → Airport → Ticket desk ──(own ticket)──► Gate → "Fly!" → 
 | New York | Rooftop at sunset with a skyline and a torch-raised statue silhouette in the distance | Food-cart order job (reuses café engine) | Snow globe, yellow-cab model, pretzel keychain (avoid the trademarked "I ♥ NY" logo) |
 
 Each new destination needs: 1 scene, 1 ticket price, 3–6 souvenirs, a sticker set, a stamp, and a cultural review. Activities reuse existing engines where possible.
+
+## 8. Town life (Wave A)
+
+Healthy-engagement rules for everything in this section: nothing expires, nothing decays, nothing is random, and nothing is lost by not playing. Every reward comes from finished gameplay.
+
+### 8.1 Pets (Paw Parlour)
+
+- Adopt **one pet for free**: kitten, puppy or bunny; 6 fur colors; a name from 4 ideas or typed (max 12 characters, empty → "Buddy").
+- Care activities, each a small game: **Feed** (the pet asks for a food; pick it from 3 bowls; a wrong bowl gets a kind "not that one" and the right food named), **Bath** (tap or rub 5 muddy spots, then Rinse), **Catch** (tap the ball 3 times).
+- Pets have no hunger, health or mood meters. Care only adds.
+- Tricks are learned by total care: Sit 0, Spin 3, High five 8, Dance 15, Roll over 25.
+- Feeding asks for the kind's favourites in a fixed rotation; bowl order and ball spots are fixed sequences (no randomness).
+- Accessories (Paw Parlour): Big Bow 25, Bandana 30, Bell Collar 35, Tiny Crown 45.
+- The pet sits next to the player at home and outside Harbour Loft on the map; tapping it at home opens the pet corner.
+
+### 8.2 Petal Notes (request board)
+
+- The board always holds **3 notes**, each from a different regular and of a different kind. Notes are generated from a seed (save creation time) and a running number, so they are deterministic.
+- Kinds and pay: cook a recipe with a named topping **20**; serve 2 of a named drink at the café **15**; wear a named Boutique item **10**; place a named Boutique furniture item **10**; feed / bathe / play with the pet **10** (only once a pet is adopted). Cook notes only name unlocked recipes.
+- Cook, café and pet notes count activities finished after the note appears. Wear and place notes are checked live.
+- Notes never expire. "New note" swaps any note for a new one at no cost.
+
+### 8.3 Friendships
+
+- Each finished note gives that regular **1 heart** (max 10).
+- At **3 hearts** the friend sends a gift: Mila Flower Crown, Theo Sunflower Pot, Grandma Rosa Patchwork Rug, Aiko Blossom Print, Sam Star Purse, Noor Heart Sunglasses, Leo Star Lamp, Zuri Bucket Hat.
+- At **5 hearts** the friend can be invited home (one visitor at a time; tap them for a line). 10 hearts earns the Best Friends sticker.
+
+### 8.4 Post Box
+
+- One letter waits each calendar week (weeks start Monday, local time). A new player has one waiting right away.
+- Missed weeks don't stack and aren't lost: the next letter just waits.
+- Letters come from the regulars in a fixed order; each sends the first gift on its list the player doesn't own yet, otherwise 40–50 coins.
+
+### 8.5 Sticker album
+
+- 26 stickers, each earned by something the player did (café shifts and rank, recipes and 3-star dishes, items owned and placed, pet care and tricks, notes, hearts, friends, letters, lifetime coins 500 / 2000).
+- Conditions only read counters that never go down, so stickers are never lost. A new sticker shows a toast once.
+- Locked stickers show a silhouette and a hint ("How to get it").

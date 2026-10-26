@@ -3,6 +3,7 @@ import type { FurnitureDef, HomeDef } from './types';
 
 const starter = { kind: 'starter', lifestyle: 'urban' } as const;
 const shop = (price: number) => ({ kind: 'shop', shop: 'boutique', price }) as const;
+const friendGift = { kind: 'reward', unlock: { kind: 'friend' } } as const;
 
 export const FURNITURE: FurnitureDef[] = [
   {
@@ -155,6 +156,46 @@ export const FURNITURE: FurnitureDef[] = [
       { id: 'main', default: 'lilac' },
       { id: 'accent', default: 'sunshine' },
     ],
+  },
+  // Friendship gifts (game-systems §8.3)
+  {
+    id: 'furn.sunflower',
+    type: 'furniture',
+    slot: 'plant',
+    name: 'Sunflower Pot',
+    source: friendGift,
+    art: 'furn/plant/sunflower',
+    tints: [{ id: 'main', default: 'sea' }],
+  },
+  {
+    id: 'furn.patchwork-rug',
+    type: 'furniture',
+    slot: 'rug',
+    name: 'Patchwork Rug',
+    source: friendGift,
+    art: 'furn/rug/patchwork',
+    tints: [
+      { id: 'main', default: 'lilac' },
+      { id: 'accent', default: 'sunshine' },
+    ],
+  },
+  {
+    id: 'furn.blossom-print',
+    type: 'furniture',
+    slot: 'wall',
+    name: 'Blossom Print',
+    source: friendGift,
+    art: 'furn/wall/blossom-print',
+    tints: [{ id: 'main', default: 'cocoa' }],
+  },
+  {
+    id: 'furn.star-lamp',
+    type: 'furniture',
+    slot: 'lamp',
+    name: 'Star Lamp',
+    source: friendGift,
+    art: 'furn/lamp/star',
+    tints: [{ id: 'main', default: 'sunshine' }],
   },
 ];
 

@@ -283,4 +283,117 @@ export const FURN_ART: Record<string, (p: FurnArtProps) => ReactElement> = {
       <rect x={230} y={192} width={36} height={12} rx={6} fill={accent.base} stroke={OUTLINE} strokeWidth={2.5} />
     </g>
   ),
+  'furn/plant/sunflower': ({ main }) => (
+    <g>
+      <path d="M150,236 C148,190 152,150 150,110" stroke={OUTLINE} strokeWidth={14} strokeLinecap="round" fill="none" />
+      <path d="M150,236 C148,190 152,150 150,110" stroke={LEAF.base} strokeWidth={8} strokeLinecap="round" fill="none" />
+      <Shaded d="M150,190 C126,170 104,176 96,190 C112,204 134,204 150,190 Z" shade={LEAF} depth={3} />
+      <Shaded d="M152,160 C176,140 198,146 206,160 C190,174 168,174 152,160 Z" shade={LEAF} depth={3} />
+      <path d={scallopCircle(150, 92, 56, 14, 12)} fill="#FFC94A" stroke={OUTLINE} strokeWidth={3.5} />
+      <path d={scallopCircle(150, 92, 44, 14, 7, 0.2)} fill="#FFDE8D" />
+      <circle cx={150} cy={92} r={26} fill="#8B5E3C" stroke={OUTLINE} strokeWidth={3} />
+      {[
+        [142, 84],
+        [156, 88],
+        [146, 100],
+        [160, 100],
+      ].map(([x, y]) => (
+        <circle key={`${x}-${y}`} cx={x} cy={y} r={3} fill="#5B3B26" />
+      ))}
+      <Shaded d="M106,236 L194,236 L184,296 L116,296 Z" shade={main} depth={4} shine={[124, 250, 6, 10]} />
+      <rect x={100} y={228} width={100} height={16} rx={6} fill={main.base} stroke={OUTLINE} strokeWidth={3} />
+    </g>
+  ),
+  'furn/rug/patchwork': ({ main, accent }) => (
+    <g>
+      <Shaded
+        d="M26,212 C26,200 40,192 60,192 L240,192 C260,192 274,200 274,212 L284,276 C284,288 270,296 250,296 L50,296 C30,296 16,288 16,276 Z"
+        shade={main}
+        depth={5}
+      />
+      {[0, 1, 2, 3].map((i) => (
+        <path
+          key={i}
+          d={`M${48 + i * 52},${206} L${96 + i * 52},${206} L${100 + i * 54},${244} L${46 + i * 54},${244} Z`}
+          fill={i % 2 ? accent.base : main.highlight}
+          stroke={OUTLINE}
+          strokeWidth={2}
+        />
+      ))}
+      {[0, 1, 2, 3].map((i) => (
+        <path
+          key={`b${i}`}
+          d={`M${44 + i * 56},${248} L${98 + i * 56},${248} L${102 + i * 58},${284} L${40 + i * 58},${284} Z`}
+          fill={i % 2 ? main.highlight : accent.base}
+          stroke={OUTLINE}
+          strokeWidth={2}
+        />
+      ))}
+      <path d="M30,214 L270,214 M24,280 L278,280" stroke="#FFF7EC" strokeWidth={3} strokeDasharray="6 6" />
+    </g>
+  ),
+  'furn/wall/blossom-print': ({ main }) => (
+    <g>
+      <Shaded d="M40,40 L260,40 L260,240 L40,240 Z" shade={main} depth={6} />
+      <rect x={62} y={62} width={176} height={156} fill="#FFF7EC" stroke={OUTLINE} strokeWidth={3} />
+      <path
+        d="M80,206 C110,180 130,150 150,140 C170,130 196,120 222,96"
+        fill="none"
+        stroke="#8B5E3C"
+        strokeWidth={6}
+        strokeLinecap="round"
+      />
+      <path
+        d="M130,160 C126,136 116,120 104,110 M176,128 C184,108 196,96 206,88"
+        fill="none"
+        stroke="#8B5E3C"
+        strokeWidth={4}
+        strokeLinecap="round"
+      />
+      {[
+        [104, 106],
+        [140, 146],
+        [206, 86],
+        [176, 120],
+        [96, 190],
+        [222, 104],
+      ].map(([x, y]) => (
+        <g key={`${x}-${y}`}>
+          {[0, 72, 144, 216, 288].map((a) => (
+            <circle
+              key={a}
+              cx={x + Math.cos((a * Math.PI) / 180) * 8}
+              cy={y + Math.sin((a * Math.PI) / 180) * 8}
+              r={7}
+              fill="#FFADCA"
+              stroke={OUTLINE}
+              strokeWidth={1.5}
+            />
+          ))}
+          <circle cx={x} cy={y} r={4} fill="#FF7BA9" />
+        </g>
+      ))}
+    </g>
+  ),
+  'furn/lamp/star': ({ main }) => (
+    <g>
+      <path d="M150,290 L150,150" stroke={OUTLINE} strokeWidth={14} strokeLinecap="round" />
+      <path d="M150,290 L150,150" stroke={BRASS.base} strokeWidth={7} strokeLinecap="round" />
+      <Shaded d="M106,290 C106,278 126,272 150,272 C174,272 194,278 194,290 Z" shade={BRASS} depth={3} />
+      <Shaded
+        d={
+          Array.from({ length: 10 }, (_, i) => {
+            const a = -Math.PI / 2 + (i * Math.PI) / 5;
+            const r = i % 2 ? 40 : 88;
+            return `${i ? 'L' : 'M'}${(150 + Math.cos(a) * r).toFixed(1)},${(112 + Math.sin(a) * r).toFixed(1)}`;
+          }).join(' ') + ' Z'
+        }
+        shade={main}
+        shine={[124, 84, 10, 8]}
+      />
+      <circle cx={136} cy={110} r={5} fill={OUTLINE} />
+      <circle cx={164} cy={110} r={5} fill={OUTLINE} />
+      <path d="M140,126 Q150,134 160,126" fill="none" stroke={OUTLINE} strokeWidth={3} strokeLinecap="round" />
+    </g>
+  ),
 };

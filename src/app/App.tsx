@@ -8,6 +8,10 @@ import { KitchenScene } from '../scenes/KitchenScene';
 import { MeScene } from '../scenes/MeScene';
 import { TitleScene } from '../scenes/TitleScene';
 import { TownScene } from '../scenes/TownScene';
+import { PetShopScene } from '../scenes/PetShopScene';
+import { PetScene } from '../scenes/PetScene';
+import { BoardScene } from '../scenes/BoardScene';
+import { AlbumScene } from '../scenes/AlbumScene';
 import { setSfxEnabled } from '../platform/audio';
 import { testParam } from '../platform/hooks';
 import { useGame, type SceneId } from '../state/store';
@@ -47,6 +51,10 @@ export function App() {
         {scene === 'kitchen' && <KitchenScene />}
         {scene === 'me' && <MeScene />}
         {scene === 'home' && <HomeScene />}
+        {scene === 'petshop' && <PetShopScene />}
+        {scene === 'pet' && <PetScene />}
+        {scene === 'board' && <BoardScene />}
+        {scene === 'album' && <AlbumScene />}
         {scene === 'gallery' && <GalleryScene />}
         {toast && <Toast key={toast.id} message={toast.message} icon={toast.icon} onDone={clearToast} />}
         {gate && (

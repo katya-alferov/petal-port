@@ -4,6 +4,7 @@ import type { WearableDef, WearSlot } from './types';
 const starter = { kind: 'starter' } as const;
 const shop = (price: number) => ({ kind: 'shop', shop: 'boutique', price }) as const;
 const gift = (rank: 2 | 3) => ({ kind: 'reward', unlock: { kind: `cafe-rank-${rank}` } }) as const;
+const friendGift = { kind: 'reward', unlock: { kind: 'friend' } } as const;
 
 export const WEARABLES: WearableDef[] = [
   {
@@ -376,6 +377,56 @@ export const WEARABLES: WearableDef[] = [
     source: gift(3),
     tags: ['work'],
     art: 'wear/headwear/barista-cap',
+    tints: [
+      { id: 'main', default: 'sea' },
+      { id: 'accent', default: 'cream' },
+    ],
+  },
+  // Friendship gifts (game-systems §8.3)
+  {
+    id: 'headwear.flower-crown',
+    type: 'wearable',
+    slot: 'headwear',
+    name: 'Flower Crown',
+    source: friendGift,
+    tags: ['dressy'],
+    art: 'wear/headwear/flower-crown',
+    tints: [
+      { id: 'main', default: 'petal' },
+      { id: 'accent', default: 'sunshine' },
+    ],
+  },
+  {
+    id: 'bag.star-purse',
+    type: 'wearable',
+    slot: 'bag',
+    name: 'Star Purse',
+    source: friendGift,
+    tags: ['school'],
+    art: 'wear/bag/star-purse',
+    tints: [
+      { id: 'main', default: 'lilac' },
+      { id: 'accent', default: 'sunshine' },
+    ],
+  },
+  {
+    id: 'eyewear.heart-sunglasses',
+    type: 'wearable',
+    slot: 'eyewear',
+    name: 'Heart Sunglasses',
+    source: friendGift,
+    tags: ['party'],
+    art: 'wear/eyewear/heart-sunglasses',
+    tints: [{ id: 'main', default: 'petal' }],
+  },
+  {
+    id: 'headwear.bucket-hat',
+    type: 'wearable',
+    slot: 'headwear',
+    name: 'Bucket Hat',
+    source: friendGift,
+    tags: ['harbour'],
+    art: 'wear/headwear/bucket-hat',
     tints: [
       { id: 'main', default: 'sea' },
       { id: 'accent', default: 'cream' },

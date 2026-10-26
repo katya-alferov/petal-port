@@ -10,7 +10,8 @@ import { resolveFurniture } from '../content/resolve';
 import { WEARABLES } from '../content/wearables';
 import { STARTER_OUTFIT } from '../content/outfits';
 import { Button, Panel, ProgressRing, Tile } from '../ui/kit';
-import { Character, MainDock, TopBar } from './common';
+import { PET_ACCESSORIES, PET_COLORS, PET_KINDS } from '../content/pets';
+import { Character, MainDock, PetThumb, TopBar } from './common';
 
 const PLAIN = { top: STARTER_OUTFIT.top, bottom: STARTER_OUTFIT.bottom, shoes: STARTER_OUTFIT.shoes };
 
@@ -51,6 +52,20 @@ export function GalleryScene() {
                     title={`${o.name}, ${p}`}
                   />
                 </div>
+              )),
+            )}
+          </div>
+        </Section>
+        <Section title="Pets × colors × moods">
+          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: 6 }}>
+            {PET_KINDS.flatMap((k, ki) =>
+              PET_COLORS.map((c, ci) => (
+                <PetThumb
+                  key={k.id + c.id}
+                  label={`${k.name}, ${c.name}`}
+                  mood={(['idle', 'happy', 'eat', 'paw'] as const)[(ci + ki) % 4]}
+                  pet={{ kind: k.id, color: c.id, accessory: PET_ACCESSORIES[(ci + ki) % 5]?.id ?? null }}
+                />
               )),
             )}
           </div>

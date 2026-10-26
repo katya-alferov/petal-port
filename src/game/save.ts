@@ -39,12 +39,52 @@ export interface Dish {
   toppings: DishTopping[];
 }
 
+export interface PetState {
+  kind: string;
+  color: string;
+  name: string;
+  /** Pet accessory item id, or null. */
+  accessory: string | null;
+  fed: number;
+  washed: number;
+  played: number;
+}
+
+export type RequestGoal =
+  | { kind: 'cook'; recipe: string; topping: string }
+  | { kind: 'cafe'; base: string; count: number }
+  | { kind: 'wear'; item: string }
+  | { kind: 'place'; item: string }
+  | { kind: 'pet'; action: PetAction };
+
+export type PetAction = 'feed' | 'wash' | 'play';
+
+export interface RequestNote {
+  /** Running number: also the seed for the next note. */
+  no: number;
+  friend: string;
+  goal: RequestGoal;
+  /** Progress for counted goals (cook, cafe, pet). */
+  have: number;
+}
+
 export interface Progress {
   cafe: { correctOrders: number; shifts: number; rank: 1 | 2 | 3 };
   recipes: Record<string, { cooked: number; stars: number }>;
   dish: Dish | null;
   /** Welcome Journey step ids that are done (game-systems §6.7). */
   journey: string[];
+  /** Wave A (game-systems §8). */
+  pet: PetState | null;
+  /** Friendship hearts per regular id. */
+  friends: Record<string, number>;
+  requests: { made: number; done: number; board: RequestNote[] };
+  /** Post Box: the last week index a letter was opened in, and how many were opened. */
+  mail: { lastWeek: number; opened: number };
+  /** Sticker ids earned, in order. */
+  stickers: string[];
+  /** A friend visiting the player's home, or null. */
+  visitor: string | null;
 }
 
 export interface SaveGame {
@@ -79,9 +119,21 @@ export const CURRENT_SCHEMA = 1;
 export const MAX_COINS = 99_999;
 export const MAX_NAME = 12;
 export const START_COINS = 120;
+export const MAX_HEARTS = 10;
 
 export function newProgress(): Progress {
-  return { cafe: { correctOrders: 0, shifts: 0, rank: 1 }, recipes: {}, dish: null, journey: [] };
+  return {
+    cafe: { correctOrders: 0, shifts: 0, rank: 1 },
+    recipes: {},
+    dish: null,
+    journey: [],
+    pet: null,
+    friends: {},
+    requests: { made: 0, done: 0, board: [] },
+    mail: { lastWeek: -1, opened: 0 },
+    stickers: [],
+    visitor: null,
+  };
 }
 
 /** The content facts that sanitize() needs, injected so this module stays pure. */
@@ -216,7 +268,48 @@ function sanitizeProgress(raw: unknown): Progress {
         .map((t) => ({ id: t.id, x: Math.max(0, Math.min(1, t.x)), y: Math.max(0, Math.min(1, t.y)) })),
     };
   if (Array.isArray(raw.journey)) p.journey = [...new Set(raw.journey.filter(isStr))];
+  const pet = raw.pet;
+  if (isObj(pet) && isStr(pet.kind) && isStr(pet.color) && isStr(pet.name))
+    p.pet = {
+      kind: pet.kind,
+      color: pet.color,
+      name: pet.name.slice(0, MAX_NAME),
+      accessory: isStr(pet.accessory) ? pet.accessory : null,
+      fed: clampInt(pet.fed),
+      washed: clampInt(pet.washed),
+      played: clampInt(pet.played),
+    };
+  if (isObj(raw.friends)) for (const [id, h] of Object.entries(raw.friends)) if (isNum(h)) p.friends[id] = clampInt(h, MAX_HEARTS);
+  const rq = raw.requests;
+  if (isObj(rq)) {
+    p.requests.made = clampInt(rq.made);
+    p.requests.done = clampInt(rq.done);
+    if (Array.isArray(rq.board)) p.requests.board = rq.board.filter(isNote).slice(0, 3);
+  }
+  const mail = raw.mail;
+  if (isObj(mail))
+    p.mail = { lastWeek: isNum(mail.lastWeek) ? Math.max(-1, Math.floor(mail.lastWeek)) : -1, opened: clampInt(mail.opened) };
+  if (Array.isArray(raw.stickers)) p.stickers = [...new Set(raw.stickers.filter(isStr))];
+  if (isStr(raw.visitor)) p.visitor = raw.visitor;
   return p;
+}
+
+function isNote(n: unknown): n is RequestNote {
+  if (!isObj(n) || !isNum(n.no) || !isStr(n.friend) || !isNum(n.have) || !isObj(n.goal)) return false;
+  const g = n.goal;
+  switch (g.kind) {
+    case 'cook':
+      return isStr(g.recipe) && isStr(g.topping);
+    case 'cafe':
+      return isStr(g.base) && isNum(g.count);
+    case 'wear':
+    case 'place':
+      return isStr(g.item);
+    case 'pet':
+      return ['feed', 'wash', 'play'].includes(g.action as string);
+    default:
+      return false;
+  }
 }
 
 type Migration = (old: Record<string, unknown>) => Record<string, unknown>;

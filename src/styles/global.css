@@ -184,6 +184,7 @@ body {
   justify-content: center;
   gap: 8px;
   font: inherit;
+  white-space: nowrap;
   transition:
     transform var(--t-tap) var(--spring),
     box-shadow var(--t-tap) ease-out;
@@ -1024,4 +1025,211 @@ body {
 }
 .chip[aria-pressed='true'] {
   background: var(--sunshine);
+}
+
+/* Wave A: pets, notes, album, mail (game-systems §8) */
+.text-input {
+  font: inherit;
+  font-size: 1.1rem;
+  min-height: 48px;
+  padding: 8px 14px;
+  border: var(--stroke);
+  border-radius: 16px;
+  background: #fff;
+  color: var(--ink);
+}
+.pet-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  justify-content: center;
+}
+.bowl-btn {
+  display: grid;
+  justify-items: center;
+  gap: 2px;
+  width: 96px;
+  min-height: 96px;
+  padding: 6px;
+  font: inherit;
+  font-weight: 800;
+  border: var(--stroke);
+  border-radius: 20px;
+  background: #fff;
+  box-shadow: 0 4px 0 var(--outline);
+  color: var(--ink);
+  cursor: pointer;
+}
+.bowl-btn svg {
+  width: 64px;
+  height: 64px;
+}
+.bowl-btn:active {
+  transform: translateY(3px);
+  box-shadow: 0 1px 0 var(--outline);
+}
+.pet-hop {
+  animation: petHop 0.5s ease-out;
+}
+.pet-idle {
+  animation: breathe 3.2s ease-in-out infinite;
+}
+.pet-wag {
+  animation: wag 0.6s ease-in-out infinite alternate;
+}
+.pet-wiggle,
+.pet-no {
+  animation: shake 0.5s;
+}
+.pet-chew {
+  animation: squash 0.4s 3;
+}
+.pet-jump,
+.pet-sit {
+  animation: petHop 0.7s ease-out;
+}
+.pet-spin {
+  animation: petSpin 1s ease-in-out;
+}
+.pet-paw {
+  animation: petHop 0.6s ease-out 2;
+}
+.pet-dance {
+  animation: petDance 0.3s ease-in-out 4 alternate;
+}
+.pet-roll {
+  animation: petRoll 1.1s ease-in-out;
+}
+.pet-shake {
+  animation: shake 0.3s 3;
+}
+.ball-bounce {
+  animation: bob 0.9s ease-in-out infinite;
+}
+@keyframes petHop {
+  40% {
+    transform: translateY(-22%) scale(0.96, 1.04);
+  }
+  80% {
+    transform: translateY(0) scale(1.04, 0.96);
+  }
+}
+@keyframes petSpin {
+  50% {
+    transform: scaleX(-1);
+  }
+}
+@keyframes petDance {
+  from {
+    transform: rotate(-8deg);
+  }
+  to {
+    transform: rotate(8deg) translateY(-6%);
+  }
+}
+@keyframes petRoll {
+  to {
+    transform: rotate(360deg);
+  }
+}
+@keyframes wag {
+  from {
+    transform: rotate(-10deg);
+  }
+  to {
+    transform: rotate(14deg);
+  }
+}
+.album-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 10px;
+}
+.album-slot {
+  display: grid;
+  justify-items: center;
+  gap: 2px;
+  padding: 6px 4px 8px;
+  min-height: 44px;
+  font: inherit;
+  font-weight: 800;
+  font-size: 0.95rem;
+  color: var(--ink);
+  background: rgba(255, 255, 255, 0.7);
+  border: 3px dashed #c9b8ff;
+  border-radius: 20px;
+  cursor: pointer;
+}
+.album-slot[data-earned='true'] {
+  border: var(--stroke);
+  background: #fff;
+}
+.album-slot svg {
+  width: 100%;
+  max-width: 96px;
+}
+.note-card {
+  position: relative;
+  display: grid;
+  gap: 8px;
+  padding: 18px 14px 12px;
+  background: #fffbe6;
+  border: var(--stroke);
+  border-radius: 10px;
+  box-shadow: 0 5px 0 var(--outline);
+}
+.note-card[data-ready='true'] {
+  background: #e9fbef;
+}
+.note-card .pin {
+  position: absolute;
+  top: -8px;
+  left: 50%;
+  width: 20px;
+  height: 20px;
+  margin-left: -10px;
+  border-radius: 50%;
+  background: #ff7ba9;
+  border: var(--stroke);
+}
+.face {
+  flex: 0 0 auto;
+  width: 72px;
+  height: 72px;
+  border-radius: 50%;
+  overflow: hidden;
+  background: #ffe7f0;
+  border: var(--stroke);
+}
+.face svg {
+  width: 100%;
+  height: 100%;
+}
+.friend-row {
+  display: flex;
+  gap: 10px;
+  align-items: center;
+}
+.heart-row {
+  display: inline-flex;
+  gap: 1px;
+  font-size: 1rem;
+  line-height: 1;
+}
+.heart-row span {
+  color: #e3d3cc;
+}
+.heart-row span[data-on='true'] {
+  color: #ff5c95;
+}
+.letter {
+  background: #fffbe6;
+  border: var(--stroke);
+  border-radius: 12px;
+  padding: 14px;
+  margin-bottom: 12px;
+  background-image: repeating-linear-gradient(transparent 0 30px, #f2dcc0 30px 32px);
+}
+.flag-up {
+  animation: petHop 1.6s ease-in-out infinite;
 }

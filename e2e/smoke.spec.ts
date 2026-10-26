@@ -74,7 +74,8 @@ test('every tappable thing on Home responds', async ({ page }) => {
 });
 
 test('no serious accessibility violations on each main scene', async ({ page }) => {
-  for (const scene of ['title', 'town', 'me', 'home', 'cafe', 'boutique', 'kitchen', 'gallery']) {
+  test.setTimeout(120_000);
+  for (const scene of ['title', 'town', 'me', 'home', 'cafe', 'boutique', 'kitchen', 'petshop', 'board', 'album', 'gallery']) {
     await page.goto(`./?fixture=fresh&scene=${scene}`);
     await page.waitForTimeout(300);
     const results = await new AxeBuilder({ page }).disableRules(['color-contrast']).analyze();
@@ -216,4 +217,95 @@ test('town: every place opens a card; the airport says it is coming soon', async
   await tapPlace('cafe');
   await page.getByTestId('place-go').click();
   await expect(page.getByTestId('order-bubble')).toBeVisible();
+});
+
+type Petal = { getState: () => { save: Record<string, unknown> & { progress: Record<string, unknown> } }; setState: (s: object) => void };
+const patchSave = (page: Page, fn: string) =>
+  page.evaluate((body) => {
+    const g = (window as unknown as { __petal: Petal }).__petal;
+    const s = structuredClone(g.getState().save);
+    new Function('s', body)(s);
+    g.setState({ save: s });
+  }, fn);
+
+test('pets: adopt a puppy, then feed, bathe and play until it learns a trick', async ({ page }) => {
+  await page.goto('./?fixture=fresh&scene=town');
+  const place = page.getByTestId('place-petshop');
+  await place.evaluate((e) => e.scrollIntoView({ block: 'center' }));
+  await place.click({ force: true });
+  await page.getByTestId('place-go').click();
+  await page.getByTestId('adopt-kind-pet.puppy').click();
+  await page.getByTestId('adopt-next').click();
+  await page.getByTestId('adopt-color-petcolor.cocoa').click();
+  await page.getByTestId('adopt-next').click();
+  await page.getByTestId('adopt-done').click({ force: true });
+  await expect(page.getByRole('status').filter({ hasText: 'Pick or type a name' })).toBeVisible();
+  await page.getByTestId('adopt-name-Waffles').click();
+  await page.getByTestId('adopt-done').click();
+  await expect(page.getByRole('region', { name: /Waffles the puppy/ })).toBeVisible();
+
+  // Feed: the pet says what it wants; a wrong bowl is explained, the right one is eaten.
+  await page.getByTestId('pet-feed').click();
+  const say = (await page.getByTestId('pet-say').textContent())!.toLowerCase();
+  const bowls = page.getByRole('group', { name: 'Food bowls' }).getByRole('button');
+  const names = await bowls.allTextContents();
+  const right = names.findIndex((n) => say.includes(n.toLowerCase()));
+  const wrong = names.findIndex((_, i) => i !== right);
+  await bowls.nth(wrong).click();
+  await expect(page.getByTestId('pet-say')).toContainText('not that one');
+  await bowls.nth(right).click();
+  await expect(page.getByTestId('pet-progress')).toContainText('2 more cares');
+
+  // Bath: every muddy spot, then rinse.
+  await page.getByTestId('pet-bath').click();
+  for (let i = 0; i < 5; i++) await page.getByTestId(`mud-${i}`).dispatchEvent('click');
+  await page.getByTestId('bath-rinse').click();
+  await expect(page.getByTestId('pet-progress')).toContainText('1 more care');
+
+  // Catch three times: the third care teaches Spin.
+  await page.getByTestId('pet-play').click();
+  for (let i = 0; i < 3; i++) await page.getByTestId('ball').dispatchEvent('click');
+  await expect(page.getByTestId('trick-card')).toContainText('Spin');
+  await shot(page, '13-pet-trick');
+  await page.getByTestId('trick-ok').click();
+  await page.getByTestId('pet-done').click();
+  await page.getByRole('button', { name: 'Back' }).click();
+  await expect(page.getByTestId('home-pet')).toBeAttached();
+});
+
+test('petal notes: a finished note pays, adds a heart, and a new note takes its place', async ({ page }) => {
+  await page.goto('./?fixture=fresh&scene=board');
+  await expect(page.getByTestId('note-2')).toBeVisible();
+  await page.getByTestId('note-give-0').click({ force: true });
+  await expect(page.getByRole('status').filter({ hasText: 'Not yet' })).toBeVisible();
+  // Make note 0 a "wear" note for the shoes the player already has on, so it is ready.
+  await patchSave(
+    page,
+    "s.progress.requests.board[0].goal = { kind: 'wear', item: 'shoes.sneakers' }; s.progress.friends['regular.rosa'] = 2; s.progress.requests.board[0].friend = 'regular.rosa';",
+  );
+  await expect(page.getByTestId('note-0')).toHaveAttribute('data-ready', 'true');
+  await page.getByTestId('note-give-0').click();
+  await expect(page.getByTestId('thanks-card')).toContainText('Patchwork Rug');
+  await shot(page, '14-note-thanks');
+  await page.getByTestId('thanks-ok').click();
+  await expect(page.getByTestId('note-2')).toBeVisible();
+  await page.getByTestId('tab-friends').click();
+  await expect(page.getByTestId('friend-regular.rosa')).toContainText('2 more ♥ until Grandma Rosa can visit');
+});
+
+test('post box and album: open this week’s letter once, and see the sticker it earns', async ({ page }) => {
+  await page.goto('./?fixture=fresh&scene=town');
+  const box = page.getByTestId('place-postbox');
+  await box.evaluate((e) => e.scrollIntoView({ block: 'center' }));
+  await box.click({ force: true });
+  await page.getByTestId('mail-open').click();
+  await expect(page.getByTestId('letter')).toContainText('Grandma Rosa');
+  await page.keyboard.press('Escape');
+  await box.click({ force: true });
+  await expect(page.getByTestId('mail-empty')).toContainText('1 letter');
+  await page.keyboard.press('Escape');
+  await page.getByTestId('album-open').click();
+  await expect(page.getByTestId('sticker-sticker.mail')).toHaveAttribute('data-earned', 'true');
+  await expect(page.getByTestId('sticker-sticker.pen-pal')).toHaveAttribute('data-earned', 'false');
+  await shot(page, '15-album');
 });

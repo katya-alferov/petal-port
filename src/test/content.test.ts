@@ -8,6 +8,9 @@ import { CAFE_INGREDIENTS, CAFE_MENU, RANK_GIFTS, REGULARS } from '../content/ca
 import { FURNITURE } from '../content/furniture';
 import { KITCHEN_ITEMS, RECIPES } from '../content/recipes';
 import { wearable, WEARABLES } from '../content/wearables';
+import { PET_ACCESSORIES, PET_FOODS, PET_KINDS } from '../content/pets';
+import { LETTERS, STICKERS } from '../content/town';
+import { furniture } from '../content/furniture';
 
 describe('content lint', () => {
   it('ids are unique', () => {
@@ -36,5 +39,21 @@ describe('content lint', () => {
     for (const id of Object.values(CAFE_MENU).flat()) expect(cafe.has(id), id).toBe(true);
     const kitchen = new Set(KITCHEN_ITEMS.map((i) => i.id));
     for (const r of RECIPES) for (const id of [...r.shelf, ...r.toppings]) expect(kitchen.has(id), id).toBe(true);
+  });
+  it('friend gifts, letter gifts and pets point at real things', () => {
+    const ids = new Set(REGULARS.map((r) => r.id));
+    expect(ids.size).toBe(REGULARS.length);
+    for (const r of REGULARS) {
+      const g = wearable(r.gift) ?? furniture(r.gift);
+      expect(g?.source.kind, `${r.name}: ${r.gift}`).toBe('reward');
+    }
+    for (const l of LETTERS) {
+      expect(ids.has(l.from), l.from).toBe(true);
+      for (const g of l.gifts) expect(Boolean(wearable(g) ?? furniture(g)), g).toBe(true);
+    }
+    const foods = new Set(PET_FOODS.map((f) => f.id));
+    for (const k of PET_KINDS) for (const f of k.favourites) expect(foods.has(f), f).toBe(true);
+    expect(new Set(PET_ACCESSORIES.map((a) => a.id)).size).toBe(PET_ACCESSORIES.length);
+    expect(new Set(STICKERS.map((s) => s.id)).size).toBe(STICKERS.length);
   });
 });

@@ -110,6 +110,51 @@ export const ICONS: Record<string, ReactElement> = {
       />
     </svg>
   ),
+  star: (
+    <svg viewBox="0 0 32 32" aria-hidden="true">
+      <path d="M16,3 L19.8,11.2 L28.6,12.2 L22,18.2 L23.8,27 L16,22.6 L8.2,27 L10,18.2 L3.4,12.2 L12.2,11.2 Z" fill="#FFC94A" {...S} />
+      <path d="M12,13.5 L14,13.2" stroke="#FFFFFF" strokeWidth={2.5} strokeLinecap="round" />
+    </svg>
+  ),
+  paw: (
+    <svg viewBox="0 0 32 32" aria-hidden="true">
+      <path d="M16,15 C21,15 25,20 24,24 C23,28 19,26 16,26 C13,26 9,28 8,24 C7,20 11,15 16,15 Z" fill="#FFADCA" {...S} />
+      <ellipse cx={7} cy={13} rx={3} ry={4} fill="#FFADCA" {...S} />
+      <ellipse cx={12.5} cy={7.5} rx={3} ry={4} fill="#FFADCA" {...S} />
+      <ellipse cx={19.5} cy={7.5} rx={3} ry={4} fill="#FFADCA" {...S} />
+      <ellipse cx={25} cy={13} rx={3} ry={4} fill="#FFADCA" {...S} />
+    </svg>
+  ),
+  note: (
+    <svg viewBox="0 0 32 32" aria-hidden="true">
+      <path d="M6,6 L26,5 L27,26 L7,27 Z" fill="#FFDE8D" {...S} />
+      <circle cx={16} cy={6} r={2.5} fill="#FF7BA9" {...S} />
+      <path d="M10,13 L22,12.5 M10,18 L22,17.5 M10,23 L17,22.8" {...S} fill="none" strokeWidth={2} />
+    </svg>
+  ),
+  mail: (
+    <svg viewBox="0 0 32 32" aria-hidden="true">
+      <path d="M4,9 L28,9 L28,25 L4,25 Z" fill="#FFF7EC" {...S} />
+      <path d="M4,9 L16,18 L28,9" fill="none" {...S} />
+      <path d="M16,22 C14.8,20.8 13,21.6 13.6,23.4 L16,25.6 L18.4,23.4 C19,21.6 17.2,20.8 16,22 Z" fill="#FF7BA9" stroke="none" />
+    </svg>
+  ),
+  heart: (
+    <svg viewBox="0 0 32 32" aria-hidden="true">
+      <path
+        d="M16,28 C6,21 3,16 3,11 C3,7 6,4 10,4 C13,4 15,6 16,8 C17,6 19,4 22,4 C26,4 29,7 29,11 C29,16 26,21 16,28 Z"
+        fill="#FF7BA9"
+        {...S}
+      />
+      <path d="M8,10 C8,8.5 9,7.5 10.5,7.3" stroke="#FFFFFF" strokeWidth={2.5} strokeLinecap="round" fill="none" />
+    </svg>
+  ),
+  flag: (
+    <svg viewBox="0 0 32 32" aria-hidden="true">
+      <path d="M8,4 L8,29" {...S} fill="none" strokeWidth={3} />
+      <path d="M8,5 C14,2 18,9 26,6 L26,18 C18,21 14,14 8,17 Z" fill="#7ED6A7" {...S} />
+    </svg>
+  ),
 };
 
 export function Icon({ name }: { name: keyof typeof ICONS | string }) {

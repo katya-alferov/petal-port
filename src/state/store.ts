@@ -2,21 +2,29 @@
 import { create } from 'zustand';
 import { SAVE_CONTEXT } from '../content/saveContext';
 import { WEARABLES } from '../content/wearables';
-import { RANK_GIFTS } from '../content/cafe';
+import { RANK_GIFTS, regular } from '../content/cafe';
+import { petAccessory, petKind } from '../content/pets';
+import { LETTERS, REQUEST_POOLS, STICKERS } from '../content/town';
+import { RECIPES } from '../content/recipes';
 import { furniture } from '../content/furniture';
-import { JOURNEY_COINS } from '../content/recipes';
+import { JOURNEY_COINS, JOURNEY_STEPS } from '../content/recipes';
 import type { HomeSlot } from '../content/types';
 import { priceOf } from '../content/wearables';
 import { orderPay, rankFor, SHIFT_BONUS } from '../game/cafe';
-import { cookReward } from '../game/cooking';
+import { cookReward, isRecipeUnlocked } from '../game/cooking';
+import { letterGift, letterWaiting, nextLetter, weekIndex, type LetterDef } from '../game/mail';
+import { adopt, care } from '../game/pets';
+import { addHeart, applyEvent, fillBoard, isReady, NOTE_PAY, type GameEvent } from '../game/requests';
+import { newStickers } from '../game/stickers';
 import { earn, grant, purchase } from '../game/economy';
-import { load, newSave, validate, type Appearance, type Dish, type Outfit, type SaveGame } from '../game/save';
+import { load, newSave, validate, type Appearance, type Dish, type Outfit, type PetAction, type SaveGame } from '../game/save';
 import { equip } from '../game/wardrobe';
 import { TEST_HOOKS_ENABLED } from '../platform/hooks';
 import { log } from '../platform/log';
 import { readSaves, requestPersist, scheduleWrite } from '../platform/storage';
 
-export type SceneId = 'title' | 'town' | 'me' | 'home' | 'cafe' | 'boutique' | 'kitchen' | 'gallery' | 'spike';
+export type SceneId =
+  'title' | 'town' | 'me' | 'home' | 'cafe' | 'boutique' | 'kitchen' | 'petshop' | 'pet' | 'board' | 'album' | 'gallery' | 'spike';
 
 export interface ToastMsg {
   id: number;
@@ -41,10 +49,21 @@ interface GameStore {
   buy: (itemId: string) => boolean;
   placeFurniture: (slot: HomeSlot, itemId: string) => void;
   /** A correct café serve. Returns coins earned and the new rank if it went up. */
-  cafeServed: (firstTry: boolean) => { coins: number; rankUp: 2 | 3 | null };
+  cafeServed: (firstTry: boolean, base?: string) => { coins: number; rankUp: 2 | 3 | null };
   cafeShiftDone: () => number;
   cookDone: (dish: Dish, stars: 1 | 2 | 3) => number;
   completeJourney: (stepId: string) => void;
+  adoptPet: (kind: string, color: string, name: string) => void;
+  setPetAccessory: (id: string | null) => void;
+  /** A finished feed / wash / play. Returns the trick number learned, if any. */
+  petCared: (action: PetAction) => number | null;
+  /** Tops the Petal Notes board up to three notes. */
+  refreshBoard: () => void;
+  deliverNote: (no: number) => { coins: number; hearts: number; gift: string | null; visit: boolean } | null;
+  swapNote: (no: number) => void;
+  /** Opens this week's letter, if one is waiting. */
+  openMail: () => { letter: LetterDef; gift: { item: string } | { coins: number } } | null;
+  inviteFriend: (id: string | null) => void;
   boot: (fixture?: string | null) => Promise<void>;
 }
 
@@ -53,6 +72,26 @@ let toastId = 0;
 function touch(save: SaveGame): SaveGame {
   return { ...save, updatedAt: Date.now() };
 }
+
+/** Counts a finished activity on the Petal Notes board. */
+function withEvent(s: SaveGame, e: GameEvent): SaveGame {
+  const board = applyEvent(s.progress.requests.board, e);
+  return { ...s, progress: { ...s.progress, requests: { ...s.progress.requests, board } } };
+}
+
+export function currentWeek(): number {
+  const now = Date.now();
+  return weekIndex(now, new Date(now).getTimezoneOffset());
+}
+
+export function liveState(s: SaveGame) {
+  return { wearing: Object.values(s.player.outfit).map((e) => e!.itemId), placed: Object.values(s.home.slots) };
+}
+
+export const STICKER_FACTS = {
+  journeySteps: JOURNEY_STEPS.length,
+  starters: new Set([...Object.values(SAVE_CONTEXT.starterOutfit).map((e) => e!.itemId), ...Object.values(SAVE_CONTEXT.starterHome)]),
+};
 
 export const useGame = create<GameStore>((setState, getState) => ({
   save: newSave(SAVE_CONTEXT, Date.now()),
@@ -86,7 +125,7 @@ export const useGame = create<GameStore>((setState, getState) => ({
   },
   buy: (itemId) => {
     const s = getState().save;
-    const def = WEARABLES.find((w) => w.id === itemId) ?? furniture(itemId);
+    const def = WEARABLES.find((w) => w.id === itemId) ?? furniture(itemId) ?? petAccessory(itemId);
     const price = def ? priceOf(def) : null;
     if (price === null) return false;
     const r = purchase(s, itemId, price, Date.now());
@@ -101,8 +140,9 @@ export const useGame = create<GameStore>((setState, getState) => ({
     setState({ save: touch({ ...s, home: { ...s.home, slots: { ...s.home.slots, [slot]: itemId } } }) });
     getState().completeJourney('journey.decorate');
   },
-  cafeServed: (firstTry) => {
+  cafeServed: (firstTry, base) => {
     let s = getState().save;
+    if (base) s = withEvent(s, { kind: 'cafe', base });
     const before = s.progress.cafe.rank;
     const coins = orderPay(before, firstTry);
     const correctOrders = s.progress.cafe.correctOrders + 1;
@@ -131,6 +171,7 @@ export const useGame = create<GameStore>((setState, getState) => ({
     s = earn(s, coins);
     const rec = { cooked: (prev?.cooked ?? 0) + 1, stars: Math.max(prev?.stars ?? 0, stars) };
     s = { ...s, progress: { ...s.progress, dish, recipes: { ...s.progress.recipes, [dish.recipeId]: rec } } };
+    s = withEvent(s, { kind: 'cook', recipe: dish.recipeId, toppings: dish.toppings.map((t) => t.id) });
     setState({ save: touch(s) });
     getState().completeJourney('journey.cook');
     return coins;
@@ -141,6 +182,80 @@ export const useGame = create<GameStore>((setState, getState) => ({
     const next = earn({ ...s, progress: { ...s.progress, journey: [...s.progress.journey, stepId] } }, JOURNEY_COINS);
     setState({ save: touch(next) });
     getState().showToast(`Journey step done! +${JOURNEY_COINS} coins`, 'sparkle');
+  },
+  adoptPet: (kind, color, name) => {
+    const s = getState().save;
+    if (s.progress.pet) return;
+    const pet = adopt(kind, color, name || petKind(kind).names[0]);
+    setState({ save: touch({ ...s, progress: { ...s.progress, pet } }) });
+  },
+  setPetAccessory: (id) => {
+    const s = getState().save;
+    const pet = s.progress.pet;
+    if (!pet || (id && !s.inventory.owned[id])) return;
+    setState({ save: touch({ ...s, progress: { ...s.progress, pet: { ...pet, accessory: id } } }) });
+  },
+  petCared: (action) => {
+    let s = getState().save;
+    if (!s.progress.pet) return null;
+    const r = care(s.progress.pet, action);
+    s = withEvent({ ...s, progress: { ...s.progress, pet: r.pet } }, { kind: 'pet', action });
+    setState({ save: touch(s) });
+    return r.newTrick;
+  },
+  refreshBoard: () => {
+    const s = getState().save;
+    const ctx = {
+      hasPet: s.progress.pet !== null,
+      unlockedRecipes: RECIPES.filter((r) => isRecipeUnlocked(r, s.progress.recipes)).map((r) => r.id),
+    };
+    const requests = fillBoard(s.progress.requests, s.createdAt, REQUEST_POOLS, ctx);
+    if (requests.made === s.progress.requests.made) return;
+    setState({ save: touch({ ...s, progress: { ...s.progress, requests } }) });
+  },
+  deliverNote: (no) => {
+    let s = getState().save;
+    const note = s.progress.requests.board.find((n) => n.no === no);
+    if (!note || !isReady(note, liveState(s))) return null;
+    const coins = NOTE_PAY[note.goal.kind];
+    const h = addHeart(s.progress.friends[note.friend] ?? 0);
+    s = earn(s, coins);
+    const gift = h.gift ? (regular(note.friend)?.gift ?? null) : null;
+    if (gift) s = grant(s, gift, Date.now());
+    const board = s.progress.requests.board.filter((n) => n.no !== no);
+    s = {
+      ...s,
+      progress: {
+        ...s.progress,
+        friends: { ...s.progress.friends, [note.friend]: h.hearts },
+        requests: { ...s.progress.requests, done: s.progress.requests.done + 1, board },
+      },
+    };
+    setState({ save: touch(s) });
+    getState().refreshBoard();
+    return { coins, hearts: h.hearts, gift, visit: h.visit };
+  },
+  swapNote: (no) => {
+    const s = getState().save;
+    const board = s.progress.requests.board.filter((n) => n.no !== no);
+    if (board.length === s.progress.requests.board.length) return;
+    setState({ save: touch({ ...s, progress: { ...s.progress, requests: { ...s.progress.requests, board } } }) });
+    getState().refreshBoard();
+  },
+  openMail: () => {
+    let s = getState().save;
+    const week = currentWeek();
+    if (!letterWaiting(s.progress.mail, week)) return null;
+    const letter = nextLetter(s.progress.mail.opened, LETTERS);
+    const gift = letterGift(letter, s.inventory.owned);
+    s = 'item' in gift ? grant(s, gift.item, Date.now()) : earn(s, gift.coins);
+    s = { ...s, progress: { ...s.progress, mail: { lastWeek: week, opened: s.progress.mail.opened + 1 } } };
+    setState({ save: touch(s) });
+    return { letter, gift };
+  },
+  inviteFriend: (id) => {
+    const s = getState().save;
+    setState({ save: touch({ ...s, progress: { ...s.progress, visitor: id } }) });
   },
   boot: async (fixture) => {
     if (fixture === 'fresh') {
@@ -171,6 +286,15 @@ export const useGame = create<GameStore>((setState, getState) => ({
 let persistAsked = false;
 useGame.subscribe((state, prev) => {
   if (!state.ready || state.save === prev.save) return;
+  // Stickers are earned by what the player did; announce each one once (game-systems §8.5).
+  const fresh = newStickers(state.save, STICKERS, STICKER_FACTS);
+  if (fresh.length) {
+    const s = state.save;
+    useGame.setState({ save: { ...s, progress: { ...s.progress, stickers: [...s.progress.stickers, ...fresh] } } });
+    const first = STICKERS.find((d) => d.id === fresh[0]);
+    if (prev.ready) state.showToast(`New sticker: ${first?.name}!`, 'star');
+    return;
+  }
   const errs = validate(state.save);
   if (errs.length) {
     log('error', `save invalid, write skipped: ${errs.join(', ')}`);

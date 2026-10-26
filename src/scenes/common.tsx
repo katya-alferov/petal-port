@@ -3,7 +3,9 @@ import { CharacterRig, type CharacterRigProps } from '../art/CharacterRig';
 import { FURN_ART } from '../art/furn';
 import { resolveFurniture, resolveRig } from '../content/resolve';
 import type { WearSlot } from '../content/types';
-import type { Appearance, Outfit } from '../game/save';
+import type { Appearance, Outfit, PetState } from '../game/save';
+import { PetArt, type PetArtKind, type PetMood } from '../art/pets';
+import { petAccessory, petColor } from '../content/pets';
 import { CoinPill, Dock, IconButton } from '../ui/kit';
 import { useGame, type SceneId } from '../state/store';
 import { play } from '../platform/audio';
@@ -84,3 +86,27 @@ export const SLOT_CROP: Record<WearSlot, string> = {
   neck: '120 180 160 160',
   bag: '140 220 160 240',
 };
+
+/** A pet from save data, drawn as an SVG group in its 300×300 box. */
+export function PetFigure({ pet, mood, mud }: { pet: Pick<PetState, 'kind' | 'color' | 'accessory'>; mood?: PetMood; mud?: boolean[] }) {
+  const color = petColor(pet.color);
+  const acc = petAccessory(pet.accessory);
+  return (
+    <PetArt
+      kind={pet.kind.replace('pet.', '') as PetArtKind}
+      fur={color.fur}
+      light={color.light}
+      mood={mood}
+      mud={mud}
+      accessory={acc && { art: acc.art, color: acc.color }}
+    />
+  );
+}
+
+export function PetThumb({ pet, label, mood }: { pet: Pick<PetState, 'kind' | 'color' | 'accessory'>; label: string; mood?: PetMood }) {
+  return (
+    <svg viewBox="0 0 300 300" role="img" aria-label={label}>
+      <PetFigure pet={pet} mood={mood} />
+    </svg>
+  );
+}

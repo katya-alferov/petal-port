@@ -3,13 +3,23 @@ import type { ReactNode } from 'react';
 import type { Shade } from '../../content/palette';
 import { OUTLINE, Shaded, scallopCircle } from '../kit';
 
-export type PlaceId = 'boutique' | 'park' | 'cafe' | 'home' | 'airport' | 'cottage';
+export type PlaceId = 'boutique' | 'park' | 'cafe' | 'home' | 'airport' | 'cottage' | 'petshop' | 'board' | 'postbox';
 
 export const MAP_W = 1170;
 export const MAP_H = 3200;
 
 /** Where each place sits, so the scene can scroll to it. */
-export const PLACE_Y: Record<PlaceId, number> = { cottage: 420, boutique: 1000, park: 1380, cafe: 1880, home: 2160, airport: 2860 };
+export const PLACE_Y: Record<PlaceId, number> = {
+  cottage: 420,
+  petshop: 880,
+  boutique: 1000,
+  board: 1380,
+  park: 1380,
+  cafe: 1880,
+  home: 2160,
+  postbox: 2160,
+  airport: 2860,
+};
 
 const sh = (base: string, shadow: string, highlight: string): Shade => ({ base, shadow, highlight });
 const PINK = sh('#FF7BA9', '#D86094', '#FFADCA');
@@ -150,9 +160,13 @@ export interface TownMapProps {
   onCat?: () => void;
   badges?: Partial<Record<PlaceId, 'coin' | 'new'>>;
   homeName?: string;
+  /** The player's pet, drawn by the scene, sitting outside home. */
+  pet?: ReactNode;
+  /** A letter is waiting: the Post Box flag is up. */
+  mail?: boolean;
 }
 
-export function TownMap({ onTap, onCat, badges = {}, homeName = 'Harbour Loft' }: TownMapProps) {
+export function TownMap({ onTap, onCat, badges = {}, homeName = 'Harbour Loft', pet, mail = false }: TownMapProps) {
   return (
     <svg
       viewBox={`0 0 ${MAP_W} ${MAP_H}`}
@@ -251,8 +265,106 @@ export function TownMap({ onTap, onCat, badges = {}, homeName = 'Harbour Loft' }
         <circle cx={860} cy={804} r={10} fill={PINK.base} stroke={OUTLINE} strokeWidth={3} />
         <Sign x={860} y={1190} label="Ribbon Boutique" color="#FF7BA9" />
       </Place>
-      <Tree x={170} y={900} s={1.1} />
-      <Tree x={330} y={1010} s={0.8} />
+      {/* Paw Parlour */}
+      <Place
+        id="petshop"
+        hit={[90, 640, 400, 480]}
+        label="Paw Parlour"
+        onTap={onTap}
+        badge={badges.petshop && <Badge x={430} y={720} kind={badges.petshop} />}
+      >
+        <Shaded d={rect(140, 790, 280, 200)} shade={CREAM} depth={10} />
+        <Shaded d="M120,800 C120,730 190,700 280,700 C370,700 440,730 440,800 Z" shade={MINT} depth={8} />
+        <Awning x={130} y={880} w={300} a="#FFF7EC" b="#7ED6A7" />
+        <Window x={164} y={940} w={110} h={42} />
+        <rect x={310} y={920} width={80} height={70} rx={26} fill={CORAL.base} stroke={OUTLINE} strokeWidth={4} />
+        {/* Paw emblem */}
+        <circle cx={280} cy={770} r={40} fill="#FFF7EC" stroke={OUTLINE} strokeWidth={4} />
+        <path
+          d="M280,768 C292,768 300,780 298,788 C296,796 288,792 280,792 C272,792 264,796 262,788 C260,780 268,768 280,768 Z"
+          fill="#FF9BBE"
+          stroke={OUTLINE}
+          strokeWidth={2.5}
+        />
+        {[
+          [258, 762],
+          [270, 750],
+          [290, 750],
+          [302, 762],
+        ].map(([x, y]) => (
+          <ellipse key={x} cx={x} cy={y} rx={6} ry={8} fill="#FF9BBE" stroke={OUTLINE} strokeWidth={2.5} />
+        ))}
+        {/* A kitten peeking from the window */}
+        <path
+          d="M196,982 L196,962 L204,950 L212,960 L228,960 L236,950 L244,962 L244,982 Z"
+          fill="#F4A15D"
+          stroke={OUTLINE}
+          strokeWidth={3}
+          strokeLinejoin="round"
+        />
+        <circle cx={212} cy={970} r={3} fill={OUTLINE} />
+        <circle cx={228} cy={970} r={3} fill={OUTLINE} />
+        <Sign x={280} y={1060} label="Paw Parlour" color="#7ED6A7" />
+      </Place>
+      <Tree x={1110} y={1330} s={0.6} />
+
+      {/* Petal Notes board */}
+      <Place
+        id="board"
+        hit={[600, 1260, 300, 270]}
+        label="Petal Notes board"
+        onTap={onTap}
+        badge={badges.board && <Badge x={860} y={1290} kind={badges.board} />}
+      >
+        <rect x={650} y={1380} width={16} height={110} fill={WOOD.shadow} stroke={OUTLINE} strokeWidth={4} />
+        <rect x={834} y={1380} width={16} height={110} fill={WOOD.shadow} stroke={OUTLINE} strokeWidth={4} />
+        <Shaded d={rect(630, 1290, 240, 150)} shade={WOOD} depth={6} />
+        <rect x={646} y={1306} width={208} height={118} rx={6} fill="#E3B183" stroke={OUTLINE} strokeWidth={3} />
+        {[
+          [664, 1316, -4, '#FFDE8D'],
+          [726, 1322, 3, '#FFADCA'],
+          [790, 1314, -2, '#AEE6C6'],
+        ].map(([x, y, r, c]) => (
+          <g key={x as number} transform={`rotate(${r} ${(x as number) + 26} ${(y as number) + 40})`}>
+            <rect x={x as number} y={y as number} width={52} height={66} fill={c as string} stroke={OUTLINE} strokeWidth={2.5} />
+            <path
+              d={`M${(x as number) + 10},${(y as number) + 24} h32 M${(x as number) + 10},${(y as number) + 36} h32 M${(x as number) + 10},${(y as number) + 48} h20`}
+              stroke={OUTLINE}
+              strokeWidth={2.5}
+            />
+            <circle cx={(x as number) + 26} cy={(y as number) + 6} r={6} fill="#FF7BA9" stroke={OUTLINE} strokeWidth={2} />
+          </g>
+        ))}
+        <path d="M624,1292 L750,1240 L876,1292 Z" fill={CORAL.base} stroke={OUTLINE} strokeWidth={4} strokeLinejoin="round" />
+      </Place>
+
+      {/* Post Box */}
+      <Place
+        id="postbox"
+        hit={[990, 2060, 170, 220]}
+        label={mail ? 'Post Box: a letter is waiting' : 'Post Box'}
+        onTap={onTap}
+        badge={badges.postbox && <Badge x={1120} y={2080} kind={badges.postbox} />}
+      >
+        <rect x={1062} y={2170} width={18} height={90} fill={WOOD.shadow} stroke={OUTLINE} strokeWidth={4} />
+        <Shaded
+          d="M1010,2180 L1010,2120 C1010,2090 1030,2076 1070,2076 C1110,2076 1130,2090 1130,2120 L1130,2180 Z"
+          shade={PINK}
+          depth={6}
+        />
+        <rect x={1040} y={2134} width={60} height={10} rx={5} fill={OUTLINE} />
+        <path d="M1070,2100 C1066,2094 1058,2096 1060,2104 L1070,2112 L1080,2104 C1082,2096 1074,2094 1070,2100 Z" fill="#FFF7EC" />
+        <g style={{ transformBox: 'fill-box', transformOrigin: '0% 100%' }} className={mail ? 'flag-up' : undefined}>
+          <rect x={1130} y={mail ? 2060 : 2120} width={8} height={mail ? 70 : 40} fill={GREY.shadow} stroke={OUTLINE} strokeWidth={3} />
+          <path
+            d={mail ? 'M1138,2060 L1168,2070 L1138,2082 Z' : 'M1138,2120 L1162,2128 L1138,2138 Z'}
+            fill={SUN.base}
+            stroke={OUTLINE}
+            strokeWidth={3}
+            strokeLinejoin="round"
+          />
+        </g>
+      </Place>
 
       {/* Petal Park (scenery: pond and ducks) */}
       <Place id="park" hit={[50, 1200, 500, 400]} label="Petal Park" onTap={onTap}>
@@ -350,6 +462,11 @@ export function TownMap({ onTap, onCat, badges = {}, homeName = 'Harbour Loft' }
         <Flowers x={290} y={2240} n={4} />
         <Sign x={390} y={1830} label={homeName} color="#3BB7C4" />
       </Place>
+      {pet && (
+        <g transform="translate(500 2150) scale(0.42)" pointerEvents="none">
+          {pet}
+        </g>
+      )}
 
       {/* Cat on a wall: tap for a meow (ambient easter egg) */}
       <g role="button" tabIndex={0} aria-label="A sleepy cat" data-testid="place-cat" style={{ cursor: 'pointer' }} onClick={onCat}>

@@ -79,7 +79,7 @@ function CafeShift({ onAgain }: { onAgain: () => void }) {
       return;
     }
     const firstTry = !binUsed && !wrong;
-    const r = cafeServed(firstTry);
+    const r = cafeServed(firstTry, order.drink.base);
     play('chime');
     setEarned((e) => e + r.coins);
     setCheer({ n: idx, text: firstTry ? `Perfect! +${r.coins} (tip!)` : `Yum! +${r.coins}` });

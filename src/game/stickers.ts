@@ -1,0 +1,69 @@
+// Sticker album (game-systems §8.5): every sticker is earned by something the player did.
+// Conditions only look at counters that never go down, so a sticker can never be lost.
+import { careCount, tricksKnown } from './pets';
+import type { SaveGame } from './save';
+
+export type StickerCond =
+  | { kind: 'journey' }
+  | { kind: 'shifts'; n: number }
+  | { kind: 'rank'; n: number }
+  | { kind: 'cooked'; recipe: string }
+  | { kind: 'stars'; recipe: string }
+  | { kind: 'owned'; n: number }
+  | { kind: 'placed'; n: number }
+  | { kind: 'pet' }
+  | { kind: 'care'; n: number }
+  | { kind: 'tricks'; n: number }
+  | { kind: 'notes'; n: number }
+  | { kind: 'hearts'; n: number }
+  | { kind: 'friends'; n: number }
+  | { kind: 'mail'; n: number }
+  | { kind: 'coins'; n: number };
+
+export interface StickerFacts {
+  journeySteps: number;
+  /** Starter item ids, which don't count as "owned" for collection stickers. */
+  starters: ReadonlySet<string>;
+}
+
+export function meets(save: SaveGame, c: StickerCond, facts: StickerFacts): boolean {
+  const p = save.progress;
+  switch (c.kind) {
+    case 'journey':
+      return p.journey.length >= facts.journeySteps;
+    case 'shifts':
+      return p.cafe.shifts >= c.n;
+    case 'rank':
+      return p.cafe.rank >= c.n;
+    case 'cooked':
+      return (p.recipes[c.recipe]?.cooked ?? 0) > 0;
+    case 'stars':
+      return (p.recipes[c.recipe]?.stars ?? 0) >= 3;
+    case 'owned':
+      return Object.keys(save.inventory.owned).filter((id) => !facts.starters.has(id)).length >= c.n;
+    case 'placed':
+      return Object.values(save.home.slots).filter((id) => !facts.starters.has(id)).length >= c.n;
+    case 'pet':
+      return p.pet !== null;
+    case 'care':
+      return p.pet !== null && careCount(p.pet) >= c.n;
+    case 'tricks':
+      return p.pet !== null && tricksKnown(p.pet) >= c.n;
+    case 'notes':
+      return p.requests.done >= c.n;
+    case 'hearts':
+      return Object.values(p.friends).some((h) => h >= c.n);
+    case 'friends':
+      return Object.values(p.friends).filter((h) => h > 0).length >= c.n;
+    case 'mail':
+      return p.mail.opened >= c.n;
+    case 'coins':
+      return save.wallet.lifetimeEarned >= c.n;
+  }
+}
+
+/** Sticker ids newly earned since the save's list was last updated, in album order. */
+export function newStickers(save: SaveGame, defs: readonly { id: string; cond: StickerCond }[], facts: StickerFacts): string[] {
+  const have = new Set(save.progress.stickers);
+  return defs.filter((d) => !have.has(d.id) && meets(save, d.cond, facts)).map((d) => d.id);
+}

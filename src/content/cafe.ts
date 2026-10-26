@@ -49,7 +49,13 @@ export const RANK_GIFTS: Record<2 | 3, { items: string[]; line: string }> = {
 };
 
 export interface Regular {
+  /** Permanent id: friendship hearts are saved under it. */
+  id: string;
   name: string;
+  /** Friendship gift at GIFT_AT hearts (game-systems §8.3). */
+  gift: string;
+  /** Things they say when visiting your home. */
+  visit: string[];
   thanks: string;
   appearance: Appearance;
   outfit: Outfit;
@@ -75,51 +81,79 @@ const wear = (top: string, main: SwatchId, extra: Outfit = {}): Outfit => ({
 /** Townsfolk who visit the counter, drawn with the same rig as the player. */
 export const REGULARS: Regular[] = [
   {
+    id: 'regular.mila',
     name: 'Mila',
+    gift: 'headwear.flower-crown',
+    visit: ['I love your home! Can I come again?', 'Your pet is the cutest in Petalport!'],
     thanks: 'Best cocoa in Petalport!',
     appearance: look('skin.peach', 'hairstyle.space-buns', 'hair.copper', 'eye.green', true),
     outfit: wear('top.sailor-tee', 'petal'),
   },
   {
+    id: 'regular.theo',
     name: 'Theo',
+    gift: 'furn.sunflower',
+    visit: ['Is that a new rug? So cool!', 'I brought you a hello!'],
     thanks: 'You made my morning!',
     appearance: look('skin.espresso', 'hairstyle.coily-puff', 'hair.black', 'eye.dark-brown'),
     outfit: wear('top.long-tee', 'mint'),
   },
   {
+    id: 'regular.rosa',
     name: 'Grandma Rosa',
+    gift: 'furn.patchwork-rug',
+    visit: ['What a cozy little home, dear.', 'Shall we have pancakes together?'],
     thanks: 'Just like I used to make!',
     appearance: look('skin.olive', 'hairstyle.bob', 'hair.platinum', 'eye.hazel'),
     outfit: wear('top.long-tee', 'lilac', { eyewear: { itemId: 'eyewear.round-glasses' } }),
   },
   {
+    id: 'regular.aiko',
     name: 'Aiko',
+    gift: 'furn.blossom-print',
+    visit: ['Everything matches so well!', 'Can you teach me to decorate?'],
     thanks: 'So pretty I almost didn’t drink it!',
     appearance: look('skin.porcelain', 'hairstyle.ponytail', 'hair.black', 'eye.brown'),
     outfit: wear('top.ruffle-blouse', 'sea'),
   },
   {
+    id: 'regular.sam',
     name: 'Sam',
+    gift: 'bag.star-purse',
+    visit: ['Race you to the park later!', 'Your home has the best vibes.'],
     thanks: 'Ten out of ten. No, eleven!',
     appearance: look('skin.chestnut', 'hairstyle.braids', 'hair.dark-brown', 'eye.amber'),
     outfit: wear('top.sailor-tee', 'sunshine'),
   },
   {
+    id: 'regular.noor',
     name: 'Noor',
+    gift: 'eyewear.heart-sunglasses',
+    visit: ['Your outfit is amazing today!', 'Let’s have a fashion show!'],
     thanks: 'Thank you, barista!',
     appearance: look('skin.honey', 'hairstyle.wavy-long', 'hair.black', 'eye.brown'),
     outfit: wear('top.ruffle-blouse', 'coral', { headwear: { itemId: 'headwear.bow-headband' } }),
   },
   {
+    id: 'regular.leo',
     name: 'Leo',
+    gift: 'furn.star-lamp',
+    visit: ['Did you know ducks can sleep with one eye open?', 'Wow, it’s so bright and happy here!'],
     thanks: 'The sprinkles were perfect!',
     appearance: look('skin.rose', 'hairstyle.bob', 'hair.honey-blonde', 'eye.blue', true),
     outfit: wear('top.long-tee', 'coral'),
   },
   {
+    id: 'regular.zuri',
     name: 'Zuri',
+    gift: 'headwear.bucket-hat',
+    visit: ['I can see the sea from here!', 'Best friends forever!'],
     thanks: 'I’ll be back tomorrow!',
     appearance: look('skin.ebony', 'hairstyle.braids', 'hair.sea-teal', 'eye.dark-brown'),
     outfit: wear('top.tank-heart', 'mint'),
   },
 ];
+
+export function regular(id: string): Regular | undefined {
+  return REGULARS.find((r) => r.id === id);
+}

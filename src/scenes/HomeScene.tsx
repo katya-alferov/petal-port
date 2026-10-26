@@ -8,7 +8,8 @@ import { HOME_SLOTS, type HomeSlot } from '../content/types';
 import { play } from '../platform/audio';
 import { useGame } from '../state/store';
 import { Button, Sheet, Tabs } from '../ui/kit';
-import { Character, FurnitureThumb, MainDock, TopBar } from './common';
+import { regular } from '../content/cafe';
+import { Character, FurnitureThumb, MainDock, PetFigure, TopBar } from './common';
 
 const CHAR_H = 1316; // 52% of the 2532 scene height (visual-design §7.2)
 
@@ -36,6 +37,10 @@ export function HomeScene() {
   const theme = HARBOUR_LOFT.themes.find((t) => t.id === save.home.themeId) ?? HARBOUR_LOFT.themes[0];
   const room = useMemo(() => resolveRoom(HARBOUR_LOFT, save.home.themeId, save.home.slots), [save.home.themeId, save.home.slots]);
   const dish = save.progress.dish;
+  const pet = save.progress.pet;
+  const visitor = save.progress.visitor ? regular(save.progress.visitor) : undefined;
+  const [visitLine, setVisitLine] = useState(0);
+  const charX = visitor ? 470 : 585;
 
   const onSlotTap = (slot: HomeSlot) => {
     if (editing) {
@@ -85,9 +90,46 @@ export function HomeScene() {
               appearance={save.player.appearance}
               outfit={save.player.outfit}
               pose={pose}
-              frame={{ x: 585 - CHAR_H / 4, y: FLOOR_Y + 470 - CHAR_H * 0.975, width: CHAR_H / 2, height: CHAR_H }}
+              frame={{ x: charX - CHAR_H / 4, y: FLOOR_Y + 470 - CHAR_H * 0.975, width: CHAR_H / 2, height: CHAR_H }}
             />
           </g>
+          {visitor && !editing && (
+            <g
+              role="button"
+              tabIndex={0}
+              aria-label={`${visitor.name} is visiting`}
+              data-testid="home-visitor"
+              style={{ cursor: 'pointer' }}
+              onClick={() => {
+                play('pop');
+                showToast(`${visitor.name}: “${visitor.visit[visitLine % visitor.visit.length]}”`, 'heart');
+                setVisitLine((n) => n + 1);
+              }}
+            >
+              <Character
+                appearance={visitor.appearance}
+                outfit={visitor.outfit}
+                title={visitor.name}
+                frame={{ x: 860 - CHAR_H / 4, y: FLOOR_Y + 470 - CHAR_H * 0.95, width: CHAR_H / 2, height: CHAR_H * 0.975 }}
+              />
+            </g>
+          )}
+          {pet && !editing && (
+            <g
+              role="button"
+              tabIndex={0}
+              aria-label={`Play with ${pet.name}`}
+              data-testid="home-pet"
+              style={{ cursor: 'pointer' }}
+              onClick={() => (play('pop'), setScene('pet'))}
+              onKeyDown={(e) => (e.key === 'Enter' || e.key === ' ') && setScene('pet')}
+            >
+              <g transform={`translate(${visitor ? 20 : 90} ${FLOOR_Y - 60}) scale(1.05)`}>
+                <rect width={300} height={300} fill="transparent" />
+                <PetFigure pet={pet} mood="happy" />
+              </g>
+            </g>
+          )}
         </HarbourLoft>
       </div>
       <TopBar title="Harbour Loft" />

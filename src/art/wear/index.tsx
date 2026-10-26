@@ -500,4 +500,85 @@ export const WEAR_ART: Record<string, (p: WearArtProps) => ReactElement> = {
       <circle cx={256} cy={418} r={4} fill="#E8B04C" stroke={OUTLINE} strokeWidth={1.5} />
     </g>
   ),
+  'wear/headwear/flower-crown': ({ main, accent }) => {
+    // Flowers along the same arc as the headband, alternating the two tints.
+    const pts = [158, 136, 114, 90, 66, 44, 22].map((deg) => {
+      const a = (deg * Math.PI) / 180;
+      return [200 + Math.cos(a) * 74, 118 - Math.sin(a) * 70] as const;
+    });
+    return (
+      <g>
+        <path
+          d="M128,120 C132,72 164,50 200,50 C236,50 268,72 272,120"
+          fill="none"
+          stroke={OUTLINE}
+          strokeWidth={9}
+          strokeLinecap="round"
+        />
+        <path
+          d="M128,120 C132,72 164,50 200,50 C236,50 268,72 272,120"
+          fill="none"
+          stroke="#5FA67A"
+          strokeWidth={5}
+          strokeLinecap="round"
+        />
+        {pts.map(([x, y], i) => (
+          <g key={i}>
+            <ellipse cx={x + (i % 2 ? 12 : -12)} cy={y + 6} rx={9} ry={5} fill="#7ED6A7" stroke={OUTLINE} strokeWidth={2} />
+            <circle cx={x} cy={y} r={15} fill={OUTLINE} />
+            <Flower x={x} y={y} r={8} petal={i % 2 ? accent.base : main.base} center={i % 2 ? main.highlight : accent.highlight} />
+          </g>
+        ))}
+      </g>
+    );
+  },
+  'wear/headwear/bucket-hat': ({ main, accent }) => (
+    <g>
+      <Shaded d="M134,98 C130,56 160,32 200,32 C240,32 270,56 266,98 Z" shade={main} shine={[168, 50, 20, 8]} tint="main" />
+      <path
+        d="M134,90 C170,82 230,82 266,90 L267,102 C230,94 170,94 133,102 Z"
+        fill={accent.base}
+        stroke={OUTLINE}
+        strokeWidth={3}
+        data-tint="accent"
+      />
+      <Shaded
+        d="M104,116 C120,96 280,96 296,116 C300,126 290,130 280,128 C230,116 170,116 120,128 C110,130 100,126 104,116 Z"
+        shade={main}
+        depth={4}
+        tint="main"
+      />
+      {[150, 200, 250].map((x) => (
+        <circle key={x} cx={x} cy={60 + (x === 200 ? -6 : 4)} r={4} fill={accent.base} />
+      ))}
+    </g>
+  ),
+  'wear/eyewear/heart-sunglasses': ({ main }) => (
+    <g data-tint="main">
+      {[167, 233].map((cx) => (
+        <g key={cx}>
+          <path d={HEART(cx, 144, 24)} fill={main.shadow} opacity={0.82} stroke={OUTLINE} strokeWidth={6} strokeLinejoin="round" />
+          <path d={HEART(cx, 144, 24)} fill="none" stroke={main.base} strokeWidth={2.5} strokeLinejoin="round" />
+          <path d={`M${cx - 16},${134} L${cx - 8},${126}`} stroke="#FFFFFF" strokeWidth={4} strokeLinecap="round" opacity={0.85} />
+        </g>
+      ))}
+      <path d="M189,138 Q200,130 211,138" fill="none" stroke={OUTLINE} strokeWidth={6} strokeLinecap="round" />
+      <path d="M189,138 Q200,130 211,138" fill="none" stroke={main.base} strokeWidth={3} strokeLinecap="round" />
+    </g>
+  ),
+  'wear/bag/star-purse': ({ main, accent }) => (
+    <g>
+      <Limb
+        pts={[
+          [226, 248],
+          [250, 330],
+          [258, 396],
+        ]}
+        width={5}
+        shade={accent}
+      />
+      <Shaded d={STAR(258, 428, 36)} shade={main} depth={4} shine={[246, 412, 6, 4]} tint="main" />
+      <circle cx={258} cy={430} r={7} fill={accent.base} stroke={OUTLINE} strokeWidth={2} data-tint="accent" />
+    </g>
+  ),
 };

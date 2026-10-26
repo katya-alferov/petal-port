@@ -65,7 +65,7 @@ describe('economy (game-systems §6)', () => {
       journey: ['a', 'a', 3],
     };
     const r = load(s, SAVE_CONTEXT);
-    expect(r.kind === 'ok' && r.save.progress).toEqual({
+    expect(r.kind === 'ok' && r.save.progress).toMatchObject({
       cafe: { correctOrders: 0, shifts: 0, rank: 1 },
       recipes: { x: { cooked: 2, stars: 3 } },
       dish: null,
