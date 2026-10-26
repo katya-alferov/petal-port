@@ -92,6 +92,8 @@ export interface Progress {
   shells: string[];
   /** Wave C (game-systems §10): Glam Salon clients styled and shifts finished. */
   salon: { clients: number; shifts: number };
+  /** Wave D (game-systems §12): Bun & Bite orders served and shifts finished. */
+  burger: { orders: number; shifts: number };
   /** Petal Garden beds: the seed planted and the growth it has gathered. */
   garden: { beds: (GardenBed | null)[]; bloomed: string[]; picked: number };
   /** Wave D (game-systems §11): the Paris trip, souvenirs and photos kept as small recipes. */
@@ -156,6 +158,7 @@ export function newProgress(): Progress {
     shows: { done: 0, best: {} },
     shells: [],
     salon: { clients: 0, shifts: 0 },
+    burger: { orders: 0, shifts: 0 },
     garden: { beds: Array.from({ length: GARDEN_BEDS }, () => null), bloomed: [], picked: 0 },
     travel: newTravel(),
   };
@@ -324,6 +327,8 @@ function sanitizeProgress(raw: unknown): Progress {
   if (Array.isArray(raw.shells)) p.shells = [...new Set(raw.shells.filter(isStr))];
   const salon = raw.salon;
   if (isObj(salon)) p.salon = { clients: clampInt(salon.clients), shifts: clampInt(salon.shifts) };
+  const bg = raw.burger;
+  if (isObj(bg)) p.burger = { orders: clampInt(bg.orders), shifts: clampInt(bg.shifts) };
   const g = raw.garden;
   if (isObj(g)) {
     if (Array.isArray(g.beds))

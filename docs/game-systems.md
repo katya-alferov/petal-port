@@ -598,3 +598,11 @@ Wave B adds a dress-up goal, an exploration collection and more doll-style cloth
 - **Album Photos page:** polaroid grid (cap 60, newest first), tap for a larger view and Remove (asks first), plus the **Souvenir shelf** (Postcard free; Mini Tower 40, Little Beret 30, Macaron Box 35 at the kiosk).
 - 3 more stickers (38 in all): Bonjour Paris (first photo), Little Photographer (5 photos), Souvenir Shelf (all 4 souvenirs).
 - Save: `progress.travel {ticket, trips, souvenirs[], photos[]}`; older saves get an empty trip.
+
+## 12. Bun & Bite Burger Bar (Wave D)
+
+- A third job, on a new row of the map (the map is now 1170 x 4380; the airport moved down 520 px). Real gameplay: 4 customers per shift; each order card lists the burger from the top down (bottom bun, patty, 1 to 4 different toppings from cheese, lettuce, tomato and pickles, top bun).
+- Tap the ingredients in order from the bottom up. A wrong tap wobbles the plate and says what comes next ("Not yet! Next comes the bottom bun."). No timer, nothing is lost; the only cost is that burger's tip.
+- Pay **14** per customer, **+4** tip when no tap was wrong, **+12** shift bonus (max 4 x 18 + 12 = 84). A finished shift also grows the garden.
+- Orders are seeded by the shift number (deterministic). Toppings grow with each customer: 1, 2, 3, 4.
+- Stickers (40 in all): Burger Buddy (1 shift) and Burger Chef (5 shifts). Save: optional `progress.burger {orders, shifts}`.

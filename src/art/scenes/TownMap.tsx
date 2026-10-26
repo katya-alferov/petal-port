@@ -5,11 +5,11 @@ import { OUTLINE, Shaded, scallopCircle } from '../kit';
 import { ShellArt } from '../shells';
 
 export type PlaceId =
-  'boutique' | 'park' | 'cafe' | 'home' | 'airport' | 'cottage' | 'petshop' | 'board' | 'postbox' | 'stage' | 'salon' | 'garden';
+  'boutique' | 'park' | 'cafe' | 'home' | 'airport' | 'cottage' | 'petshop' | 'board' | 'postbox' | 'stage' | 'salon' | 'garden' | 'burger';
 
 export const MAP_W = 1170;
 /** Sparkle Street (Glam Salon and Petal Garden) sits between the harbour and the airport. */
-const STREET = 660;
+const STREET = 1180;
 export const MAP_H = 3200 + STREET;
 
 /** Where each place sits, so the scene can scroll to it. */
@@ -25,6 +25,7 @@ export const PLACE_Y: Record<PlaceId, number> = {
   stage: 2480,
   salon: 3000,
   garden: 3000,
+  burger: 3500,
   airport: 2860 + STREET,
 };
 
@@ -578,7 +579,7 @@ export function TownMap({
       </g>
 
       {/* Sparkle Street: a pink-and-lilac row of new places (game-systems §10) */}
-      <path d="M0,2740 C300,2715 800,2735 1170,2712 L1170,3900 L0,3900 Z" fill="#B8E6C4" stroke={OUTLINE} strokeWidth={5} />
+      <path d="M0,2740 C300,2715 800,2735 1170,2712 L1170,4500 L0,4500 Z" fill="#B8E6C4" stroke={OUTLINE} strokeWidth={5} />
       <path d="M0,3190 L1170,3190 L1170,3240 L0,3240 Z" fill="#F2E3D2" stroke={OUTLINE} strokeWidth={4} />
       <path d="M0,3215 L1170,3215" stroke="#FFFFFF" strokeWidth={8} strokeDasharray="44 36" />
 
@@ -633,6 +634,44 @@ export function TownMap({
         <Tree x={1110} y={2900} s={0.5} />
         <Sign x={880} y={3250} label="Petal Garden" color="#7ED6A7" />
       </Place>
+
+      {/* Snack Street: Bun & Bite Burger Bar (game-systems §12) */}
+      <path d="M0,3690 L1170,3690 L1170,3740 L0,3740 Z" fill="#F2E3D2" stroke={OUTLINE} strokeWidth={4} />
+      <path d="M0,3715 L1170,3715" stroke="#FFFFFF" strokeWidth={8} strokeDasharray="44 36" />
+      <Place
+        id="burger"
+        hit={[90, 3330, 520, 420]}
+        label="Bun & Bite"
+        onTap={onTap}
+        badge={badges.burger && <Badge x={590} y={3390} kind={badges.burger} />}
+      >
+        <Shaded d={rect(140, 3430, 420, 250)} shade={SUN} depth={10} />
+        <Shaded d="M120,3440 L350,3340 L580,3440 Z" shade={PINK} depth={6} />
+        <Awning x={130} y={3510} w={440} a="#FFF7EC" b="#FF7BA9" />
+        <rect x={170} y={3590} width={150} height={90} rx={10} fill="#BDE8EC" stroke={OUTLINE} strokeWidth={4} />
+        <path d="M190,3610 L210,3596" stroke="#FFFFFF" strokeWidth={5} strokeLinecap="round" opacity={0.85} />
+        <rect x={380} y={3580} width={110} height={100} rx={36} fill={PINK.base} stroke={OUTLINE} strokeWidth={4} />
+        <path d="M300,3410 C300,3350 400,3350 400,3410 Z" fill="#F2B45B" stroke={OUTLINE} strokeWidth={4} strokeLinejoin="round" />
+        <path
+          d="M296,3418 q13,-12 26,0 q13,12 26,0 q13,-12 26,0 q13,12 26,0"
+          fill="none"
+          stroke="#7ED6A7"
+          strokeWidth={6}
+          strokeLinecap="round"
+        />
+        <rect x={298} y={3426} width={104} height={14} rx={7} fill="#8A5A3C" stroke={OUTLINE} strokeWidth={4} />
+        <path
+          d="M298,3446 L402,3446 L396,3462 Q350,3470 304,3462 Z"
+          fill="#F2B45B"
+          stroke={OUTLINE}
+          strokeWidth={4}
+          strokeLinejoin="round"
+        />
+        <Sign x={350} y={3750} label="Bun & Bite" color="#FF7BA9" />
+      </Place>
+      <Tree x={820} y={3560} s={0.7} />
+      <Tree x={1000} y={3600} s={0.6} />
+      <Flowers x={720} y={3660} n={5} />
 
       <g transform={`translate(0 ${STREET})`}>
         {/* Airport on the point */}

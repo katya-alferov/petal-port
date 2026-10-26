@@ -25,6 +25,7 @@ export type StickerCond =
   | { kind: 'salonShifts'; n: number }
   | { kind: 'blooms'; n: number }
   | { kind: 'photos'; n: number }
+  | { kind: 'burgerShifts'; n: number }
   | { kind: 'souvenirs'; n: number };
 
 export interface StickerFacts {
@@ -76,6 +77,8 @@ export function meets(save: SaveGame, c: StickerCond, facts: StickerFacts): bool
       return p.salon.shifts >= c.n;
     case 'blooms':
       return p.garden.bloomed.length >= c.n;
+    case 'burgerShifts':
+      return p.burger.shifts >= c.n;
     case 'photos':
       return p.travel.photos.length >= c.n;
     case 'souvenirs':

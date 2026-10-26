@@ -91,6 +91,7 @@ test('no serious accessibility violations on each main scene', async ({ page }) 
     'board',
     'album',
     'airport',
+    'burger',
     'paris',
     'photo',
     'show',
@@ -227,7 +228,7 @@ test('town: every place opens a card; the airport opens', async ({ page }) => {
     await place.evaluate((e) => e.scrollIntoView({ block: 'center' }));
     await place.click({ force: true });
   };
-  for (const id of ['cafe', 'boutique', 'home', 'park', 'airport', 'salon', 'garden']) {
+  for (const id of ['cafe', 'boutique', 'home', 'park', 'airport', 'salon', 'garden', 'burger']) {
     await tapPlace(id);
     await expect(page.getByRole('dialog'), id).toBeVisible();
     await page.keyboard.press('Escape');
@@ -468,4 +469,30 @@ test('paris trip: save for the ticket, fly, take a photo, buy a souvenir, find t
   await page.getByTestId('photo-remove').click();
   await page.getByTestId('photo-remove-yes').click();
   await expect(page.getByTestId('photos-empty')).toBeVisible();
+});
+
+test('bun and bite: a wrong tap names the next layer, a full shift pays with tips and a bonus', async ({ page }) => {
+  await page.goto('./?fixture=fresh&scene=town');
+  const place = page.getByTestId('place-burger');
+  await place.evaluate((e) => e.scrollIntoView({ block: 'center' }));
+  await place.click({ force: true });
+  await page.getByTestId('place-go').click();
+  const coins = () =>
+    page.evaluate(
+      () =>
+        (window as unknown as { __petal: { getState: () => { save: { wallet: { coins: number } } } } }).__petal.getState().save.wallet
+          .coins,
+    );
+  const start = await coins();
+  // A wrong first tap explains, takes nothing away, and costs the tip for this burger only.
+  await page.getByTestId('part-bun-top').click();
+  await expect(page.getByTestId('burger-wrong')).toContainText('bottom bun');
+  for (let i = 0; i < 4; i++) {
+    const order = JSON.parse((await page.getByTestId('burger-card').getAttribute('data-order'))!) as string[];
+    for (const part of order) await page.getByTestId(`part-${part}`).click();
+    await expect(page.getByTestId('burger-served')).toContainText(i === 0 ? '+14' : '+18');
+    await page.getByTestId('burger-next').click();
+  }
+  await expect(page.getByTestId('burger-done')).toContainText('+');
+  expect((await coins()) - start).toBe(14 + 18 * 3 + 12);
 });

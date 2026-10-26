@@ -15,6 +15,7 @@ import { HAIR_COLORS } from '../content/appearance';
 import { SALON_MENU, SEEDS } from '../content/wavec';
 import { BLOOM_AT, grow, pickBloom, plant, stage } from './garden';
 import { seasonFor } from './season';
+import { BURGER_PAY, BURGER_TIP, burgerOrders, burgerPay, CUSTOMERS_PER_SHIFT, tapPart } from './burger';
 import { MAX_PHOTOS, PARIS_TICKET, addPhoto, buySouvenir, buyTicket, newTravel, removePhoto, type PhotoRecipe } from './travel';
 import { WINDOW_VIEWS, windowView } from '../content/views';
 import { viewUnlocked } from './views';
@@ -405,5 +406,37 @@ describe('Paris trip (§11)', () => {
   });
   it('travel stickers match the content', () => {
     expect(STICKERS.find((s) => s.id === 'sticker.paris')!.cond).toEqual({ kind: 'photos', n: 1 });
+  });
+});
+
+describe('Bun & Bite (§12)', () => {
+  it('a shift has 4 burgers with 1 to 4 different toppings, bun at both ends, same for the same shift', () => {
+    const o = burgerOrders(3);
+    expect(o).toHaveLength(CUSTOMERS_PER_SHIFT);
+    o.forEach((b, i) => {
+      expect(b[0]).toBe('bun-bottom');
+      expect(b[1]).toBe('patty');
+      expect(b[b.length - 1]).toBe('bun-top');
+      const tops = b.slice(2, -1);
+      expect(tops).toHaveLength(i + 1);
+      expect(new Set(tops).size).toBe(tops.length);
+    });
+    expect(burgerOrders(3)).toEqual(o);
+    expect(burgerOrders(4)).not.toEqual(o);
+  });
+  it('taps must follow the order; a wrong tap names the next layer', () => {
+    const order = burgerOrders(1)[0];
+    expect(tapPart(order, 0, 'bun-top')).toEqual({ ok: false, next: 'bun-bottom' });
+    expect(tapPart(order, 0, 'bun-bottom')).toEqual({ ok: true, done: false });
+    expect(tapPart(order, order.length - 1, 'bun-top')).toEqual({ ok: true, done: true });
+  });
+  it('pays 14 and a 4 tip for a clean burger', () => {
+    expect(burgerPay(false)).toBe(BURGER_PAY);
+    expect(burgerPay(true)).toBe(BURGER_PAY + BURGER_TIP);
+  });
+  it('old saves get an empty burger record', () => {
+    const raw = JSON.parse(JSON.stringify(newSave(SAVE_CONTEXT, 1)));
+    delete raw.progress.burger;
+    expect(sanitize(raw, SAVE_CONTEXT).progress.burger).toEqual({ orders: 0, shifts: 0 });
   });
 });

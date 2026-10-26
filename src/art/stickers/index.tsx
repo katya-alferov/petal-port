@@ -147,6 +147,16 @@ const MOTIF: Record<string, (ink: string) => ReactElement> = {
       <circle cx={50} cy={43} r={3} fill={W} />
     </g>
   ),
+  burger: (c) => (
+    <g {...sw}>
+      <path d="M22,48 C22,26 78,26 78,48 Z" fill={c} />
+      <path d="M22,54 q7,-7 14,0 q7,7 14,0 q7,-7 14,0 q7,7 14,0" fill="none" stroke="#7ED6A7" strokeWidth={6} />
+      <rect x={22} y={58} width={56} height={10} rx={5} fill="#8A5A3C" />
+      <path d="M22,72 L78,72 L74,80 Q50,86 26,80 Z" fill={c} />
+      <circle cx={42} cy={38} r={2.5} fill={W} stroke="none" />
+      <circle cx={56} cy={34} r={2.5} fill={W} stroke="none" />
+    </g>
+  ),
   flower: (c) => (
     <g {...sw}>
       <path d="M50,58 C48,68 50,76 50,84" fill="none" stroke="#5FA67A" strokeWidth={5} />

@@ -1,4 +1,5 @@
 // The single game store (data-model §4). Only `save` is persisted; `ui` is session state.
+import { BURGER_SHIFT_BONUS, burgerPay } from '../game/burger';
 import { souvenir } from '../content/travel';
 import { addPhoto, buySouvenir as doBuySouvenir, buyTicket as doBuyTicket, removePhoto, type PhotoRecipe } from '../game/travel';
 import { WINDOW_VIEWS } from '../content/views';
@@ -31,6 +32,7 @@ import { log } from '../platform/log';
 import { readSaves, requestPersist, scheduleWrite } from '../platform/storage';
 
 export type SceneId =
+  | 'burger'
   | 'airport'
   | 'paris'
   | 'photo'
@@ -97,6 +99,9 @@ interface GameStore {
   /** Wave C (game-systems §10). A styled client; returns the coins paid. */
   salonServed: (firstLook: boolean) => number;
   salonShiftDone: () => number;
+  /** Wave D (game-systems §12). */
+  burgerServed: (clean: boolean) => number;
+  burgerShiftDone: () => number;
   plantSeed: (bed: number, seed: string) => void;
   /** Wave D (game-systems §11). Each returns whether it worked. */
   buyTicket: () => boolean;
@@ -370,6 +375,20 @@ export const useGame = create<GameStore>((setState, getState) => ({
     s = grown({ ...s, progress: { ...s.progress, salon: { ...s.progress.salon, shifts: s.progress.salon.shifts + 1 } } });
     setState({ save: touch(s) });
     return SALON_SHIFT_BONUS;
+  },
+  burgerServed: (clean) => {
+    let s = getState().save;
+    const coins = burgerPay(clean);
+    s = earn(s, coins);
+    s = { ...s, progress: { ...s.progress, burger: { ...s.progress.burger, orders: s.progress.burger.orders + 1 } } };
+    setState({ save: touch(s) });
+    return coins;
+  },
+  burgerShiftDone: () => {
+    let s = earn(getState().save, BURGER_SHIFT_BONUS);
+    s = grown({ ...s, progress: { ...s.progress, burger: { ...s.progress.burger, shifts: s.progress.burger.shifts + 1 } } });
+    setState({ save: touch(s) });
+    return BURGER_SHIFT_BONUS;
   },
   plantSeed: (bed, seedId) => {
     const s = getState().save;
