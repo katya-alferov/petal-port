@@ -50,7 +50,7 @@ function Adopt() {
           <PetThumb pet={{ kind, color, accessory: null }} label={k.name} mood={hop ? 'happy' : 'idle'} />
         </div>
       </div>
-      <div className="tray" style={{ flex: 1, minHeight: 0, alignContent: 'start', gap: 12 }}>
+      <div className="tray" style={{ flex: 1, minHeight: 0, gridTemplateRows: 'auto minmax(0, 1fr) auto', gap: 10 }}>
         <ol className="steps" aria-label="Adoption steps">
           {(['kind', 'color', 'name'] as Step[]).map((s, i) => (
             <li key={s} aria-current={s === step ? 'step' : undefined}>
@@ -58,74 +58,77 @@ function Adopt() {
             </li>
           ))}
         </ol>
-        {step === 'kind' && (
-          <div className="item-grid" style={{ gridTemplateColumns: 'repeat(3, 1fr)' }}>
-            {PET_KINDS.map((p) => (
-              <button
-                key={p.id}
-                type="button"
-                className="shop-tile"
-                aria-pressed={kind === p.id}
-                data-testid={`adopt-kind-${p.id}`}
-                onClick={() => (setKind(p.id), cheer())}
-              >
-                <span className="thumb">
-                  <PetThumb pet={{ kind: p.id, color, accessory: null }} label={p.name} />
-                </span>
-                {p.name}
-              </button>
-            ))}
-          </div>
-        )}
-        {step === 'color' && (
-          <div className="item-grid" style={{ gridTemplateColumns: 'repeat(3, 1fr)' }}>
-            {PET_COLORS.map((c) => (
-              <button
-                key={c.id}
-                type="button"
-                className="shop-tile"
-                aria-pressed={color === c.id}
-                data-testid={`adopt-color-${c.id}`}
-                onClick={() => (setColor(c.id), cheer())}
-              >
-                <span className="thumb">
-                  <PetThumb pet={{ kind, color: c.id, accessory: null }} label={c.name} />
-                </span>
-                {c.name}
-              </button>
-            ))}
-          </div>
-        )}
-        {step === 'name' && (
-          <div style={{ display: 'grid', gap: 10 }}>
-            <div className="chip-row" role="group" aria-label="Name ideas">
-              {k.names.map((n) => (
+        {/* Choices scroll; Back / Next stay pinned so they never fall below the screen. */}
+        <div className="scroll-y">
+          {step === 'kind' && (
+            <div className="item-grid" style={{ gridTemplateColumns: 'repeat(3, 1fr)' }}>
+              {PET_KINDS.map((p) => (
                 <button
-                  key={n}
+                  key={p.id}
                   type="button"
-                  className="chip"
-                  aria-pressed={name === n}
-                  data-testid={`adopt-name-${n}`}
-                  onClick={() => (setName(n), cheer())}
+                  className="shop-tile"
+                  aria-pressed={kind === p.id}
+                  data-testid={`adopt-kind-${p.id}`}
+                  onClick={() => (setKind(p.id), cheer())}
                 >
-                  {n}
+                  <span className="thumb">
+                    <PetThumb pet={{ kind: p.id, color, accessory: null }} label={p.name} />
+                  </span>
+                  {p.name}
                 </button>
               ))}
             </div>
-            <label style={{ display: 'grid', gap: 4, fontWeight: 800 }}>
-              Or type a name
-              <input
-                className="text-input"
-                value={name}
-                maxLength={12}
-                onChange={(e) => setName(e.target.value)}
-                data-testid="adopt-name-input"
-                autoComplete="off"
-              />
-            </label>
-          </div>
-        )}
-        <div style={{ display: 'flex', gap: 8, justifyContent: 'center', marginTop: 'auto' }}>
+          )}
+          {step === 'color' && (
+            <div className="item-grid" style={{ gridTemplateColumns: 'repeat(3, 1fr)' }}>
+              {PET_COLORS.map((c) => (
+                <button
+                  key={c.id}
+                  type="button"
+                  className="shop-tile"
+                  aria-pressed={color === c.id}
+                  data-testid={`adopt-color-${c.id}`}
+                  onClick={() => (setColor(c.id), cheer())}
+                >
+                  <span className="thumb">
+                    <PetThumb pet={{ kind, color: c.id, accessory: null }} label={c.name} />
+                  </span>
+                  {c.name}
+                </button>
+              ))}
+            </div>
+          )}
+          {step === 'name' && (
+            <div style={{ display: 'grid', gap: 10 }}>
+              <div className="chip-row wrap" role="group" aria-label="Name ideas">
+                {k.names.map((n) => (
+                  <button
+                    key={n}
+                    type="button"
+                    className="chip"
+                    aria-pressed={name === n}
+                    data-testid={`adopt-name-${n}`}
+                    onClick={() => (setName(n), cheer())}
+                  >
+                    {n}
+                  </button>
+                ))}
+              </div>
+              <label style={{ display: 'grid', gap: 4, fontWeight: 800 }}>
+                Or type a name
+                <input
+                  className="text-input"
+                  value={name}
+                  maxLength={12}
+                  onChange={(e) => setName(e.target.value)}
+                  data-testid="adopt-name-input"
+                  autoComplete="off"
+                />
+              </label>
+            </div>
+          )}
+        </div>
+        <div style={{ display: 'flex', gap: 8, justifyContent: 'center' }}>
           {step !== 'kind' && (
             <Button onClick={() => (play('pop'), setStep(step === 'name' ? 'color' : 'kind'))} testId="adopt-back">
               Back

@@ -1,5 +1,6 @@
 // Sticker UI kit (visual-design §6). Pure presentation: no game knowledge.
-import { useEffect, useState, type ReactNode } from 'react';
+import { createPortal } from 'react-dom';
+import { useEffect, useRef, useState, type ReactNode } from 'react';
 import { Icon } from './icons';
 
 type Tone = 'primary' | 'secondary' | 'confirm';
@@ -20,7 +21,7 @@ export function Button({
   testId?: string;
   icon?: string;
 }) {
-  const [explain, setExplain] = useState(false);
+  const [explain, setExplain] = useState<number | null>(null);
   const cls = tone === 'primary' ? 'btn btn-primary' : tone === 'confirm' ? 'btn btn-secondary btn-confirm' : 'btn btn-secondary';
   return (
     <span style={{ position: 'relative', display: 'inline-flex' }}>
@@ -29,10 +30,10 @@ export function Button({
         className={cls}
         data-testid={testId}
         aria-disabled={disabledReason ? 'true' : undefined}
-        onClick={() => {
+        onClick={(e) => {
           if (disabledReason) {
-            setExplain(true);
-            window.setTimeout(() => setExplain(false), 2000);
+            setExplain(e.currentTarget.getBoundingClientRect().top);
+            window.setTimeout(() => setExplain(null), 2200);
             return;
           }
           onClick?.();
@@ -41,23 +42,22 @@ export function Button({
         {icon && <Icon name={icon} />}
         {children}
       </button>
-      {explain && disabledReason && (
-        <span
-          role="status"
-          className="panel pop-in"
-          style={{
-            position: 'absolute',
-            bottom: '110%',
-            left: '50%',
-            transform: 'translateX(-50%)',
-            whiteSpace: 'nowrap',
-            padding: '8px 12px',
-          }}
-        >
-          {disabledReason}
-        </span>
-      )}
+      {explain !== null && disabledReason && <WhyNot top={explain} text={disabledReason} />}
     </span>
+  );
+}
+
+/** The "why can't I?" tip for a locked button: a full-width banner just above it, drawn on the stage
+ *  so scrollers and screen edges never clip it (review Oct 2026). */
+function WhyNot({ top, text }: { top: number; text: string }) {
+  const stage = document.querySelector('.stage');
+  if (!stage) return null;
+  const y = top - stage.getBoundingClientRect().top;
+  return createPortal(
+    <span role="status" className="why-not" style={{ top: Math.max(8, y - 8) }}>
+      <span className="panel pop-in">{text}</span>
+    </span>,
+    stage,
   );
 }
 
@@ -174,18 +174,39 @@ export function Toast({ message, icon = 'sparkle', onDone }: { message: string; 
 }
 
 export function Sheet({ title, children, onClose }: { title: string; children: ReactNode; onClose: () => void }) {
+  const box = useRef<HTMLDivElement>(null);
   useEffect(() => {
-    const onKey = (e: KeyboardEvent) => e.key === 'Escape' && onClose();
-    window.addEventListener('keydown', onKey);
-    return () => window.removeEventListener('keydown', onKey);
+    const back = document.activeElement as HTMLElement | null;
+    box.current?.querySelector<HTMLElement>('[data-testid="sheet-close"]')?.focus();
+    const onKey = (e: KeyboardEvent) => {
+      if (e.key === 'Escape') {
+        e.stopImmediatePropagation();
+        onClose();
+      }
+      // Keep keyboard focus inside the open sheet.
+      if (e.key === 'Tab' && box.current) {
+        const f = [...box.current.querySelectorAll<HTMLElement>('button, [href], input, [tabindex]:not([tabindex="-1"])')];
+        if (!f.length) return;
+        const [first, last] = [f[0], f[f.length - 1]];
+        if (e.shiftKey && document.activeElement === first) (e.preventDefault(), last.focus());
+        else if (!e.shiftKey && document.activeElement === last) (e.preventDefault(), first.focus());
+      }
+    };
+    window.addEventListener('keydown', onKey, true);
+    return () => {
+      window.removeEventListener('keydown', onKey, true);
+      back?.focus?.();
+    };
   }, [onClose]);
   return (
     <div className="sheet-scrim" onClick={onClose}>
-      <div className="sheet" role="dialog" aria-modal="true" aria-label={title} onClick={(e) => e.stopPropagation()}>
-        <div className="sheet-grabber" />
-        <h2 className="display" style={{ marginBottom: 12 }}>
-          {title}
-        </h2>
+      <div ref={box} className="sheet" role="dialog" aria-modal="true" aria-label={title} onClick={(e) => e.stopPropagation()}>
+        <div className="sheet-head">
+          <h2 className="display" style={{ margin: 0 }}>
+            {title}
+          </h2>
+          <IconButton icon="close" label="Close" onClick={onClose} testId="sheet-close" />
+        </div>
         {children}
       </div>
     </div>

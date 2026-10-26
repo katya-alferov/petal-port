@@ -90,11 +90,16 @@ function Flowers({ x, y, n = 5 }: { x: number; y: number; n?: number }) {
 }
 
 /** Signpost pin: icon dot + name on a sticker label. */
-function Sign({ x, y, label, color }: { x: number; y: number; label: string; color: string }) {
+function Sign({ x, y, label, color, post = 'down' }: { x: number; y: number; label: string; color: string; post?: 'down' | 'up' }) {
   const w = label.length * 25 + 84;
   return (
     <g>
-      <path d={`M${x},${y + 40} L${x},${y + 88}`} stroke={OUTLINE} strokeWidth={8} strokeLinecap="round" />
+      <path
+        d={post === 'down' ? `M${x},${y + 40} L${x},${y + 88}` : `M${x},${y - 34} L${x},${y - 80}`}
+        stroke={OUTLINE}
+        strokeWidth={8}
+        strokeLinecap="round"
+      />
       <rect x={x - w / 2} y={y - 34} width={w} height={74} rx={37} fill="#3A2E4F" opacity={0.18} transform="translate(0 8)" />
       <rect x={x - w / 2} y={y - 34} width={w} height={74} rx={37} fill="#FFF7EC" stroke={OUTLINE} strokeWidth={5} />
       <circle cx={x - w / 2 + 38} cy={y + 3} r={20} fill={color} stroke={OUTLINE} strokeWidth={4} />
@@ -268,7 +273,7 @@ export function TownMap({ onTap, onCat, badges = {}, homeName = 'Harbour Loft', 
           strokeWidth={4}
         />
         <circle cx={860} cy={804} r={10} fill={PINK.base} stroke={OUTLINE} strokeWidth={3} />
-        <Sign x={860} y={1190} label="Ribbon Boutique" color="#FF7BA9" />
+        <Sign x={860} y={1190} label="Ribbon Boutique" color="#FF7BA9" post="up" />
       </Place>
       {/* Paw Parlour */}
       <Place

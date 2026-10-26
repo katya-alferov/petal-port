@@ -322,15 +322,16 @@ body {
 
 .tab {
   appearance: none;
-  flex: 1 0 auto;
+  flex: 1 1 auto;
+  min-width: 0;
   min-height: 48px;
-  padding: 0 14px;
+  padding: 0 clamp(6px, 2vw, 14px);
   border-radius: 999px;
   border: none;
   background: transparent;
   font: inherit;
   font-weight: 800;
-  font-size: 1.0625rem;
+  font-size: clamp(0.95rem, 4.2vw, 1.0625rem);
   color: var(--ink);
   cursor: pointer;
   white-space: nowrap;
@@ -436,6 +437,9 @@ body {
   top: calc(var(--safe-top) + 72px);
   transform: translateX(-50%);
   z-index: 30;
+  width: max-content;
+  max-width: calc(100% - 32px);
+  pointer-events: none;
   display: flex;
   align-items: center;
   gap: 8px;
@@ -644,6 +648,11 @@ body {
   font-family: var(--font-display);
   font-size: 1.5rem;
   padding: 6px 16px;
+  /* A label, not a button: no sticker drop shadow (review Oct 2026). */
+  box-shadow: none;
+  border-width: 2px;
+  background: rgba(255, 247, 236, 0.9);
+  white-space: nowrap;
 }
 
 .options {
@@ -990,15 +999,20 @@ body {
   z-index: 5;
 }
 .steps li {
-  border: var(--stroke);
+  border: 2px dashed rgba(91, 74, 110, 0.45);
   border-radius: 999px;
   padding: 2px 10px;
-  background: #fff;
+  background: transparent;
   font-weight: 800;
   font-size: 0.85rem;
 }
 .steps li.done {
-  background: var(--mint);
+  background: rgba(126, 214, 167, 0.35);
+}
+.steps li[aria-current='step'] {
+  border-style: solid;
+  border-color: var(--outline);
+  background: var(--sunshine);
 }
 .steps li[aria-current='step'] {
   background: var(--sunshine);
@@ -1009,6 +1023,9 @@ body {
   overflow-x: auto;
   padding: 2px 2px 6px;
   scrollbar-width: none;
+  /* A soft fade at the edge says "there's more, swipe" (review Oct 2026). */
+  -webkit-mask-image: linear-gradient(to right, #000 calc(100% - 28px), transparent);
+  mask-image: linear-gradient(to right, #000 calc(100% - 28px), transparent);
 }
 .chip {
   all: unset;
@@ -1017,7 +1034,10 @@ body {
   border: var(--stroke);
   border-radius: 999px;
   padding: 6px 12px;
-  min-height: 32px;
+  min-height: 44px;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
   box-sizing: border-box;
   background: #fff;
   font-weight: 800;
@@ -1423,4 +1443,55 @@ body {
   display: grid;
   gap: 4px;
   text-align: left;
+}
+
+.why-not {
+  position: absolute;
+  left: 12px;
+  right: 12px;
+  z-index: 40;
+  display: flex;
+  justify-content: center;
+  transform: translateY(-100%);
+  pointer-events: none;
+}
+.why-not > .panel {
+  padding: 8px 12px;
+  text-align: center;
+  font-weight: 800;
+}
+
+.sheet-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  margin-bottom: 12px;
+}
+.chip-row.wrap {
+  flex-wrap: wrap;
+  overflow: visible;
+  -webkit-mask-image: none;
+  mask-image: none;
+}
+.swatch-dot {
+  width: 18px;
+  height: 18px;
+  border-radius: 50%;
+  border: 2px solid var(--outline);
+}
+
+/* While a result card is open, toasts move to the bottom so they never cover its title. */
+.stage:has(.card-center) .toast {
+  top: auto;
+  bottom: calc(var(--safe-bottom) + 12px);
+}
+
+/* Map and scene hotspots: no square box after a tap, a soft ring for keyboard users. */
+[role='button']:focus:not(:focus-visible) {
+  outline: none;
+}
+g[role='button']:focus-visible {
+  outline: 4px solid var(--sea-deep);
+  outline-offset: 4px;
 }

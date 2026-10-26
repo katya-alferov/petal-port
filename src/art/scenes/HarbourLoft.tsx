@@ -7,6 +7,10 @@ import { OUTLINE, Shaded } from '../kit';
 import { FURN_ART } from '../furn';
 
 export const FLOOR_Y = 1680;
+/** The part of the 1170×2532 canvas that holds the room: window top to just under the rug. */
+const VIEW_TOP = 480;
+const VIEW_BOTTOM = 2380;
+const BLEED = 1200;
 
 function WindowView({ night }: { night: boolean }) {
   // The window frame is part of the room; the harbour view behind it changes with the theme's mood.
@@ -121,27 +125,29 @@ export function HarbourLoft({ room, children, lampOn = true, onSlotTap, tappable
 
   return (
     <svg
-      viewBox="0 0 1170 2532"
-      preserveAspectRatio="xMidYMid slice"
+      viewBox={`0 ${VIEW_TOP} 1170 ${VIEW_BOTTOM - VIEW_TOP}`}
+      preserveAspectRatio="xMidYMax meet"
+      style={{ overflow: 'visible' }}
       role="group"
       aria-label={`${room.name}, ${room.themeName} theme`}
       data-testid="room-harbour-loft"
     >
-      <rect width={1170} height={FLOOR_Y} fill={room.walls} />
+      {/* Walls and floor run past the canvas so any screen shape shows a whole room (visual-design §15). */}
+      <rect x={-BLEED} y={-BLEED} width={1170 + BLEED * 2} height={FLOOR_Y + BLEED} fill={room.walls} />
       {room.pattern === 'leaf' &&
         Array.from({ length: 9 }).flatMap((_, row) =>
-          Array.from({ length: 7 }).map((__, col) => (
-            <g key={`${row}-${col}`} transform={`translate(${90 + col * 170 + (row % 2) * 85} ${400 + row * 150})`} opacity={0.55}>
+          Array.from({ length: 15 }).map((__, col) => (
+            <g key={`${row}-${col}`} transform={`translate(${90 + (col - 4) * 170 + (row % 2) * 85} ${400 + row * 150})`} opacity={0.55}>
               <path d="M0,-12 C6,-4 6,4 0,12 C-6,4 -6,-4 0,-12 Z" fill={wallLine} />
             </g>
           )),
         )}
       {room.pattern === 'dots' &&
         Array.from({ length: 13 }).flatMap((_, row) =>
-          Array.from({ length: 10 }).map((__, col) => (
+          Array.from({ length: 20 }).map((__, col) => (
             <circle
               key={`${row}-${col}`}
-              cx={40 + col * 120 + (row % 2) * 60}
+              cx={40 + (col - 5) * 120 + (row % 2) * 60}
               cy={360 + row * 100}
               r={row % 3 === 1 ? 10 : 16}
               fill={row % 3 === 1 ? trim.base : '#FFFFFF'}
@@ -152,15 +158,15 @@ export function HarbourLoft({ room, children, lampOn = true, onSlotTap, tappable
       {room.pattern === 'quilt' && (
         <g opacity={0.7}>
           {/* Tufted quilting: 45° diamonds with a button at every crossing. */}
-          {Array.from({ length: 19 }).map((_, i) => (
-            <path key={`a${i}`} d={`M${-1260 + i * 140},${FLOOR_Y} l1300,-1300`} stroke={wallLine} strokeWidth={4} />
+          {Array.from({ length: 31 }).map((_, i) => (
+            <path key={`a${i}`} d={`M${-1820 + i * 140},${FLOOR_Y} l1300,-1300`} stroke={wallLine} strokeWidth={4} />
           ))}
-          {Array.from({ length: 19 }).map((_, i) => (
-            <path key={`b${i}`} d={`M${i * 140},${FLOOR_Y} l-1300,-1300`} stroke={wallLine} strokeWidth={4} />
+          {Array.from({ length: 31 }).map((_, i) => (
+            <path key={`b${i}`} d={`M${-560 + i * 140},${FLOOR_Y} l-1300,-1300`} stroke={wallLine} strokeWidth={4} />
           ))}
           {Array.from({ length: 19 }).flatMap((_, k) =>
-            Array.from({ length: 18 })
-              .map((__, c) => c)
+            Array.from({ length: 34 })
+              .map((__, c) => c - 8)
               .filter((c) => (c + k) % 2 === 0)
               .map((c) => (
                 <circle key={`q${k}-${c}`} cx={c * 70} cy={FLOOR_Y - k * 70} r={7} fill="#FFFFFF" stroke={wallLine} strokeWidth={2} />
@@ -174,32 +180,32 @@ export function HarbourLoft({ room, children, lampOn = true, onSlotTap, tappable
       <rect x={640} y={600} width={400} height={540} rx={20} fill="none" stroke={OUTLINE} strokeWidth={5} />
       <Shaded d="M600,1150 L1080,1150 L1080,1190 L600,1190 Z" shade={trim} depth={4} />
 
-      <rect y={FLOOR_Y} width={1170} height={2532 - FLOOR_Y} fill={floor.base} />
-      {Array.from({ length: 6 }).map((_, i) => (
+      <rect x={-BLEED} y={FLOOR_Y} width={1170 + BLEED * 2} height={2532 - FLOOR_Y + BLEED} fill={floor.base} />
+      {Array.from({ length: 9 }).map((_, i) => (
         <path
           key={i}
-          d={`M0,${FLOOR_Y + 90 + i * 140} L1170,${FLOOR_Y + 90 + i * 140}`}
+          d={`M${-BLEED},${FLOOR_Y + 90 + i * 140} L${1170 + BLEED},${FLOOR_Y + 90 + i * 140}`}
           stroke={floor.shadow}
           strokeWidth={4}
           opacity={0.5}
         />
       ))}
-      {Array.from({ length: 12 }).map((_, i) => (
+      {Array.from({ length: 30 }).map((_, i) => (
         <path
           key={i}
-          d={`M${(i * 233) % 1170},${FLOOR_Y + 90 + (i % 6) * 140} l0,140`}
+          d={`M${((i * 233) % 2340) - 585},${FLOOR_Y + 90 + (i % 8) * 140} l0,140`}
           stroke={floor.shadow}
           strokeWidth={4}
           opacity={0.4}
         />
       ))}
       <Shaded
-        d={`M0,${FLOOR_Y - 34} L1170,${FLOOR_Y - 34} L1170,${FLOOR_Y + 6} L0,${FLOOR_Y + 6} Z`}
+        d={`M${-BLEED},${FLOOR_Y - 34} L${1170 + BLEED},${FLOOR_Y - 34} L${1170 + BLEED},${FLOOR_Y + 6} L${-BLEED},${FLOOR_Y + 6} Z`}
         shade={trim}
         depth={4}
         outline={false}
       />
-      <path d={`M0,${FLOOR_Y + 6} L1170,${FLOOR_Y + 6}`} stroke={OUTLINE} strokeWidth={5} />
+      <path d={`M${-BLEED},${FLOOR_Y + 6} L${1170 + BLEED},${FLOOR_Y + 6}`} stroke={OUTLINE} strokeWidth={5} />
 
       {ordered.filter((s) => anchors[s].z <= 3).map(renderSlot)}
       {lampOn && (

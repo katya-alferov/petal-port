@@ -137,7 +137,7 @@ function CafeShift({ onAgain }: { onAgain: () => void }) {
         <div
           key={idx}
           className="customer-in"
-          style={{ position: 'absolute', left: '0%', bottom: '18%', height: '74%', aspectRatio: '320 / 470' }}
+          style={{ position: 'absolute', left: '0%', bottom: '18%', height: 'min(74%, 330px)', aspectRatio: '320 / 470' }}
         >
           <Character
             appearance={regular.appearance}
@@ -174,7 +174,7 @@ function CafeShift({ onAgain }: { onAgain: () => void }) {
           )}
         </div>
         {cheer && (
-          <div className="hearts" style={{ left: '20%', top: '20%' }} key={`cheer-${cheer.n}`}>
+          <div className="hearts" style={{ left: '4%', top: '2%', zIndex: 6 }} key={`cheer-${cheer.n}`}>
             💖{' '}
             <span className="panel" style={{ fontSize: '1rem', padding: '4px 10px' }}>
               {cheer.text}
@@ -194,7 +194,7 @@ function CafeShift({ onAgain }: { onAgain: () => void }) {
             alignItems: 'flex-end',
             justifyContent: 'center',
             gap: 8,
-            paddingBottom: 6,
+            padding: '0 12px 6px',
           }}
         >
           <button
@@ -203,7 +203,7 @@ function CafeShift({ onAgain }: { onAgain: () => void }) {
             aria-label="Empty the cup"
             onClick={bin}
             data-testid="cafe-bin"
-            style={{ alignSelf: 'center' }}
+            style={{ alignSelf: 'center', flexShrink: 0 }}
           >
             <Icon name="bin" />
           </button>
@@ -211,7 +211,7 @@ function CafeShift({ onAgain }: { onAgain: () => void }) {
             key={wobble}
             viewBox="0 0 200 220"
             className={wobble ? 'wobble' : undefined}
-            style={{ height: '100%' }}
+            style={{ height: '100%', maxHeight: 170, minWidth: 0, flex: '0 1 auto' }}
             role="img"
             aria-label="Your drink"
             data-testid="built-drink"
@@ -223,7 +223,7 @@ function CafeShift({ onAgain }: { onAgain: () => void }) {
               <PastryArt id={built.pastry} />
             </svg>
           )}
-          <span style={{ alignSelf: 'center' }}>
+          <span style={{ alignSelf: 'center', flexShrink: 0 }}>
             <Button tone="primary" onClick={serve} testId="cafe-serve" icon="bell">
               Serve
             </Button>

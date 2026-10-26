@@ -99,7 +99,11 @@ function Cooking({ recipe, onAgain, onPick }: { recipe: RecipeDef; onAgain: () =
 
   const s = recipe.steps[step];
   const crepe = recipe.id === 'recipe.crepes';
-  const next = () => setStep((n) => n + 1);
+  // Advances only from the step that asked, so extra taps can never skip a step.
+  const next = () => {
+    const from = step;
+    setStep((n) => (n === from ? n + 1 : n));
+  };
 
   // Heat: start the clock when the step begins, tick while waiting for Flip.
   useEffect(() => {
@@ -132,6 +136,7 @@ function Cooking({ recipe, onAgain, onPick }: { recipe: RecipeDef; onAgain: () =
   };
 
   const whisk = () => {
+    if (mixTaps >= MIX_TAPS) return;
     play('swap');
     const n = mixTaps + 1;
     setMixTaps(n);
@@ -159,6 +164,7 @@ function Cooking({ recipe, onAgain, onPick }: { recipe: RecipeDef; onAgain: () =
   };
 
   const flip = () => {
+    if (result) return;
     const d = doneness(heatSecs, recipe.golden);
     setResult(d);
     play(d === 'golden' ? 'chime' : 'pop');
@@ -166,6 +172,7 @@ function Cooking({ recipe, onAgain, onPick }: { recipe: RecipeDef; onAgain: () =
   };
 
   const fold = () => {
+    if (folds >= 2) return;
     play('swap');
     const n = folds + 1;
     setFolds(n);
@@ -319,7 +326,7 @@ function Cooking({ recipe, onAgain, onPick }: { recipe: RecipeDef; onAgain: () =
         {s.type === 'heat' && (
           <span style={{ justifySelf: 'center' }}>
             <Button tone="primary" onClick={result ? undefined : flip} testId="flip">
-              Flip!
+              {result ? 'Flipped!' : 'Flip!'}
             </Button>
           </span>
         )}

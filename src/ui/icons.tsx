@@ -139,6 +139,11 @@ export const ICONS: Record<string, ReactElement> = {
       <path d="M16,22 C14.8,20.8 13,21.6 13.6,23.4 L16,25.6 L18.4,23.4 C19,21.6 17.2,20.8 16,22 Z" fill="#FF7BA9" stroke="none" />
     </svg>
   ),
+  close: (
+    <svg viewBox="0 0 32 32" aria-hidden="true">
+      <path d="M9,9 L23,23 M23,9 L9,23" fill="none" stroke="#5B4A6E" strokeWidth={5} strokeLinecap="round" />
+    </svg>
+  ),
   heart: (
     <svg viewBox="0 0 32 32" aria-hidden="true">
       <path

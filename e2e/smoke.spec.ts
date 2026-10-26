@@ -51,12 +51,16 @@ test('outfit, skin and room theme survive a reload', async ({ page }) => {
   await page.getByRole('button', { name: 'Espresso' }).click();
   await page.getByTestId('dock-home').click();
   await page.getByTestId('home-decorate').click();
-  await page.getByTestId('tab-theme.night-market').click();
+  await page.getByTestId('home-colors').click();
+  await page.getByTestId('theme-theme.night-market').click();
+  await page.getByTestId('sheet-close').click();
   await page.waitForTimeout(1200); // debounced save (≤ 1 s)
 
   await page.goto('./?scene=home');
   await page.getByTestId('home-decorate').click();
-  await expect(page.getByTestId('tab-theme.night-market')).toHaveAttribute('aria-selected', 'true');
+  await page.getByTestId('home-colors').click();
+  await expect(page.getByTestId('theme-theme.night-market')).toHaveAttribute('aria-pressed', 'true');
+  await page.getByTestId('sheet-close').click();
   await expect(page.locator('[data-slot="dress"][data-item="dress.picnic"]').first()).toBeAttached();
   await shot(page, '05-home-night-after-reload');
 });

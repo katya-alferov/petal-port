@@ -99,7 +99,15 @@ export function TownScene() {
                 <li
                   key={st.id}
                   className="panel"
-                  style={{ padding: '8px 12px', display: 'flex', gap: 10, alignItems: 'center', background: done ? '#DFF5EC' : '#fff' }}
+                  style={{
+                    padding: '8px 12px',
+                    display: 'flex',
+                    gap: 10,
+                    alignItems: 'center',
+                    background: done ? '#DFF5EC' : '#fff',
+                    boxShadow: 'none',
+                    borderWidth: 2,
+                  }}
                 >
                   <span style={{ fontSize: '1.4rem' }}>{done ? '✅' : '⬜'}</span>
                   <span style={{ flex: 1, fontWeight: 700 }}>{st.label}</span>

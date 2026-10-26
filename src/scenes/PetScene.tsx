@@ -298,7 +298,7 @@ export function PetScene() {
           </p>
         )}
         {mode === 'tricks' && (
-          <div className="chip-row" role="group" aria-label="Tricks">
+          <div className="chip-row wrap" role="group" aria-label="Tricks" style={{ justifyContent: 'center' }}>
             {TRICK_NAMES.map((t, i) => (
               <Button
                 key={t}

@@ -1,4 +1,4 @@
-import { useMemo } from 'react';
+import { useEffect, useMemo } from 'react';
 import { CharacterRig, type CharacterRigProps } from '../art/CharacterRig';
 import { FURN_ART } from '../art/furn';
 import { resolveFurniture, resolveRig } from '../content/resolve';
@@ -54,6 +54,16 @@ export function Character({ appearance, outfit, ...rest }: { appearance: Appeara
 /** Top bar for activities: a back button instead of the dock (activities are full-screen). */
 export function ActivityBar({ title, onBack, children }: { title: string; onBack: () => void; children?: React.ReactNode }) {
   const coins = useGame((s) => s.save.wallet.coins);
+  // Esc is Back on desktop (spec §2.3); an open sheet catches Esc first and closes itself.
+  useEffect(() => {
+    const onKey = (e: KeyboardEvent) => {
+      if (e.key !== 'Escape' || e.defaultPrevented) return;
+      if ((e.target as HTMLElement | null)?.closest?.('input, textarea')) return;
+      onBack();
+    };
+    window.addEventListener('keydown', onKey);
+    return () => window.removeEventListener('keydown', onKey);
+  }, [onBack]);
   return (
     <header className="activity-bar">
       <IconButton icon="back" label="Back" onClick={onBack} testId="activity-back" />
