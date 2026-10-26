@@ -371,13 +371,13 @@ test('glam salon: wash, style to match the card, and get paid', async ({ page })
   await salon.click({ force: true });
   await page.getByTestId('place-go').click();
   await expect(page.getByTestId('salon-client')).toBeVisible();
+  for (let i = 0; i < 5; i++) await page.getByTestId(`foam-${i}`).click({ force: true });
+  await expect(page.getByTestId('salon-mirror')).toBeVisible();
   const want = JSON.parse((await page.getByTestId('salon-card').getAttribute('data-want'))!) as {
     style: string;
     color: string;
     accessory: string;
   };
-  for (let i = 0; i < 5; i++) await page.getByTestId(`foam-${i}`).click({ force: true });
-  await expect(page.getByTestId('salon-mirror')).toBeVisible();
   // A wrong first look explains what to change and takes nothing away.
   await page.getByTestId('salon-mirror').click();
   await expect(page.getByTestId('salon-wrong')).toContainText('Almost');

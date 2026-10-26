@@ -167,19 +167,27 @@ function SalonShift({ onAgain }: { onAgain: () => void }) {
             </svg>
           )}
         </div>
-        <div className="panel bubble salon-card" data-testid="salon-card" data-want={JSON.stringify(want)}>
-          <b>{client.name} wants:</b>
-          <div className="salon-card-body">
-            <div className="face">
-              <Character appearance={target.appearance} outfit={target.outfit} crop="70 0 260 330" animate={false} title="The style card" />
+        {phase !== 'wash' && (
+          <div className="panel bubble salon-card" data-testid="salon-card" data-want={JSON.stringify(want)}>
+            <b>{client.name} wants:</b>
+            <div className="salon-card-body">
+              <div className="face">
+                <Character
+                  appearance={target.appearance}
+                  outfit={target.outfit}
+                  crop="70 0 260 330"
+                  animate={false}
+                  title="The style card"
+                />
+              </div>
+              <ul>
+                <li>{styleName(want.style)}</li>
+                <li>{colorName(want.color)}</li>
+                <li>{accName(want.accessory)}</li>
+              </ul>
             </div>
-            <ul>
-              <li>{styleName(want.style)}</li>
-              <li>{colorName(want.color)}</li>
-              <li>{accName(want.accessory)}</li>
-            </ul>
           </div>
-        </div>
+        )}
         {wrong && phase === 'style' && (
           <p role="status" className="panel salon-wrong" data-testid="salon-wrong">
             Almost! Check the {list(wrong.map((w) => PART_LABEL[w].toLowerCase()))} on the card.
@@ -222,6 +230,17 @@ function SalonShift({ onAgain }: { onAgain: () => void }) {
                   data-testid={`salon-opt-${o.id}`}
                   onClick={() => pick(part, o.id)}
                 >
+                  {part === 'style' && (
+                    <span className="chip-face">
+                      <Character
+                        appearance={{ ...client.appearance, hairStyle: o.id, hairColor: have.color }}
+                        outfit={{}}
+                        crop="80 0 240 250"
+                        animate={false}
+                        title={o.label}
+                      />
+                    </span>
+                  )}
                   {o.label}
                 </button>
               ))}
