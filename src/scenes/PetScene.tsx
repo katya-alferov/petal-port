@@ -141,25 +141,28 @@ export function PetScene() {
       style={{ background: 'linear-gradient(#CDEEEA, #FFF7EC 70%)' }}
     >
       <ActivityBar title={pet.name} onBack={() => setScene('home')} />
-      <div style={{ flex: 1, minHeight: 0, position: 'relative', display: 'grid', placeItems: 'center' }}>
-        {say && (
-          <div
-            className="panel bubble pop-in"
-            role="status"
-            style={{ top: 8, left: '50%', transform: 'translateX(-50%)', maxWidth: '86%', textAlign: 'center' }}
-            data-testid="pet-say"
-          >
-            {mode === 'feed' && (
-              <svg viewBox="0 0 100 100" width={44} height={44} aria-hidden="true" style={{ verticalAlign: 'middle', marginRight: 6 }}>
-                <FoodArt id={want} x={50} y={52} />
-              </svg>
-            )}
-            {say}
-          </div>
-        )}
+      <div style={{ flex: 1, minHeight: 0, position: 'relative', display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
+        {/* The bubble has its own band above the pet (toasts use the same band), so the ears stay visible. */}
+        <div style={{ flex: '0 0 auto', minHeight: 84, display: 'flex', alignItems: 'center', justifyContent: 'center', width: '100%' }}>
+          {say && (
+            <div
+              className="panel bubble pop-in"
+              role="status"
+              style={{ position: 'relative', maxWidth: '86%', textAlign: 'center' }}
+              data-testid="pet-say"
+            >
+              {mode === 'feed' && (
+                <svg viewBox="0 0 100 100" width={44} height={44} aria-hidden="true" style={{ verticalAlign: 'middle', marginRight: 6 }}>
+                  <FoodArt id={want} x={50} y={52} />
+                </svg>
+              )}
+              {say}
+            </div>
+          )}
+        </div>
         <svg
           viewBox="0 0 300 300"
-          style={{ width: 'min(92%, 46dvh)', touchAction: mode === 'bath' ? 'none' : undefined }}
+          style={{ flex: '1 1 0', minHeight: 0, width: 'min(92%, 46dvh)', touchAction: mode === 'bath' ? 'none' : undefined }}
           role="img"
           aria-label={pet.name}
           onPointerMove={scrubAt}

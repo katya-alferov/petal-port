@@ -1,4 +1,5 @@
 // Title scene: the Petalport waterfront (scene canvas 1170×2532).
+import type { ReactNode } from 'react';
 import type { Shade } from '../../content/palette';
 import { OUTLINE, Shaded, scallopCircle } from '../kit';
 
@@ -37,7 +38,10 @@ function House({ x, y, w, h, color, roof }: { x: number; y: number; w: number; h
   );
 }
 
-export function Waterfront({ sailing = false }: { sailing?: boolean }) {
+/** Top of the boardwalk the player stands on. */
+export const BOARDWALK_Y = 1960;
+
+export function Waterfront({ sailing = false, children }: { sailing?: boolean; children?: ReactNode }) {
   const houses = Array.from({ length: 9 }).map((_, i) => ({
     x: 30 + i * 128,
     w: 108,
@@ -48,7 +52,7 @@ export function Waterfront({ sailing = false }: { sailing?: boolean }) {
   return (
     <svg
       viewBox="0 0 1170 2532"
-      preserveAspectRatio="xMidYMid slice"
+      preserveAspectRatio="xMidYMax slice"
       role="img"
       aria-label="The Petalport waterfront on a sunny morning"
       data-testid="waterfront"
@@ -100,12 +104,12 @@ export function Waterfront({ sailing = false }: { sailing?: boolean }) {
         <path d="M1030,1162 L1070,1126 L1110,1162 Z" fill="#FF8A65" stroke={OUTLINE} strokeWidth={4} strokeLinejoin="round" />
       </g>
       {/* Sea */}
-      <rect y={1560} width={1170} height={620} fill="url(#wf-sea)" />
+      <rect y={1560} width={1170} height={BOARDWALK_Y - 1560 + 20} fill="url(#wf-sea)" />
       <path d="M0,1560 L1170,1560" stroke={OUTLINE} strokeWidth={5} />
       {Array.from({ length: 14 }).map((_, i) => (
         <path
           key={i}
-          d={`M${(i * 211) % 1100},${1620 + ((i * 97) % 480)} q24,-14 48,0 q24,14 48,0`}
+          d={`M${(i * 211) % 1100},${1610 + ((i * 97) % 300)} q24,-14 48,0 q24,14 48,0`}
           fill="none"
           stroke="#FFF7EC"
           strokeWidth={6}
@@ -119,26 +123,27 @@ export function Waterfront({ sailing = false }: { sailing?: boolean }) {
         <path d="M536,1782 L536,1640 L470,1774 Z" fill="#FFC94A" stroke={OUTLINE} strokeWidth={5} strokeLinejoin="round" />
         <path d="M546,1600 L586,1612 L546,1624 Z" fill="#3BB7C4" stroke={OUTLINE} strokeWidth={3} strokeLinejoin="round" />
       </g>
-      {/* Boardwalk */}
-      <rect y={2180} width={1170} height={352} fill="#E3B183" />
-      <path d="M0,2180 L1170,2180" stroke={OUTLINE} strokeWidth={6} />
-      {Array.from({ length: 4 }).map((_, i) => (
-        <path key={i} d={`M0,${2250 + i * 80} L1170,${2250 + i * 80}`} stroke="#C98F5E" strokeWidth={5} />
+      {/* Boardwalk: deep enough that the player can stand on it on every screen shape */}
+      <rect y={BOARDWALK_Y} width={1170} height={2532 - BOARDWALK_Y} fill="#E3B183" />
+      <rect y={BOARDWALK_Y} width={1170} height={26} fill="#F2CFA6" />
+      <path d={`M0,${BOARDWALK_Y} L1170,${BOARDWALK_Y}`} stroke={OUTLINE} strokeWidth={6} />
+      {Array.from({ length: 6 }).map((_, i) => (
+        <path key={i} d={`M0,${BOARDWALK_Y + 80 + i * 90} L1170,${BOARDWALK_Y + 80 + i * 90}`} stroke="#C98F5E" strokeWidth={5} />
       ))}
       {[120, 1050].map((x) => (
         <g key={x}>
-          <path d={`M${x},2200 L${x},1960`} stroke={OUTLINE} strokeWidth={14} strokeLinecap="round" />
-          <path d={`M${x},2200 L${x},1960`} stroke="#3F3A48" strokeWidth={8} strokeLinecap="round" />
-          <circle cx={x} cy={1940} r={26} fill="#FFE08A" stroke={OUTLINE} strokeWidth={5} />
+          <path d={`M${x},${BOARDWALK_Y + 30} L${x},${BOARDWALK_Y - 220}`} stroke={OUTLINE} strokeWidth={14} strokeLinecap="round" />
+          <path d={`M${x},${BOARDWALK_Y + 30} L${x},${BOARDWALK_Y - 220}`} stroke="#3F3A48" strokeWidth={8} strokeLinecap="round" />
+          <circle cx={x} cy={BOARDWALK_Y - 240} r={26} fill="#FFE08A" stroke={OUTLINE} strokeWidth={5} />
         </g>
       ))}
-      {[260, 860].map((x) => (
+      {[240, 520].map((x) => (
         <g key={x}>
-          <rect x={x} y={2150} width={90} height={40} rx={8} fill="#C98F5E" stroke={OUTLINE} strokeWidth={4} />
+          <rect x={x} y={BOARDWALK_Y + 10} width={90} height={40} rx={8} fill="#C98F5E" stroke={OUTLINE} strokeWidth={4} />
           {[0, 1, 2].map((i) => (
             <path
               key={i}
-              d={scallopCircle(x + 18 + i * 27, 2140, 14, 6, 3)}
+              d={scallopCircle(x + 18 + i * 27, BOARDWALK_Y, 14, 6, 3)}
               fill={['#FF7BA9', '#FFC94A', '#B39DFF'][i]}
               stroke={OUTLINE}
               strokeWidth={3}
@@ -146,6 +151,7 @@ export function Waterfront({ sailing = false }: { sailing?: boolean }) {
           ))}
         </g>
       ))}
+      {children}
     </svg>
   );
 }

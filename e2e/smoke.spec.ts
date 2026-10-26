@@ -22,7 +22,7 @@ test('title → Me → Town → Home, with no network calls outside the app', as
   page.on('pageerror', (e) => errors.push(String(e)));
 
   await page.goto('./?fixture=fresh');
-  await expect(page.getByTestId('version-label')).toContainText(/^v\d+\.\d+\.\d+-m\d+\+/);
+  await expect(page.getByTestId('version-label')).toHaveAttribute('data-version', /^v\d+\.\d+\.\d+-m\d+\+/);
   await expect(page.getByTestId('title-start')).toHaveText('Tap to start');
   await shot(page, '01-title');
 

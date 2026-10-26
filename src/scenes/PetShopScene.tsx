@@ -36,15 +36,16 @@ function Adopt() {
 
   return (
     <>
-      <div style={{ flex: '0 0 34%', display: 'grid', placeItems: 'center', position: 'relative' }}>
-        <div className="panel bubble" style={{ position: 'absolute', top: 4, left: 16, right: 16, textAlign: 'center' }}>
+      {/* Speech bubble sits above the pet in the flow so it never covers the ears. */}
+      <div style={{ flex: '0 0 36%', minHeight: 0, display: 'flex', flexDirection: 'column', alignItems: 'center', padding: '4px 16px 0' }}>
+        <div className="panel bubble" style={{ position: 'relative', alignSelf: 'stretch', textAlign: 'center', marginBottom: 18 }}>
           {step === 'kind'
             ? 'Every pet here needs a loving home. Who will you take home?'
             : step === 'color'
               ? 'Pick a fur color!'
               : 'What’s their name?'}
         </div>
-        <div key={hop} className="pet-hop" style={{ height: '78%', aspectRatio: '1', marginTop: 40 }} data-testid="adopt-preview">
+        <div key={hop} className="pet-hop" style={{ flex: 1, minHeight: 0, aspectRatio: '1' }} data-testid="adopt-preview">
           <PetThumb pet={{ kind, color, accessory: null }} label={k.name} mood={hop ? 'happy' : 'idle'} />
         </div>
       </div>
@@ -170,7 +171,8 @@ function Accessories() {
 
   return (
     <>
-      <div style={{ flex: '0 0 34%', display: 'flex', alignItems: 'center', gap: 8, padding: '0 12px' }}>
+      {/* Top padding keeps the pet's ears clear of toasts. */}
+      <div style={{ flex: '0 0 38%', minHeight: 0, display: 'flex', alignItems: 'flex-end', gap: 8, padding: '64px 12px 8px' }}>
         <div style={{ width: '46%', maxHeight: '100%', aspectRatio: '1' }} data-testid="petshop-preview">
           <PetThumb pet={{ ...pet, accessory: picked ?? pet.accessory }} label={pet.name} mood={picked ? 'happy' : 'idle'} />
         </div>
