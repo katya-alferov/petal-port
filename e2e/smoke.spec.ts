@@ -410,3 +410,21 @@ test('petal garden: plant a seed, it grows from finished activities, and a bloom
   await page.getByTestId('garden-picked-ok').click();
   await expect(page.getByTestId('bed-0')).toHaveAttribute('data-stage', 'empty');
 });
+
+test('home window views: locked ones explain how to open, an open one changes the window', async ({ page }) => {
+  await page.goto('./?fixture=fresh&scene=home');
+  await page.getByTestId('home-decorate').click();
+  await page.getByTestId('home-colors').click();
+  await page.getByTestId('view-meadow').click({ force: true });
+  await expect(page.getByTestId('view-meadow')).toHaveAttribute('data-locked', 'true');
+  await expect(page.getByTestId('view-meadow')).toHaveAttribute('aria-pressed', 'false');
+  await page.evaluate(() => {
+    const g = (window as unknown as { __petal: { getState: () => { save: unknown }; setState: (p: unknown) => void } }).__petal;
+    const s = structuredClone(g.getState().save) as { progress: { garden: { bloomed: string[] } } };
+    s.progress.garden.bloomed = ['seed.rose'];
+    g.setState({ save: s });
+  });
+  await page.getByTestId('view-meadow').click();
+  await expect(page.getByTestId('view-meadow')).toHaveAttribute('aria-pressed', 'true');
+  await shot(page, '19-home-meadow-view');
+});

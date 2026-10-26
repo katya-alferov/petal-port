@@ -22,9 +22,9 @@ Covers data models, state management, persistence, component boundaries, asset l
 ### 2.1 Shared types
 
 ```ts
-type ItemId = string;            // e.g. "top.sailor-tee", "furn.arc-lamp"
-type SwatchId = string;          // e.g. "sea", "petal", "denim"
-type Coins = number;             // integer >= 0
+type ItemId = string; // e.g. "top.sailor-tee", "furn.arc-lamp"
+type SwatchId = string; // e.g. "sea", "petal", "denim"
+type Coins = number; // integer >= 0
 
 type UnlockCondition =
   | { kind: 'always' }
@@ -37,22 +37,21 @@ type UnlockCondition =
   | { kind: 'journeyComplete' };
 
 type Source =
-  | { kind: 'starter'; lifestyle?: Lifestyle }      // given at start (optionally lifestyle-specific)
+  | { kind: 'starter'; lifestyle?: Lifestyle } // given at start (optionally lifestyle-specific)
   | { kind: 'shop'; shop: 'boutique-clothes' | 'boutique-home' | 'cafe-makeover' | DestinationShopId; price: Coins }
-  | { kind: 'reward'; unlock: UnlockCondition };    // granted automatically when the condition is met
+  | { kind: 'reward'; unlock: UnlockCondition }; // granted automatically when the condition is met
 
 interface TintRegion {
   id: 'main' | 'accent';
   default: SwatchId;
-  allowed?: SwatchId[];          // omitted = whole Fashion Palette
+  allowed?: SwatchId[]; // omitted = whole Fashion Palette
 }
 ```
 
 ### 2.2 Wearables
 
 ```ts
-type WearSlot = 'top' | 'bottom' | 'dress' | 'outerwear' | 'shoes'
-              | 'headwear' | 'eyewear' | 'neck' | 'bag';
+type WearSlot = 'top' | 'bottom' | 'dress' | 'outerwear' | 'shoes' | 'headwear' | 'eyewear' | 'neck' | 'bag';
 
 type SleeveType = 'none' | 'cap' | 'short' | 'long' | 'puff';
 
@@ -60,14 +59,14 @@ interface WearableDef {
   id: ItemId;
   type: 'wearable';
   slot: WearSlot;
-  name: string;                  // string key in content/strings.ts in practice
+  name: string; // string key in content/strings.ts in practice
   source: Source;
-  tags: string[];                // 'cozy', 'sporty', 'paris', 'cafe' ... used by NPC generation and future briefs
-  tints: TintRegion[];           // 0–2
-  sleeve?: SleeveType;           // required for top, dress, outerwear
+  tags: string[]; // 'cozy', 'sporty', 'paris', 'cafe' ... used by NPC generation and future briefs
+  tints: TintRegion[]; // 0–2
+  sleeve?: SleeveType; // required for top, dress, outerwear
   sleeveTrim?: 'cuff' | 'stripe'; // drawn on the sleeve in the accent tint
-  hidesHairFront?: boolean;      // hats
-  art: string;                   // key into the art registry: "wear/top/sailor-tee"
+  hidesHairFront?: boolean; // hats
+  art: string; // key into the art registry: "wear/top/sailor-tee"
 }
 ```
 
@@ -86,13 +85,37 @@ interface WearableDef {
 ### 2.3 Appearance parts
 
 ```ts
-interface SkinToneDef { id: string; base: string; shadow: string; blush: string; }
-interface HairColorDef { id: string; base: string; shadow: string; shine: string; fantasy: boolean; }
-interface HairStyleDef { id: string; art: string; texture: 'coily'|'curly'|'wavy'|'straight'|'braids'|'covering';
-                         tintable: 'hairColor' | 'fashionPalette'; }   // a hijab tints from the Fashion Palette
-interface EyeStyleDef { id: string; art: string; }
-interface EyeColorDef { id: string; iris: string; }
-interface BrowDef { id: string; art: string; }
+interface SkinToneDef {
+  id: string;
+  base: string;
+  shadow: string;
+  blush: string;
+}
+interface HairColorDef {
+  id: string;
+  base: string;
+  shadow: string;
+  shine: string;
+  fantasy: boolean;
+}
+interface HairStyleDef {
+  id: string;
+  art: string;
+  texture: 'coily' | 'curly' | 'wavy' | 'straight' | 'braids' | 'covering';
+  tintable: 'hairColor' | 'fashionPalette';
+} // a hijab tints from the Fashion Palette
+interface EyeStyleDef {
+  id: string;
+  art: string;
+}
+interface EyeColorDef {
+  id: string;
+  iris: string;
+}
+interface BrowDef {
+  id: string;
+  art: string;
+}
 ```
 
 ### 2.4 Furniture & souvenirs
@@ -100,16 +123,22 @@ interface BrowDef { id: string; art: string; }
 ```ts
 type HomeSlot = 'wall' | 'window' | 'seat' | 'rug' | 'table' | 'lamp' | 'plant' | 'shelf';
 
-interface KeepsakeDef {           // sits in one of the shelf's 3 keepsake spots
+interface KeepsakeDef {
+  // sits in one of the shelf's 3 keepsake spots
   id: ItemId;
   type: 'keepsake';
   name: string;
   source: Source;
-  art: string;                   // "keep/espresso-machine"
+  art: string; // "keep/espresso-machine"
 }
 
-interface CafeDecorDef {          // café makeover (game-systems §3.10)
-  id: ItemId; type: 'cafeDecor'; name: string; source: Source; art: string;
+interface CafeDecorDef {
+  // café makeover (game-systems §3.10)
+  id: ItemId;
+  type: 'cafeDecor';
+  name: string;
+  source: Source;
+  art: string;
   spot: 'bunting' | 'window-boxes' | 'chalkboard' | 'display-case' | 'lights';
 }
 
@@ -120,7 +149,7 @@ interface FurnitureDef {
   name: string;
   source: Source;
   tints: TintRegion[];
-  art: string;                   // "furn/lamp/arc"
+  art: string; // "furn/lamp/arc"
 }
 
 interface SouvenirDef {
@@ -128,8 +157,8 @@ interface SouvenirDef {
   type: 'souvenir';
   destinationId: DestinationId;
   name: string;
-  source: Source;                // shop at the destination, or reward
-  wearableId?: ItemId;           // the beret is both a souvenir and a wearable
+  source: Source; // shop at the destination, or reward
+  wearableId?: ItemId; // the beret is both a souvenir and a wearable
   art: string;
 }
 ```
@@ -144,27 +173,27 @@ type Lifestyle = 'urban' | 'countryside';
 interface HomeDef {
   id: 'harbour-loft' | 'meadow-cottage';
   lifestyle: Lifestyle;
-  art: string;                               // room background component
-  themes: { id: string; walls: string; floor: string; trim: string }[];  // 3 each
+  art: string; // room background component
+  themes: { id: string; walls: string; floor: string; trim: string }[]; // 3 each
   slotAnchors: Record<HomeSlot, { x: number; y: number; w: number; h: number; z: number }>;
   hotspots: HotspotDef[];
   starterFurniture: Record<HomeSlot, ItemId>;
-  mapPin: string;                            // id of the map hotspot
+  mapPin: string; // id of the map hotspot
 }
 ```
 
 ### 2.6 Recipes
 
 ```ts
-type RecipeId = 'pancakes' | 'crepes';             // 'fruit-salad' arrives in v0.2
+type RecipeId = 'pancakes' | 'crepes'; // 'fruit-salad' arrives in v0.2
 
 type CookStep =
   | { kind: 'add'; ingredients: IngredientId[]; distractors: IngredientId[] }
   | { kind: 'mix'; taps: number }
-  | { kind: 'pour'; target: 'regular' | 'thin' }                   // thin = tilt the pan
-  | { kind: 'heat'; paleUntilMs: number; goldenUntilMs: number }   // pancakes 2500/5500, crêpes 2000/4500
+  | { kind: 'pour'; target: 'regular' | 'thin' } // thin = tilt the pan
+  | { kind: 'heat'; paleUntilMs: number; goldenUntilMs: number } // pancakes 2500/5500, crêpes 2000/4500
   | { kind: 'fold'; folds: 2 }
-  | { kind: 'decorate'; toppings: IngredientId[]; max: number };   // max 8
+  | { kind: 'decorate'; toppings: IngredientId[]; max: number }; // max 8
 
 interface RecipeDef {
   id: RecipeId;
@@ -172,7 +201,7 @@ interface RecipeDef {
   unlock: UnlockCondition;
   steps: CookStep[];
   dishArt: string;
-  rewards: { firstCook: Coins; firstThreeStar: Coins };            // 20 / 20
+  rewards: { firstCook: Coins; firstThreeStar: Coins }; // 20 / 20
 }
 ```
 
@@ -181,11 +210,17 @@ interface RecipeDef {
 ```ts
 interface CafeRankDef {
   rank: 1 | 2 | 3;
-  ordersRequired: number;        // 0, 15, 40
-  payPerOrder: Coins;            // 10, 12, 14
-  menu: { bases: IngredientId[]; toppings: IngredientId[]; maxToppings: number;
-          pastries: IngredientId[]; pastryChance: number;
-          stencils: StencilId[]; stencilChance: number };
+  ordersRequired: number; // 0, 15, 40
+  payPerOrder: Coins; // 10, 12, 14
+  menu: {
+    bases: IngredientId[];
+    toppings: IngredientId[];
+    maxToppings: number;
+    pastries: IngredientId[];
+    pastryChance: number;
+    stencils: StencilId[];
+    stencilChance: number;
+  };
   gifts: ItemId[];
 }
 
@@ -196,33 +231,56 @@ interface CafeConfig {
   maxIngredientsPerCup: 4;
   ranks: CafeRankDef[];
   challenge: { bubbleVisibleMs: 3000; sparkleMs: 20000; sparkleBonus: 2; twoCustomersFromRank: 2 };
-  thankYouStickers: StickerId[];  // 24, awarded in this order
+  thankYouStickers: StickerId[]; // 24, awarded in this order
 }
 
 // Generated per order, transient
-interface CafeOrder { cup: 'small' | 'large'; base: IngredientId; toppings: IngredientId[];
-                      pastry?: IngredientId; stencil?: StencilId; customer: NpcLook; }
+interface CafeOrder {
+  cup: 'small' | 'large';
+  base: IngredientId;
+  toppings: IngredientId[];
+  pastry?: IngredientId;
+  stencil?: StencilId;
+  customer: NpcLook;
+}
 
 // Small ID unions and helpers referenced above
-type IngredientId = string;      // 'cocoa', 'marshmallow', 'flour', ... defined in content/ingredients.ts
+type IngredientId = string; // 'cocoa', 'marshmallow', 'flour', ... defined in content/ingredients.ts
 type StencilId = 'heart' | 'star' | 'flower';
 type PoseId = 'idle' | 'wave' | 'hips' | 'heart' | 'point';
 type PropId = 'beret' | 'croissant' | 'balloon' | 'dish';
-type StickerId = string;         // 'paris.heart', 'thanks.03', ...
+type StickerId = string; // 'paris.heart', 'thanks.03', ...
 type JourneyStepId = 'make-me' | 'first-cook' | 'first-shift' | 'first-buy' | 'first-look' | 'paris-photo';
-interface NpcLook { appearance: Appearance; outfit: Outfit; }   // generated from the seeded RNG
+interface NpcLook {
+  appearance: Appearance;
+  outfit: Outfit;
+} // generated from the seeded RNG
 ```
 
 ### 2.8 Map, scenes and hotspots
 
 ```ts
-type SceneId = 'title' | 'creator' | 'lifestyle' | 'home' | 'closet' | 'cooking'
-             | 'map' | 'cafe' | 'boutique' | 'airport' | 'flight'
-             | `dest:${DestinationId}` | 'photo' | 'album' | 'parent' | 'recovery';
+type SceneId =
+  | 'title'
+  | 'creator'
+  | 'lifestyle'
+  | 'home'
+  | 'closet'
+  | 'cooking'
+  | 'map'
+  | 'cafe'
+  | 'boutique'
+  | 'airport'
+  | 'flight'
+  | `dest:${DestinationId}`
+  | 'photo'
+  | 'album'
+  | 'parent'
+  | 'recovery';
 
 interface HotspotDef {
   id: string;
-  label: string;                 // accessible name, also the sign text
+  label: string; // accessible name, also the sign text
   icon: string;
   shape: { x: number; y: number; w: number; h: number } | { path: string };
   action: HotspotAction;
@@ -230,12 +288,14 @@ interface HotspotDef {
 
 type HotspotAction =
   | { kind: 'goto'; scene: SceneId }
-  | { kind: 'preview'; locationId: LocationId }          // map: opens preview card
-  | { kind: 'effect'; effect: string };                  // local reaction: 'lamp-toggle', 'pigeon-flutter'
+  | { kind: 'preview'; locationId: LocationId } // map: opens preview card
+  | { kind: 'effect'; effect: string }; // local reaction: 'lamp-toggle', 'pigeon-flutter'
 
 interface LocationDef {
   id: 'home' | 'cafe' | 'boutique' | 'airport';
-  name: string; blurb: string; icon: string;
+  name: string;
+  blurb: string;
+  icon: string;
   scene: SceneId;
   hotspot: HotspotDef;
 }
@@ -251,16 +311,16 @@ type DestinationShopId = `kiosk:${DestinationId}`;
 
 interface DestinationDef {
   id: DestinationId;
-  name: string;                       // "Paris"
-  status: 'released' | 'planned';     // only 'released' are shown; 'planned' appear as blank passport outlines
+  name: string; // "Paris"
+  status: 'released' | 'planned'; // only 'released' are shown; 'planned' appear as blank passport outlines
   ticket: { price: Coins; oneTime: true };
-  palette: Record<string, string>;    // scene accents, see visual-design §8
-  scenes: DestinationSceneDef[];      // v0.1 Paris: 1 scene
+  palette: Record<string, string>; // scene accents, see visual-design §8
+  scenes: DestinationSceneDef[]; // v0.1 Paris: 1 scene
   souvenirs: ItemId[];
   stickers: StickerId[];
   stampArt: string;
-  unlocksRecipe?: RecipeId;           // Paris → crepes (P2)
-  culturalReview: { reviewer?: string; date?: string; notes?: string };   // required before 'released' (except Paris v0.1 family build)
+  unlocksRecipe?: RecipeId; // Paris → crepes (P2)
+  culturalReview: { reviewer?: string; date?: string; notes?: string }; // required before 'released' (except Paris v0.1 family build)
 }
 
 interface DestinationSceneDef {
@@ -283,29 +343,43 @@ interface DestinationSceneDef {
 ## 3. Save model (persisted)
 
 ```ts
-interface EquippedItem { itemId: ItemId; tint?: Partial<Record<'main' | 'accent', SwatchId>>; }
+interface EquippedItem {
+  itemId: ItemId;
+  tint?: Partial<Record<'main' | 'accent', SwatchId>>;
+}
 
 interface Appearance {
-  skinTone: string; hairStyle: string; hairColor: string;
-  eyeStyle: string; eyeColor: string; brows: string; freckles: boolean;
+  skinTone: string;
+  hairStyle: string;
+  hairColor: string;
+  eyeStyle: string;
+  eyeColor: string;
+  brows: string;
+  freckles: boolean;
 }
 
 type Outfit = Partial<Record<WearSlot, EquippedItem>>;
 
-interface FavoriteLook { outfit: Outfit; hairStyle: string; hairColor: string; savedAt: number; }
+interface FavoriteLook {
+  outfit: Outfit;
+  hairStyle: string;
+  hairColor: string;
+  savedAt: number;
+}
 
 interface SaveGame {
   schemaVersion: 1;
-  createdAt: number; updatedAt: number;            // epoch ms
+  createdAt: number;
+  updatedAt: number; // epoch ms
 
   player: {
-    name: string;                                  // '' allowed, ≤ 12 chars
+    name: string; // '' allowed, ≤ 12 chars
     appearance: Appearance;
     outfit: Outfit;
-    favoriteLooks: (FavoriteLook | null)[];        // length 4
+    favoriteLooks: (FavoriteLook | null)[]; // length 4
   };
 
-  inventory: { owned: Record<ItemId, { acquiredAt: number }> };   // wearables, furniture, keepsakes, souvenirs, café decor
+  inventory: { owned: Record<ItemId, { acquiredAt: number }> }; // wearables, furniture, keepsakes, souvenirs, café decor
 
   wallet: { coins: Coins; lifetimeEarned: Coins };
 
@@ -313,21 +387,32 @@ interface SaveGame {
     homeId: HomeDef['id'];
     themeId: string;
     slots: Record<HomeSlot, ItemId>;
-    shelf: ItemId[];                               // ≤ 3 keepsake ids (souvenirs or trophies)
-    otherStarterGranted: boolean;                  // the other home's starter set was gifted on first move
-    dish: { recipeId: RecipeId; result: 'pale' | 'golden' | 'toasty' | 'n/a';
-            toppings: { id: IngredientId; x: number; y: number }[] } | null;
+    shelf: ItemId[]; // ≤ 3 keepsake ids (souvenirs or trophies)
+    otherStarterGranted: boolean; // the other home's starter set was gifted on first move
+    dish: {
+      recipeId: RecipeId;
+      result: 'pale' | 'golden' | 'toasty' | 'n/a';
+      toppings: { id: IngredientId; x: number; y: number }[];
+    } | null;
   };
 
   progress: {
-    cafe: { correctOrders: number; shiftsCompleted: number; rank: 1 | 2 | 3; shiftSeed: number;
-            challenge: boolean; bestChallengeMs?: number; stickers: number; cafeStars: number };
+    cafe: {
+      correctOrders: number;
+      shiftsCompleted: number;
+      rank: 1 | 2 | 3;
+      shiftSeed: number;
+      challenge: boolean;
+      bestChallengeMs?: number;
+      stickers: number;
+      cafeStars: number;
+    };
     collectedEverythingShown: boolean;
     recipes: Partial<Record<RecipeId, { timesCooked: number; bestStars: 1 | 2 | 3 }>>;
     journey: Record<JourneyStepId, boolean>;
     destinations: Partial<Record<DestinationId, { ticket: boolean; visits: number; stamped: boolean }>>;
     savingsGoal: ItemId | 'ticket:paris' | null;
-    seen: string[];                                // tutorial pointers already shown
+    seen: string[]; // tutorial pointers already shown
   };
 
   settings: { music: boolean; sfx: boolean; reducedMotion: 'system' | 'on' | 'off'; installCardDismissedAt?: number };
@@ -340,15 +425,20 @@ interface SaveGame {
 
 ```ts
 interface PhotoRecord {
-  id: string;                                      // crypto.randomUUID()
+  id: string; // crypto.randomUUID()
   createdAt: number;
   place: DestinationId | 'home';
-  scene: { pose: PoseId; expression: string; prop: PropId | null;
-           stickers: { id: StickerId; x: number; y: number }[];
-           outfit: Outfit; appearance: Appearance };  // lets us re-render later if needed
-  image: ArrayBuffer;                              // 1080×1350 PNG bytes (fallback JPEG 0.9 if > 1.5 MB); stored as ArrayBuffer, not Blob
+  scene: {
+    pose: PoseId;
+    expression: string;
+    prop: PropId | null;
+    stickers: { id: StickerId; x: number; y: number }[];
+    outfit: Outfit;
+    appearance: Appearance;
+  }; // lets us re-render later if needed
+  image: ArrayBuffer; // 1080×1350 PNG bytes (fallback JPEG 0.9 if > 1.5 MB); stored as ArrayBuffer, not Blob
   imageType: 'image/png' | 'image/jpeg';
-  thumb: ArrayBuffer;                              // 270×338 JPEG 0.8
+  thumb: ArrayBuffer; // 270×338 JPEG 0.8
 }
 ```
 
@@ -362,9 +452,15 @@ The `scene` part of each record (≈ 1 KB) is also written into backups so photo
 
 ```ts
 interface GameStore {
-  save: SaveGame;                       // persisted
-  ui: { scene: SceneId; sceneParams?: unknown; history: SceneId[];   // not persisted
-        toast: Toast | null; sheet: Sheet | null; saveStatus: SaveStatus; };
+  save: SaveGame; // persisted
+  ui: {
+    scene: SceneId;
+    sceneParams?: unknown;
+    history: SceneId[]; // not persisted
+    toast: Toast | null;
+    sheet: Sheet | null;
+    saveStatus: SaveStatus;
+  };
   actions: GameActions;
 }
 ```
@@ -391,13 +487,13 @@ setSavingsGoal(id)
 
 ### 4.2 Activity state (not persisted)
 
-| Activity | State holder | Committed to the store |
-|---|---|---|
-| Café shift | `useReducer(cafeShiftReducer)` in `CafeScene` | Per served order (coins) and at shift end (bonus, rank) |
-| Cooking | `useReducer(cookingReducer)` | At finish only |
-| Photo mode | `useReducer(photoReducer)` | On shutter (album write + stamp/reward) |
-| Boutique try-on | Local `tryOn` outfit | On buy / wear |
-| Decorate | Writes directly (each swap is a commit) | Immediately |
+| Activity        | State holder                                  | Committed to the store                                  |
+| --------------- | --------------------------------------------- | ------------------------------------------------------- |
+| Café shift      | `useReducer(cafeShiftReducer)` in `CafeScene` | Per served order (coins) and at shift end (bonus, rank) |
+| Cooking         | `useReducer(cookingReducer)`                  | At finish only                                          |
+| Photo mode      | `useReducer(photoReducer)`                    | On shutter (album write + stamp/reward)                 |
+| Boutique try-on | Local `tryOn` outfit                          | On buy / wear                                           |
+| Decorate        | Writes directly (each swap is a commit)       | Immediately                                             |
 
 Coins are committed per served order so leaving mid-shift keeps them (AC-F8-6).
 
@@ -407,12 +503,12 @@ Coins are committed per served order so leaving mid-shift keeps them (AC-F8-6).
 
 ### 5.1 Keys (IndexedDB via idb-keyval, database `petalport`)
 
-| Store / key | Content |
-|---|---|
-| `kv` / `save:current` | `SaveGame` JSON |
-| `kv` / `save:previous` | The previous good `SaveGame` |
-| `kv` / `meta` | `{ lastSessionAt, persistGranted, sessionsCount }` |
-| `photos` (separate idb-keyval store) | `PhotoRecord` by id |
+| Store / key                          | Content                                            |
+| ------------------------------------ | -------------------------------------------------- |
+| `kv` / `save:current`                | `SaveGame` JSON                                    |
+| `kv` / `save:previous`               | The previous good `SaveGame`                       |
+| `kv` / `meta`                        | `{ lastSessionAt, persistGranted, sessionsCount }` |
+| `photos` (separate idb-keyval store) | `PhotoRecord` by id                                |
 
 ### 5.2 Write path
 
@@ -443,8 +539,14 @@ something stored but unreadable? → Recovery scene (never auto-overwrite)
 ### 5.5 Backup file (export / import)
 
 ```ts
-interface BackupFile { app: 'petalport'; kind: 'backup'; appVersion: string; exportedAt: string;
-                      save: SaveGame; photos: Omit<PhotoRecord, 'image' | 'thumb' | 'imageType'>[]; }
+interface BackupFile {
+  app: 'petalport';
+  kind: 'backup';
+  appVersion: string;
+  exportedAt: string;
+  save: SaveGame;
+  photos: Omit<PhotoRecord, 'image' | 'thumb' | 'imageType'>[];
+}
 ```
 
 - Export: `JSON.stringify` → `Blob` → `navigator.share({ files })` if `navigator.canShare({ files })`, else `<a download>`.
@@ -510,19 +612,19 @@ ui     → (nothing game-specific)
 
 ## 8. Asset-loading strategy
 
-| Asset | Format | Loading |
-|---|---|---|
-| Character rig, wearables, hair, faces | SVG React components | Separate chunk loaded during the title screen (the title itself needs none of it) |
-| Home rooms (2) | SVG components | Lazy chunk per home; the chosen one preloads during the title |
-| Map | SVG component | Lazy chunk, prefetched after Home renders |
-| Café, Boutique, Airport, Paris scenes | SVG components | Lazy chunk per scene; prefetched when the map preview card opens |
-| Thumbnails for carousels | Rendered live from the same SVG at small size, memoized; carousels are **virtualized** (only visible tiles mount) | If closet scrolling stutters on the iPhone, pre-render thumbnails to WebP at build time with Playwright (already a dev dependency) |
-| Fonts | Fredoka 600, Nunito 600/800, subset to Latin, WOFF2, self-hosted | `font-display: swap`, preloaded |
-| SFX (~20 sounds) | M4A (AAC), mono, ≤ 30 KB each | Fetched and decoded after the title tap; SFX before decode completes are skipped silently |
-| Music (1 loop, optional) | M4A, ≤ 600 KB | Lazy after first scene |
-| Everything | Precached by the service worker | Offline after first visit |
+| Asset                                 | Format                                                                                                            | Loading                                                                                                                            |
+| ------------------------------------- | ----------------------------------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------- |
+| Character rig, wearables, hair, faces | SVG React components                                                                                              | Separate chunk loaded during the title screen (the title itself needs none of it)                                                  |
+| Home rooms (2)                        | SVG components                                                                                                    | Lazy chunk per home; the chosen one preloads during the title                                                                      |
+| Map                                   | SVG component                                                                                                     | Lazy chunk, prefetched after Home renders                                                                                          |
+| Café, Boutique, Airport, Paris scenes | SVG components                                                                                                    | Lazy chunk per scene; prefetched when the map preview card opens                                                                   |
+| Thumbnails for carousels              | Rendered live from the same SVG at small size, memoized; carousels are **virtualized** (only visible tiles mount) | If closet scrolling stutters on the iPhone, pre-render thumbnails to WebP at build time with Playwright (already a dev dependency) |
+| Fonts                                 | Fredoka 600, Nunito 600/800, subset to Latin, WOFF2, self-hosted                                                  | `font-display: swap`, preloaded                                                                                                    |
+| SFX (~20 sounds)                      | M4A (AAC), mono, ≤ 30 KB each                                                                                     | Fetched and decoded after the title tap; SFX before decode completes are skipped silently                                          |
+| Music (1 loop, optional)              | M4A, ≤ 600 KB                                                                                                     | Lazy after first scene                                                                                                             |
+| Everything                            | Precached by the service worker                                                                                   | Offline after first visit                                                                                                          |
 
-**Fallback:** if a static background ever drops below 50 fps on the target iPhone, pre-rasterize *that background only* to WebP at 2× and keep characters and hotspots as SVG (technical-options §5).
+**Fallback:** if a static background ever drops below 50 fps on the target iPhone, pre-rasterize _that background only_ to WebP at 2× and keep characters and hotspots as SVG (technical-options §5).
 
 **Budget:** total precache ≤ 3 MB gzip; initial JS ≤ 250 KB gzip before the title is interactive.
 
@@ -530,21 +632,21 @@ ui     → (nothing game-specific)
 
 ## 9. Error handling
 
-| Failure | Detection | Player experience | Recovery |
-|---|---|---|---|
-| Scene render error | React error boundary per scene | Coral card: "Oops! This place needs a quick tidy." [Back to Map] | Error logged to the ring buffer; store untouched |
-| App-level crash | Root error boundary | Same card with [Restart] (reloads) | Save is on disk already |
-| Save invalid on write | `validate()` | Nothing visible | Write skipped, logged |
-| Save unreadable on boot | Read pipeline §5.3 | Previous-save toast or Recovery scene | Previous slot, backup import |
-| IndexedDB unavailable / quota | Exceptions from idb-keyval | "Saving is paused" banner | Game keeps working in memory |
-| Photo render fails | try/catch around rasterize | "The camera blinked! Try again." | Composition kept on screen |
-| Share/download fails or cancelled | Promise rejection | Cancel: nothing. Error: offer "open image" fallback | — |
-| Audio decode fails | Promise rejection | Silent; visuals unchanged | — |
-| Import file invalid | Validation | "This doesn't look like a Petalport backup." | Nothing changed |
-| Service worker update | `onNeedRefresh` | Never interrupts; applies the next time the title screen shows, or via parent-area "Update now" | Version label proves which build runs |
-| AudioContext suspended/interrupted (backgrounding, calls) | `statechange`, `visibilitychange` | Silent until next tap | `resume()` on visibility and on the next tap |
-| Silent switch on | Not detectable reliably | Sound settings show "No sound? Check your phone isn't on silent" | The game respects the switch on purpose |
-| Unknown content ID in save | `sanitize()` | Nothing visible | Fallback to starter item |
+| Failure                                                   | Detection                         | Player experience                                                                               | Recovery                                         |
+| --------------------------------------------------------- | --------------------------------- | ----------------------------------------------------------------------------------------------- | ------------------------------------------------ |
+| Scene render error                                        | React error boundary per scene    | Coral card: "Oops! This place needs a quick tidy." [Back to Map]                                | Error logged to the ring buffer; store untouched |
+| App-level crash                                           | Root error boundary               | Same card with [Restart] (reloads)                                                              | Save is on disk already                          |
+| Save invalid on write                                     | `validate()`                      | Nothing visible                                                                                 | Write skipped, logged                            |
+| Save unreadable on boot                                   | Read pipeline §5.3                | Previous-save toast or Recovery scene                                                           | Previous slot, backup import                     |
+| IndexedDB unavailable / quota                             | Exceptions from idb-keyval        | "Saving is paused" banner                                                                       | Game keeps working in memory                     |
+| Photo render fails                                        | try/catch around rasterize        | "The camera blinked! Try again."                                                                | Composition kept on screen                       |
+| Share/download fails or cancelled                         | Promise rejection                 | Cancel: nothing. Error: offer "open image" fallback                                             | —                                                |
+| Audio decode fails                                        | Promise rejection                 | Silent; visuals unchanged                                                                       | —                                                |
+| Import file invalid                                       | Validation                        | "This doesn't look like a Petalport backup."                                                    | Nothing changed                                  |
+| Service worker update                                     | `onNeedRefresh`                   | Never interrupts; applies the next time the title screen shows, or via parent-area "Update now" | Version label proves which build runs            |
+| AudioContext suspended/interrupted (backgrounding, calls) | `statechange`, `visibilitychange` | Silent until next tap                                                                           | `resume()` on visibility and on the next tap     |
+| Silent switch on                                          | Not detectable reliably           | Sound settings show "No sound? Check your phone isn't on silent"                                | The game respects the switch on purpose          |
+| Unknown content ID in save                                | `sanitize()`                      | Nothing visible                                                                                 | Fallback to starter item                         |
 
 **Copy rules:** never red, never "error", never blame the player, always one obvious next button.
 

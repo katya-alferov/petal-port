@@ -12,7 +12,133 @@ const VIEW_TOP = 480;
 const VIEW_BOTTOM = 2380;
 const BLEED = 1200;
 
-function WindowView({ night }: { night: boolean }) {
+function ExtraView({ view }: { view: string }) {
+  // Alternative window views (content/views). Drawn inside the same 400x540 window clip.
+  if (view === 'meadow')
+    return (
+      <g>
+        <rect x={640} y={600} width={400} height={540} fill="#C9EFFA" />
+        <circle cx={940} cy={690} r={44} fill="#FFC94A" />
+        <path d="M700,740 q30,-26 60,0 q30,-30 70,0 q-30,16 -70,10 q-30,10 -60,-10 Z" fill="#FFF7EC" />
+        <path d="M640,900 C720,830 820,860 900,820 C960,790 1010,820 1040,810 L1040,1140 L640,1140 Z" fill="#9AE0A8" />
+        <path d="M640,980 C740,930 860,970 1040,920 L1040,1140 L640,1140 Z" fill="#6FCB8F" />
+        <rect x={930} y={720} width={22} height={100} fill="#FFF7EC" stroke={OUTLINE} strokeWidth={3} />
+        <path d="M918,724 L941,690 L964,724 Z" fill="#FF8A65" stroke={OUTLINE} strokeWidth={3} strokeLinejoin="round" />
+        <g className="loft-boat" stroke={OUTLINE} strokeWidth={3} strokeLinecap="round">
+          <path d="M941,760 L900,730 M941,760 L982,730 M941,760 L900,790 M941,760 L982,790" fill="none" />
+        </g>
+        {[
+          [690, 1040, '#FF7BA9'],
+          [760, 1090, '#FFC94A'],
+          [850, 1020, '#B692F6'],
+          [930, 1085, '#FF7BA9'],
+          [990, 1030, '#FFC94A'],
+          [720, 970, '#FFF7EC'],
+        ].map(([x, y, c]) => (
+          <g key={String(x)}>
+            <path d={`M${x},${y} l0,28`} stroke="#3F9E63" strokeWidth={4} strokeLinecap="round" />
+            <circle cx={Number(x)} cy={Number(y)} r={11} fill={String(c)} stroke={OUTLINE} strokeWidth={3} />
+            <circle cx={Number(x)} cy={Number(y)} r={4} fill="#FFE08A" />
+          </g>
+        ))}
+      </g>
+    );
+  if (view === 'lights')
+    return (
+      <g>
+        <rect x={640} y={600} width={400} height={540} fill="#2B2950" />
+        {[
+          [700, 650],
+          [770, 700],
+          [880, 640],
+          [1000, 690],
+          [950, 770],
+        ].map(([x, y]) => (
+          <circle key={x} cx={x} cy={y} r={4} fill="#FFE08A" />
+        ))}
+        <circle cx={760} cy={780} r={34} fill="#FFF4C2" />
+        <circle cx={776} cy={770} r={30} fill="#2B2950" />
+        {[
+          [640, 880, 70, 260],
+          [720, 820, 60, 320],
+          [790, 900, 80, 240],
+          [880, 840, 66, 300],
+          [956, 910, 90, 230],
+        ].map(([x, y, w, h], i) => (
+          <g key={i}>
+            <rect x={x} y={y} width={w} height={h} fill={i % 2 ? '#4B3F82' : '#3D3470'} stroke={OUTLINE} strokeWidth={3} />
+            {[0, 1, 2, 3].map((r) =>
+              [0, 1].map((c) => (
+                <rect
+                  key={`${r}${c}`}
+                  x={x + 12 + c * (w / 2 - 6)}
+                  y={y + 18 + r * 40}
+                  width={16}
+                  height={18}
+                  rx={3}
+                  fill={(i + r + c) % 3 === 0 ? '#FFE08A' : '#7B6FB0'}
+                />
+              )),
+            )}
+          </g>
+        ))}
+        <rect x={640} y={1090} width={400} height={50} fill="#1E1B3F" />
+      </g>
+    );
+  // snow
+  return (
+    <g>
+      <rect x={640} y={600} width={400} height={540} fill="#D9E8F7" />
+      <path
+        d="M640,860 C720,800 800,840 880,790 C960,750 1010,790 1040,770 L1040,1140 L640,1140 Z"
+        fill="#F4F9FF"
+        stroke={OUTLINE}
+        strokeWidth={3}
+      />
+      <path d="M640,990 C760,950 900,990 1040,940 L1040,1140 L640,1140 Z" fill="#FFFFFF" stroke={OUTLINE} strokeWidth={3} />
+      {[
+        [720, 880],
+        [940, 850],
+      ].map(([x, y]) => (
+        <g key={x}>
+          <path d={`M${x},${y} l-30,70 l60,0 Z`} fill="#6FCB8F" stroke={OUTLINE} strokeWidth={3} strokeLinejoin="round" />
+          <path d={`M${x},${y + 24} l-40,70 l80,0 Z`} fill="#58B87B" stroke={OUTLINE} strokeWidth={3} strokeLinejoin="round" />
+          <path d={`M${Number(x) - 14},${Number(y) + 6} q14,-12 28,0`} fill="none" stroke="#FFFFFF" strokeWidth={6} strokeLinecap="round" />
+        </g>
+      ))}
+      {[
+        [670, 640],
+        [740, 700],
+        [810, 660],
+        [880, 720],
+        [950, 650],
+        [1010, 710],
+        [700, 790],
+        [860, 800],
+        [980, 790],
+        [770, 880],
+        [900, 940],
+      ].map(([x, y]) => (
+        <circle key={`${x}${y}`} cx={x} cy={y} r={6} fill="#FFFFFF" stroke="#BFD4EA" strokeWidth={2} />
+      ))}
+    </g>
+  );
+}
+
+function WindowView({ night, view }: { night: boolean; view?: string }) {
+  if (view && view !== 'harbour')
+    return (
+      <g>
+        <defs>
+          <clipPath id="loft-window-x">
+            <rect x={640} y={600} width={400} height={540} rx={20} />
+          </clipPath>
+        </defs>
+        <g clipPath="url(#loft-window-x)">
+          <ExtraView view={view} />
+        </g>
+      </g>
+    );
   // The window frame is part of the room; the harbour view behind it changes with the theme's mood.
   return (
     <g>
@@ -71,9 +197,11 @@ export interface HarbourLoftProps {
   onTable?: ReactNode;
   /** Decorate mode: dashed outline on every slot. */
   editing?: boolean;
+  /** Window view id (content/views). */
+  view?: string;
 }
 
-export function HarbourLoft({ room, children, lampOn = true, onSlotTap, tappable = [], onTable, editing = false }: HarbourLoftProps) {
+export function HarbourLoft({ room, children, lampOn = true, onSlotTap, tappable = [], onTable, editing = false, view }: HarbourLoftProps) {
   const { night, floor, trim, anchors } = room;
   const wallLine = room.wallPattern;
   const ordered = (Object.keys(anchors) as HomeSlot[]).sort((a, b) => anchors[a].z - anchors[b].z);
@@ -175,7 +303,7 @@ export function HarbourLoft({ room, children, lampOn = true, onSlotTap, tappable
         </g>
       )}
       <rect x={620} y={580} width={440} height={580} rx={30} fill={trim.base} stroke={OUTLINE} strokeWidth={6} />
-      <WindowView night={night} />
+      <WindowView night={night} view={view} />
       <path d="M840,600 L840,1140 M640,870 L1040,870" stroke={trim.base} strokeWidth={14} />
       <rect x={640} y={600} width={400} height={540} rx={20} fill="none" stroke={OUTLINE} strokeWidth={5} />
       <Shaded d="M600,1150 L1080,1150 L1080,1190 L600,1190 Z" shade={trim} depth={4} />

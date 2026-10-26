@@ -9,16 +9,16 @@ The rules behind every feature in [PRD.md](PRD.md). **This file is the single so
 
 ### 1.1 Appearance options (v0.1)
 
-| Part | Options | Notes |
-|---|---|---|
-| Skin tone | 10 | Warm and cool undertones across the range. Displayed in a 2-row grid in a mixed order, never light→dark. Each tone defines base, shadow and blush colors. |
-| Hairstyle | 8 | Coily puff, curly shoulder, wavy bob, long straight, box braids, two space buns, pixie, hijab (head covering, worn instead of hair; tintable). Each style has back + front layers. |
-| Hair color | 10 | 7 natural (black, dark brown, chestnut, auburn, copper, honey blonde, platinum) + 3 fantasy (lilac, petal pink, sea teal). Each defines base / shadow / shine. |
-| Eye style | 6 | Round, almond, sleepy, sparkle, monolid, wide. Drawn as shapes, not "beauty" variants. |
-| Eye color | 8 | Brown, dark brown, hazel, green, blue, grey, amber, violet (fantasy). |
-| Brows | 3 | Soft, straight, arched. Color follows hair. |
-| Extras | freckles on/off, glasses (as eyewear slot items, 2 starter frames) | |
-| Expressions | 4 | Smile (default), big grin, wink, surprised. Used in photo mode and reactions. |
+| Part        | Options                                                            | Notes                                                                                                                                                                              |
+| ----------- | ------------------------------------------------------------------ | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Skin tone   | 10                                                                 | Warm and cool undertones across the range. Displayed in a 2-row grid in a mixed order, never light→dark. Each tone defines base, shadow and blush colors.                          |
+| Hairstyle   | 8                                                                  | Coily puff, curly shoulder, wavy bob, long straight, box braids, two space buns, pixie, hijab (head covering, worn instead of hair; tintable). Each style has back + front layers. |
+| Hair color  | 10                                                                 | 7 natural (black, dark brown, chestnut, auburn, copper, honey blonde, platinum) + 3 fantasy (lilac, petal pink, sea teal). Each defines base / shadow / shine.                     |
+| Eye style   | 6                                                                  | Round, almond, sleepy, sparkle, monolid, wide. Drawn as shapes, not "beauty" variants.                                                                                             |
+| Eye color   | 8                                                                  | Brown, dark brown, hazel, green, blue, grey, amber, violet (fantasy).                                                                                                              |
+| Brows       | 3                                                                  | Soft, straight, arched. Color follows hair.                                                                                                                                        |
+| Extras      | freckles on/off, glasses (as eyewear slot items, 2 starter frames) |                                                                                                                                                                                    |
+| Expressions | 4                                                                  | Smile (default), big grin, wink, surprised. Used in photo mode and reactions.                                                                                                      |
 
 **Roadmap (v0.2):** body shapes, wheelchair (needs a seated variant of every pose), hearing aids, vitiligo, more styles. The wheelchair is flagged as a committed v0.2 item rather than silently dropped.
 
@@ -45,18 +45,18 @@ The rig renders layers in this fixed order (back to front):
 15 held prop       (photo mode only, in the front hand)
 ```
 
-| Slot | Group | Can be empty? | Starter count | Boutique count |
-|---|---|---|---|---|
-| top | clothing | Only when a dress is worn | 3 | 5 |
-| bottom | clothing | Only when a dress is worn | 2 | 4 |
-| dress | clothing | Yes | 1 | 3 |
-| outerwear | clothing | Yes | 1 | 2 |
-| shoes | clothing | No | 2 | 3 |
-| headwear | accessory | Yes | 1 | 2 (+ beret in Paris, + café cap reward) |
-| eyewear | accessory | Yes | 2 | 0 |
-| neck | accessory | Yes | 0 | 2 |
-| bag | accessory | Yes | 1 | 1 |
-| **Total** | | | **13** | **22** (+ 3 elsewhere) = **38 wearables** |
+| Slot      | Group     | Can be empty?             | Starter count | Boutique count                            |
+| --------- | --------- | ------------------------- | ------------- | ----------------------------------------- |
+| top       | clothing  | Only when a dress is worn | 3             | 5                                         |
+| bottom    | clothing  | Only when a dress is worn | 2             | 4                                         |
+| dress     | clothing  | Yes                       | 1             | 3                                         |
+| outerwear | clothing  | Yes                       | 1             | 2                                         |
+| shoes     | clothing  | No                        | 2             | 3                                         |
+| headwear  | accessory | Yes                       | 1             | 2 (+ beret in Paris, + café cap reward)   |
+| eyewear   | accessory | Yes                       | 2             | 0                                         |
+| neck      | accessory | Yes                       | 0             | 2                                         |
+| bag       | accessory | Yes                       | 1             | 1                                         |
+| **Total** |           |                           | **13**        | **22** (+ 3 elsewhere) = **38 wearables** |
 
 ### 1.3 Procedural sleeves (the key art-saving rule)
 
@@ -86,13 +86,13 @@ Picks a random owned item per required slot, a 50% chance per optional slot, and
 
 ### 2.1 Lifestyles and starter homes
 
-| | **Urban: Harbour Loft** | **Countryside: Meadow Cottage** |
-|---|---|---|
-| Picture | Brick loft above the harbour street; big arched window with boats and the café sign outside | Timber cottage at the edge of the hill; round window with a meadow, a fence and a windmill |
-| Map position | Downtown, next to the Café | Top of the hill path; a small bus trundles down when you leave (cosmetic) |
-| Starter furniture | Modern sofa, round rug, framed harbour print, arc lamp, fiddle-leaf plant, bistro table, floating shelf, blinds | Rattan armchair, braided rug, pressed-flower frame, oil-style lamp, herb pot, farmhouse table, wooden shelf, gingham curtains |
-| Color themes (choose 1) | Seaside (sea + cream), Sunset (coral + lilac), Night Market (sea-deep + sunshine) | Daisy (sunshine + mint), Berry (petal + cream), Orchard (mint + coral) |
-| Ambient sound | Gulls, distant tram bell | Birds, breeze |
+|                         | **Urban: Harbour Loft**                                                                                         | **Countryside: Meadow Cottage**                                                                                               |
+| ----------------------- | --------------------------------------------------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------- |
+| Picture                 | Brick loft above the harbour street; big arched window with boats and the café sign outside                     | Timber cottage at the edge of the hill; round window with a meadow, a fence and a windmill                                    |
+| Map position            | Downtown, next to the Café                                                                                      | Top of the hill path; a small bus trundles down when you leave (cosmetic)                                                     |
+| Starter furniture       | Modern sofa, round rug, framed harbour print, arc lamp, fiddle-leaf plant, bistro table, floating shelf, blinds | Rattan armchair, braided rug, pressed-flower frame, oil-style lamp, herb pot, farmhouse table, wooden shelf, gingham curtains |
+| Color themes (choose 1) | Seaside (sea + cream), Sunset (coral + lilac), Night Market (sea-deep + sunshine)                               | Daisy (sunshine + mint), Berry (petal + cream), Orchard (mint + coral)                                                        |
+| Ambient sound           | Gulls, distant tram bell                                                                                        | Birds, breeze                                                                                                                 |
 
 - Both homes share **the same 8 slot types**, so every furniture item fits either home. Only the starter set differs.
 - Themes change wall, floor and trim colors through CSS variables on the room SVG. No extra art.
@@ -100,28 +100,28 @@ Picks a random owned item per required slot, a 50% chance per optional slot, and
 
 ### 2.2 Home slots
 
-| Slot | Accepts | Notes |
-|---|---|---|
-| `wall` | framed art, posters | |
-| `window` | curtains, blinds | Window view is part of the room art |
-| `seat` | sofas, armchairs | Character stands beside it |
-| `rug` | rugs | Under everything |
-| `table` | tables | Dishes from cooking sit on top |
-| `lamp` | lamps | Lamp hotspot toggles it |
-| `plant` | plants | Plant hotspot waters it |
-| `shelf` | shelves | Every shelf has 3 **keepsake spots** that hold souvenirs and trophies (e.g. the espresso machine). Keepsakes never occupy a slot themselves |
+| Slot     | Accepts             | Notes                                                                                                                                       |
+| -------- | ------------------- | ------------------------------------------------------------------------------------------------------------------------------------------- |
+| `wall`   | framed art, posters |                                                                                                                                             |
+| `window` | curtains, blinds    | Window view is part of the room art                                                                                                         |
+| `seat`   | sofas, armchairs    | Character stands beside it                                                                                                                  |
+| `rug`    | rugs                | Under everything                                                                                                                            |
+| `table`  | tables              | Dishes from cooking sit on top                                                                                                              |
+| `lamp`   | lamps               | Lamp hotspot toggles it                                                                                                                     |
+| `plant`  | plants              | Plant hotspot waters it                                                                                                                     |
+| `shelf`  | shelves             | Every shelf has 3 **keepsake spots** that hold souvenirs and trophies (e.g. the espresso machine). Keepsakes never occupy a slot themselves |
 
 ### 2.3 Hotspots (6 always active, plus the dish when there is one)
 
-| Hotspot | Tap result | Feedback |
-|---|---|---|
-| Closet door | Opens the Closet | Door swings, hanger jingle |
-| Kitchen counter | Opens the recipe book | Steam puff |
-| Bed / sofa | Nap: 1.5 s fade to dusk and back, character yawns and stretches | Lullaby chime |
-| Lamp | Light on/off; the room gets a warm glow overlay | Click |
-| Plant | Water: leaves bounce and a bloom opens (stays for the session) | Water drop sound |
-| Shelf | Opens the Souvenir Shelf picker / Album | Little sparkle |
-| Dish on table (if any) | Choose "Eat" (happy animation, dish cleared) or "Keep" | Munch |
+| Hotspot                | Tap result                                                      | Feedback                   |
+| ---------------------- | --------------------------------------------------------------- | -------------------------- |
+| Closet door            | Opens the Closet                                                | Door swings, hanger jingle |
+| Kitchen counter        | Opens the recipe book                                           | Steam puff                 |
+| Bed / sofa             | Nap: 1.5 s fade to dusk and back, character yawns and stretches | Lullaby chime              |
+| Lamp                   | Light on/off; the room gets a warm glow overlay                 | Click                      |
+| Plant                  | Water: leaves bounce and a bloom opens (stays for the session)  | Water drop sound           |
+| Shelf                  | Opens the Souvenir Shelf picker / Album                         | Little sparkle             |
+| Dish on table (if any) | Choose "Eat" (happy animation, dish cleared) or "Keep"          | Munch                      |
 
 The **Decorate** button in the HUD is a UI control, not a scene hotspot. It enters decorate mode, where slots are outlined with pulsing dashed borders.
 
@@ -143,13 +143,13 @@ You're the barista at the busiest café on the harbour. Customers (townsfolk dra
 
 ### 3.2 Player actions
 
-| Action | Input | Alternative |
-|---|---|---|
-| Pick a cup size / plate | Tap cup on shelf | — |
-| Add an ingredient | Tap ingredient jar (it flies into the cup) | Drag jar onto cup |
-| Clear the order | Tap bin | Drag cup to bin |
-| Serve | Tap the bell / "Serve" button (64 px) | Drag cup to customer |
-| Leave shift | Back button → confirm | — |
+| Action                  | Input                                      | Alternative          |
+| ----------------------- | ------------------------------------------ | -------------------- |
+| Pick a cup size / plate | Tap cup on shelf                           | —                    |
+| Add an ingredient       | Tap ingredient jar (it flies into the cup) | Drag jar onto cup    |
+| Clear the order         | Tap bin                                    | Drag cup to bin      |
+| Serve                   | Tap the bell / "Serve" button (64 px)      | Drag cup to customer |
+| Leave shift             | Back button → confirm                      | —                    |
 
 ### 3.3 Rules
 
@@ -162,11 +162,11 @@ You're the barista at the busiest café on the harbour. Customers (townsfolk dra
 
 ### 3.4 Menu and ranks
 
-| Rank | Unlocks at | Orders contain | Pay per correct order | Rank-up gift |
-|---|---|---|---|---|
-| 1 "New Barista" | Start | 1 drink: cup (small/large) + base (cocoa, lemonade, berry tea) + 0–1 topping (cream, marshmallow, lemon slice, sprinkles) | 10 | — |
-| 2 "Barista" | 15 correct orders (≈ 3 shifts) | Drink as above with 0–2 toppings, **plus** 50% chance of a pastry plate (croissant, cupcake, cookie). Cup and plate are separate targets on the counter | 12 | **Café apron** (outerwear) + new topping: **caramel drizzle** |
-| 3 "Head Barista" | 40 correct orders (≈ 8 shifts) | Any rank-2 order, **plus** 30% chance of a "Petal Latte" whose order bubble shows a cocoa-dust *shape* (heart, star, flower); the player picks the matching stencil | 14 | **Barista cap** (headwear) + **Espresso machine** (keepsake for the home shelf) |
+| Rank             | Unlocks at                     | Orders contain                                                                                                                                                      | Pay per correct order | Rank-up gift                                                                    |
+| ---------------- | ------------------------------ | ------------------------------------------------------------------------------------------------------------------------------------------------------------------- | --------------------- | ------------------------------------------------------------------------------- |
+| 1 "New Barista"  | Start                          | 1 drink: cup (small/large) + base (cocoa, lemonade, berry tea) + 0–1 topping (cream, marshmallow, lemon slice, sprinkles)                                           | 10                    | —                                                                               |
+| 2 "Barista"      | 15 correct orders (≈ 3 shifts) | Drink as above with 0–2 toppings, **plus** 50% chance of a pastry plate (croissant, cupcake, cookie). Cup and plate are separate targets on the counter             | 12                    | **Café apron** (outerwear) + new topping: **caramel drizzle**                   |
+| 3 "Head Barista" | 40 correct orders (≈ 8 shifts) | Any rank-2 order, **plus** 30% chance of a "Petal Latte" whose order bubble shows a cocoa-dust _shape_ (heart, star, flower); the player picks the matching stencil | 14                    | **Barista cap** (headwear) + **Espresso machine** (keepsake for the home shelf) |
 
 **Counter layout:** the bottom shelf always shows cups + bases + toppings (one row of up to 8 jars; on 375 px, two rows of 4). From rank 2, a second tray tab "Bakery" holds plate + pastries; from rank 3, a "Latte" tab holds the petal-latte base + 3 stencils. Tabs are 56 px tall with icons.
 
@@ -174,27 +174,27 @@ Rank 3 is the v0.1 cap. Ranks 4–5 (latte-art tracing, custom drink invention) 
 
 ### 3.5 Rewards per shift
 
-| Source | Coins |
-|---|---|
-| Correct order | 10 / 12 / 14 by rank |
-| First-try tip | +3 per order |
-| Shift complete (all 5 served) | +10 |
+| Source                              | Coins                    |
+| ----------------------------------- | ------------------------ |
+| Correct order                       | 10 / 12 / 14 by rank     |
+| First-try tip                       | +3 per order             |
+| Shift complete (all 5 served)       | +10                      |
 | **Typical shift (R1, 3 first-try)** | 5×10 + 3×3 + 10 = **69** |
-| **Max shift (R1 / R2 / R3)** | 75 / 85 / 95 |
+| **Max shift (R1 / R2 / R3)**        | 75 / 85 / 95             |
 
 Leaving mid-shift keeps coins from served orders but not the shift bonus.
 
 ### 3.6 Feedback
 
-| Event | Visual | Sound | Text (optional) |
-|---|---|---|---|
-| Ingredient added | Jar tilts, item arcs into cup, cup squashes 0.94 → 1 | Pop (pitch rises per item) | — |
-| Cup full (5th tap) | Cup wobbles side to side | Soft "nuh-uh" boop | — |
-| Serve correct | Customer cheers, hearts float, coins arc to HUD counter | Cheerful chime + coin clinks | "Perfect!" / "Yum!" |
-| First-try tip | Extra golden coin with a sparkle | Higher chime | "Tip!" |
-| Serve wrong | Customer tilts head, bubble re-opens with the difference circled | Gentle two-note "hmm?" | "Almost!" |
-| Bin | Cup empties with a swirl | Whoosh | — |
-| Rank up | Full-screen confetti card with the gift item on the character | Fanfare | "You're now a Barista!" |
+| Event              | Visual                                                           | Sound                        | Text (optional)         |
+| ------------------ | ---------------------------------------------------------------- | ---------------------------- | ----------------------- |
+| Ingredient added   | Jar tilts, item arcs into cup, cup squashes 0.94 → 1             | Pop (pitch rises per item)   | —                       |
+| Cup full (5th tap) | Cup wobbles side to side                                         | Soft "nuh-uh" boop           | —                       |
+| Serve correct      | Customer cheers, hearts float, coins arc to HUD counter          | Cheerful chime + coin clinks | "Perfect!" / "Yum!"     |
+| First-try tip      | Extra golden coin with a sparkle                                 | Higher chime                 | "Tip!"                  |
+| Serve wrong        | Customer tilts head, bubble re-opens with the difference circled | Gentle two-note "hmm?"       | "Almost!"               |
+| Bin                | Cup empties with a swirl                                         | Whoosh                       | —                       |
+| Rank up            | Full-screen confetti card with the gift item on the character    | Fanfare                      | "You're now a Barista!" |
 
 ### 3.7 Progression contribution
 
@@ -208,19 +208,19 @@ Leaving mid-shift keeps coins from served orders but not the shift bonus.
 
 For players who want a skill test (mostly 10–13). A toggle on the café door, off by default, available from rank 1.
 
-| Rule | Standard | Challenge |
-|---|---|---|
-| Order bubble | Always visible | Shows for 3 s, then folds away. **Peek** re-opens it for 3 s (loses that order's first-try tip, nothing else) |
-| Customers at once | 1 | 2 from rank 2 (serve either one) |
-| Speed | No timer | A gentle 20 s "sparkle ring" per order; serving inside it adds **+2 coins**. When it ends the customer simply waits |
-| Pay | as §3.5 | as §3.5, plus the sparkle bonus |
-| Personal best | — | Shift card shows "fastest shift" as a personal record. No leaderboard |
+| Rule              | Standard       | Challenge                                                                                                           |
+| ----------------- | -------------- | ------------------------------------------------------------------------------------------------------------------- |
+| Order bubble      | Always visible | Shows for 3 s, then folds away. **Peek** re-opens it for 3 s (loses that order's first-try tip, nothing else)       |
+| Customers at once | 1              | 2 from rank 2 (serve either one)                                                                                    |
+| Speed             | No timer       | A gentle 20 s "sparkle ring" per order; serving inside it adds **+2 coins**. When it ends the customer simply waits |
+| Pay               | as §3.5        | as §3.5, plus the sparkle bonus                                                                                     |
+| Personal best     | —              | Shift card shows "fastest shift" as a personal record. No leaderboard                                               |
 
 Max Challenge shift at rank 3: 95 + 5 × 2 = 105.
 
 ### 3.9 Thank-you stickers (a keepsake every shift)
 
-Each completed shift gives the next of **24 customer thank-you stickers** in a fixed order (deterministic, never random). Each sticker is a small portrait of one regular customer with a one-line thank-you ("Best cocoa in Petalport!"). They fill a sticker page in the album. After all 24, every shift adds to a **Café Star** count shown on the café door. So a shift always *makes* something, even when the player owns everything.
+Each completed shift gives the next of **24 customer thank-you stickers** in a fixed order (deterministic, never random). Each sticker is a small portrait of one regular customer with a one-line thank-you ("Best cocoa in Petalport!"). They fill a sticker page in the album. After all 24, every shift adds to a **Café Star** count shown on the café door. So a shift always _makes_ something, even when the player owns everything.
 
 ### 3.10 Café makeover (coin sink)
 
@@ -236,30 +236,30 @@ Cook a real-looking dish step by step in your own kitchen, then decorate it howe
 
 ### 4.2 Step types (reusable engine)
 
-| Step type | What the player does | Tap alternative | Can it fail? |
-|---|---|---|---|
-| `add` | Put the right ingredients into the bowl. The recipe card shows icons with checkmarks | Tap ingredient, then tap bowl (or just tap ingredient) | No. A wrong ingredient bounces out with a "boing"; the right one wiggles |
-| `mix` | Stir in circles over the bowl, or tap the whisk 6 times. Progress ring fills | Tap whisk | No |
-| `pour` | Hold the jug over the pan; the batter circle grows. Release when it reaches the dotted ring | Tap once: auto-pours to the ring | No |
-| `heat` (flip) | Watch the pancake: bubbles appear, the edge turns golden. Tap **Flip** | (is a tap) | No. Early = pale, on time = golden, late = toasty. All are edible |
-| `fold` | Swipe the crêpe edge over in two moves (half, then quarter) | Tap the fold arrow twice | No |
-| `decorate` | Place up to 8 toppings anywhere on the dish; drag to move, tap to remove | Tap topping, then tap spot | No, and it is never scored |
+| Step type     | What the player does                                                                        | Tap alternative                                        | Can it fail?                                                             |
+| ------------- | ------------------------------------------------------------------------------------------- | ------------------------------------------------------ | ------------------------------------------------------------------------ |
+| `add`         | Put the right ingredients into the bowl. The recipe card shows icons with checkmarks        | Tap ingredient, then tap bowl (or just tap ingredient) | No. A wrong ingredient bounces out with a "boing"; the right one wiggles |
+| `mix`         | Stir in circles over the bowl, or tap the whisk 6 times. Progress ring fills                | Tap whisk                                              | No                                                                       |
+| `pour`        | Hold the jug over the pan; the batter circle grows. Release when it reaches the dotted ring | Tap once: auto-pours to the ring                       | No                                                                       |
+| `heat` (flip) | Watch the pancake: bubbles appear, the edge turns golden. Tap **Flip**                      | (is a tap)                                             | No. Early = pale, on time = golden, late = toasty. All are edible        |
+| `fold`        | Swipe the crêpe edge over in two moves (half, then quarter)                                 | Tap the fold arrow twice                               | No                                                                       |
+| `decorate`    | Place up to 8 toppings anywhere on the dish; drag to move, tap to remove                    | Tap topping, then tap spot                             | No, and it is never scored                                               |
 
 ### 4.3 Recipes in v0.1
 
-| Recipe | Unlock | Steps |
-|---|---|---|
-| **Fluffy Pancakes** | Start | add (flour, egg, milk) → mix → pour → heat/flip → decorate (berries, banana coins, syrup, cream, sprinkles) |
-| **Crêpes** | After cooking Pancakes once | add (flour, egg, milk, butter) → mix → pour (thin: tilt the pan to spread, tap alternative auto-tilts) → heat/flip (golden window 2.0–4.5 s, tighter than pancakes) → fold → decorate (lemon, sugar, strawberries, chocolate) |
-| Rainbow Fruit Salad | v0.2 | Needs new `chop` and `drizzle` steps |
+| Recipe              | Unlock                      | Steps                                                                                                                                                                                                                         |
+| ------------------- | --------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **Fluffy Pancakes** | Start                       | add (flour, egg, milk) → mix → pour → heat/flip → decorate (berries, banana coins, syrup, cream, sprinkles)                                                                                                                   |
+| **Crêpes**          | After cooking Pancakes once | add (flour, egg, milk, butter) → mix → pour (thin: tilt the pan to spread, tap alternative auto-tilts) → heat/flip (golden window 2.0–4.5 s, tighter than pancakes) → fold → decorate (lemon, sugar, strawberries, chocolate) |
+| Rainbow Fruit Salad | v0.2                        | Needs new `chop` and `drizzle` steps                                                                                                                                                                                          |
 
 ### 4.4 Stars (mastery, shown in the recipe book)
 
-| Star | Earned by |
-|---|---|
-| ★ | Finishing the recipe (always) |
-| ★★ | No wrong ingredient added during `add` steps |
-| ★★★ | Golden result on the `heat` step (both v0.1 recipes have one) |
+| Star | Earned by                                                     |
+| ---- | ------------------------------------------------------------- |
+| ★    | Finishing the recipe (always)                                 |
+| ★★   | No wrong ingredient added during `add` steps                  |
+| ★★★  | Golden result on the `heat` step (both v0.1 recipes have one) |
 
 Stars are a personal record shown on the recipe card. They don't rank the player against anyone.
 
@@ -267,12 +267,12 @@ Stars are a personal record shown on the recipe card. They don't rank the player
 
 ### 4.5 Rewards
 
-| Event | Reward |
-|---|---|
-| First time cooking a recipe | **+20 coins**, recipe sticker, Welcome Journey step (first recipe only) |
-| First time reaching ★★★ on a recipe | **+20 coins** |
-| Every cook | The dish on your table (replaces the previous one), stars updated |
-| Repeat cooks | No coins. Cooking is for making, not grinding |
+| Event                               | Reward                                                                  |
+| ----------------------------------- | ----------------------------------------------------------------------- |
+| First time cooking a recipe         | **+20 coins**, recipe sticker, Welcome Journey step (first recipe only) |
+| First time reaching ★★★ on a recipe | **+20 coins**                                                           |
+| Every cook                          | The dish on your table (replaces the previous one), stars updated       |
+| Repeat cooks                        | No coins. Cooking is for making, not grinding                           |
 
 Max coins from cooking in v0.1: 2 recipes × 40 = 80.
 
@@ -327,47 +327,47 @@ Boats bob, gulls loop, café chimney steam, windmill turns, plane taxis every ~2
 
 ### 6.2 Starting state
 
-| Item | Value |
-|---|---|
-| Coins | **120** (enough for 2 cheap items on day one) |
-| Wearables | 13 starter items (§1.2) incl. 2 complete outfits |
-| Furniture | 8 starter items for the chosen home (all slots filled) |
-| Recipes | Fluffy Pancakes |
-| Café rank | 1 |
-| Destinations | none (Paris ticket not owned) |
-| Savings goal | none |
+| Item         | Value                                                  |
+| ------------ | ------------------------------------------------------ |
+| Coins        | **120** (enough for 2 cheap items on day one)          |
+| Wearables    | 13 starter items (§1.2) incl. 2 complete outfits       |
+| Furniture    | 8 starter items for the chosen home (all slots filled) |
+| Recipes      | Fluffy Pancakes                                        |
+| Café rank    | 1                                                      |
+| Destinations | none (Paris ticket not owned)                          |
+| Savings goal | none                                                   |
 
 ### 6.3 Earning (all deterministic)
 
-| Source | Coins | Repeatable? |
-|---|---|---|
-| Café shift | 69–95 (see §3.5), up to 105 in Challenge mode | Yes |
-| Thank-you sticker | 1 per shift (24 total), then Café Star count | Yes |
-| First cook of a recipe | 20 | Once per recipe |
-| First ★★★ on a recipe | 20 | Once per recipe |
-| Welcome Journey step | 15 | Once per step (6 steps = 90) |
-| Welcome Journey complete | "Welcome to Petalport" poster (wall decor) | Once |
-| Café rank-up | Item gift (no coins) | Once per rank |
-| First Paris photo | Paris Postcard souvenir + stamp | Once |
+| Source                   | Coins                                         | Repeatable?                  |
+| ------------------------ | --------------------------------------------- | ---------------------------- |
+| Café shift               | 69–95 (see §3.5), up to 105 in Challenge mode | Yes                          |
+| Thank-you sticker        | 1 per shift (24 total), then Café Star count  | Yes                          |
+| First cook of a recipe   | 20                                            | Once per recipe              |
+| First ★★★ on a recipe    | 20                                            | Once per recipe              |
+| Welcome Journey step     | 15                                            | Once per step (6 steps = 90) |
+| Welcome Journey complete | "Welcome to Petalport" poster (wall decor)    | Once                         |
+| Café rank-up             | Item gift (no coins)                          | Once per rank                |
+| First Paris photo        | Paris Postcard souvenir + stamp               | Once                         |
 
 **No daily cap** in v0.1. Total content is the natural limit. Revisit if a playtester buys everything in one sitting and then stops.
 
 ### 6.4 Prices
 
-| Category | Price band | v0.1 items (count) |
-|---|---|---|
-| Tops | 35–55 | 5 |
-| Bottoms | 35–50 | 4 |
-| Dresses | 70–90 | 3 |
-| Outerwear | 60–80 | 2 |
-| Shoes | 40–60 | 3 |
-| Headwear | 25–40 | 2 |
-| Neck | 20–35 | 2 |
-| Bag | 30–45 | 1 |
-| Furniture (Home tab) | 30–120 | 10 (at least one per slot type, plus 2 extra wall/plant items) |
-| Café makeover | 60–150 | 5 (§3.10) |
-| Paris ticket | **400** (one-time) | 1 |
-| Paris souvenirs | 30–40 | 3 (Postcard is free) |
+| Category             | Price band         | v0.1 items (count)                                             |
+| -------------------- | ------------------ | -------------------------------------------------------------- |
+| Tops                 | 35–55              | 5                                                              |
+| Bottoms              | 35–50              | 4                                                              |
+| Dresses              | 70–90              | 3                                                              |
+| Outerwear            | 60–80              | 2                                                              |
+| Shoes                | 40–60              | 3                                                              |
+| Headwear             | 25–40              | 2                                                              |
+| Neck                 | 20–35              | 2                                                              |
+| Bag                  | 30–45              | 1                                                              |
+| Furniture (Home tab) | 30–120             | 10 (at least one per slot type, plus 2 extra wall/plant items) |
+| Café makeover        | 60–150             | 5 (§3.10)                                                      |
+| Paris ticket         | **400** (one-time) | 1                                                              |
+| Paris souvenirs      | 30–40              | 3 (Postcard is free)                                           |
 
 **Total cost of everything purchasable:** ≈ 1,080 (22 wearables) + 650–750 (10 furniture) + 510 (café makeover) + 400 (ticket) + 105 (souvenirs) ≈ **2,750–2,850 coins**.
 
@@ -375,34 +375,33 @@ Boats bob, gulls loop, café chimney steam, windmill turns, plane taxis every ~2
 
 A **typical session** is 15–20 minutes with **4 café shifts**. "Typical" shift = 3 of 5 first-try tips.
 
-| Measure | Value | Rule |
-|---|---|---|
-| Session 1 earnings (PRD J1, 2 shifts) | 75 Journey + 40 cooking + 138 shifts = **253** (+120 start = 373 wallet) | — |
-| Session 1 earnings (4 shifts) | 75 + 40 + 276 = **391** (+120 = 511 wallet) | — |
-| Later sessions (4 shifts at R2–R3) | **316–356** | — |
-| Most expensive item | 400 (ticket) | ≤ 6 typical R1 shifts (414) ✔ |
-| Ticket affordable | J1 player (2 shifts, buys 1 item ~45): 328 left → **session 2**. A saver doing 4 shifts can fly at the end of session 1 | Self-chosen return goal; saving hard is rewarded |
-| Shifts to buy everything | ≈ (2,800 − 290 one-offs) / ~85 ≈ **29–30 shifts** ≈ 45–60 min of café play ≈ 7–8 sessions | — |
-| All café ranks | Shift 8 (≈ session 2) | After that: stickers until shift 24, Challenge mode, makeover |
-| First purchase possible | Immediately (120 start ≥ 35) | ✔ |
+| Measure                               | Value                                                                                                                   | Rule                                                          |
+| ------------------------------------- | ----------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------- |
+| Session 1 earnings (PRD J1, 2 shifts) | 75 Journey + 40 cooking + 138 shifts = **253** (+120 start = 373 wallet)                                                | —                                                             |
+| Session 1 earnings (4 shifts)         | 75 + 40 + 276 = **391** (+120 = 511 wallet)                                                                             | —                                                             |
+| Later sessions (4 shifts at R2–R3)    | **316–356**                                                                                                             | —                                                             |
+| Most expensive item                   | 400 (ticket)                                                                                                            | ≤ 6 typical R1 shifts (414) ✔                                 |
+| Ticket affordable                     | J1 player (2 shifts, buys 1 item ~45): 328 left → **session 2**. A saver doing 4 shifts can fly at the end of session 1 | Self-chosen return goal; saving hard is rewarded              |
+| Shifts to buy everything              | ≈ (2,800 − 290 one-offs) / ~85 ≈ **29–30 shifts** ≈ 45–60 min of café play ≈ 7–8 sessions                               | —                                                             |
+| All café ranks                        | Shift 8 (≈ session 2)                                                                                                   | After that: stickers until shift 24, Challenge mode, makeover |
+| First purchase possible               | Immediately (120 start ≥ 35)                                                                                            | ✔                                                             |
 
 These rules become unit tests (implementation-plan §6.4), which simulate both the J1 player and the 4-shift saver.
 
-
 ### 6.6 Unlock conditions
 
-| Unlock | Condition |
-|---|---|
-| Crêpes recipe | Pancakes cooked ×1 |
-| Café rank 2 / 3 | 15 / 40 correct orders |
-| Café apron, caramel drizzle | Rank 2 |
-| Barista cap, espresso machine | Rank 3 |
-| Airport trip | Paris ticket owned |
-| Paris souvenir kiosk | Being in Paris |
-| Paris stamp + Postcard | First photo taken in Paris |
-| Thank-you sticker *n* | Shift *n* completed (n ≤ 24) |
+| Unlock                         | Condition                                 |
+| ------------------------------ | ----------------------------------------- |
+| Crêpes recipe                  | Pancakes cooked ×1                        |
+| Café rank 2 / 3                | 15 / 40 correct orders                    |
+| Café apron, caramel drizzle    | Rank 2                                    |
+| Barista cap, espresso machine  | Rank 3                                    |
+| Airport trip                   | Paris ticket owned                        |
+| Paris souvenir kiosk           | Being in Paris                            |
+| Paris stamp + Postcard         | First photo taken in Paris                |
+| Thank-you sticker _n_          | Shift _n_ completed (n ≤ 24)              |
 | "You've collected everything!" | Every purchasable item owned (shown once) |
-| Welcome poster | All 6 Journey steps |
+| Welcome poster                 | All 6 Journey steps                       |
 
 Every unlock is shown in advance as a silhouette with its condition in icon + words. Nothing is hidden or random.
 
@@ -410,7 +409,7 @@ Every unlock is shown in advance as a silhouette with its condition in icon + wo
 
 A small notebook icon in the HUD opens a 6-step card. Completed steps get a sticker. It's optional guidance and never blocks anything.
 
-1. Make your character (done at creation) 
+1. Make your character (done at creation)
 2. Cook your first dish
 3. Work a café shift
 4. Buy something at the Boutique
@@ -426,15 +425,15 @@ A small notebook icon in the HUD opens a 6-step card. Completed steps get a stic
 
 ### 6.9 Save & restore behavior (player-facing)
 
-| Situation | What the player sees |
-|---|---|
-| Normal play | Nothing. Saving is invisible. The parent area shows "Last saved: just now" |
-| First run in Home Screen mode with no save | "Bring your game from Safari?" guide (export there, import here) or Start new |
-| Reload / reopen | Lands at Home exactly as left (activities in progress are not resumed; they restart cleanly) |
-| `current` save corrupt, `previous` fine | "We found your game from a moment ago!" then Home |
-| Both corrupt | Recovery screen: Try again · Restore from backup (parent gate) · Start fresh (parent gate, double confirm) |
-| Storage unavailable | Banner: "Saving is paused on this device. Ask a grown-up to check settings." The game still plays |
-| Import backup | Summary card (character preview, coins, item count, photo count, date) → "Replace my game?" → confirm. Photos are re-rendered from their scene records |
+| Situation                                  | What the player sees                                                                                                                                   |
+| ------------------------------------------ | ------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| Normal play                                | Nothing. Saving is invisible. The parent area shows "Last saved: just now"                                                                             |
+| First run in Home Screen mode with no save | "Bring your game from Safari?" guide (export there, import here) or Start new                                                                          |
+| Reload / reopen                            | Lands at Home exactly as left (activities in progress are not resumed; they restart cleanly)                                                           |
+| `current` save corrupt, `previous` fine    | "We found your game from a moment ago!" then Home                                                                                                      |
+| Both corrupt                               | Recovery screen: Try again · Restore from backup (parent gate) · Start fresh (parent gate, double confirm)                                             |
+| Storage unavailable                        | Banner: "Saving is paused on this device. Ask a grown-up to check settings." The game still plays                                                      |
+| Import backup                              | Summary card (character preview, coins, item count, photo count, date) → "Replace my game?" → confirm. Photos are re-rendered from their scene records |
 
 ---
 
@@ -461,14 +460,14 @@ Map → Airport → Ticket desk ──(own ticket)──► Gate → "Fly!" → 
 
 ### 7.3 Photo mode
 
-| Control | Options (v0.1) |
-|---|---|
-| Pose | Wave, hands on hips, heart hands, tourist pointing at the tower |
-| Expression | Smile, big grin, wink |
-| Prop | None, beret (on head; temporary unless owned), croissant, balloon, your latest dish (if any) |
-| Stickers | 6 Paris stickers (heart, star, "Bonjour!" speech bubble, mini tower, macaron, sparkle); drag to place (or tap sticker, then tap spot; keyboard: next default spot), tap a placed sticker to remove; up to 6. Keep drag surfaces ≥ 24 px from the left screen edge (iOS swipe-back zone) |
-| Frame | Polaroid white (only one in v0.1) |
-| Shutter | Big 72 px round button |
+| Control    | Options (v0.1)                                                                                                                                                                                                                                                                          |
+| ---------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Pose       | Wave, hands on hips, heart hands, tourist pointing at the tower                                                                                                                                                                                                                         |
+| Expression | Smile, big grin, wink                                                                                                                                                                                                                                                                   |
+| Prop       | None, beret (on head; temporary unless owned), croissant, balloon, your latest dish (if any)                                                                                                                                                                                            |
+| Stickers   | 6 Paris stickers (heart, star, "Bonjour!" speech bubble, mini tower, macaron, sparkle); drag to place (or tap sticker, then tap spot; keyboard: next default spot), tap a placed sticker to remove; up to 6. Keep drag surfaces ≥ 24 px from the left screen edge (iOS swipe-back zone) |
+| Frame      | Polaroid white (only one in v0.1)                                                                                                                                                                                                                                                       |
+| Shutter    | Big 72 px round button                                                                                                                                                                                                                                                                  |
 
 - Shutter: white flash 120 ms → the viewfinder shrinks into a polaroid that drops into the album icon.
 - The photo is rendered from the same SVG scene (no screenshot APIs, no camera).
@@ -483,12 +482,12 @@ Map → Airport → Ticket desk ──(own ticket)──► Gate → "Fly!" → 
 
 ### 7.5 Future destinations (data model ready, content not in v0.1)
 
-| Destination | Scene idea (original, inspired-by) | Signature activity | Souvenirs |
-|---|---|---|---|
-| Paris | Garden path + tower (v0.1) | v0.3: macaron decorating (Crêpes is the v0.1 tie-in at home) | Mini tower, beret, macaron box, postcard |
-| Tokyo | Cherry-blossom street with a pagoda-style tower silhouette | Bento arranging (reuses `decorate` step) | Lucky cat, fan, origami crane |
-| London | Riverside with a clock-tower silhouette and a red bus | Afternoon-tea stacking | Double-decker model, umbrella, teacup |
-| New York | Rooftop at sunset with a skyline and a torch-raised statue silhouette in the distance | Food-cart order job (reuses café engine) | Snow globe, yellow-cab model, pretzel keychain (avoid the trademarked "I ♥ NY" logo) |
+| Destination | Scene idea (original, inspired-by)                                                    | Signature activity                                           | Souvenirs                                                                            |
+| ----------- | ------------------------------------------------------------------------------------- | ------------------------------------------------------------ | ------------------------------------------------------------------------------------ |
+| Paris       | Garden path + tower (v0.1)                                                            | v0.3: macaron decorating (Crêpes is the v0.1 tie-in at home) | Mini tower, beret, macaron box, postcard                                             |
+| Tokyo       | Cherry-blossom street with a pagoda-style tower silhouette                            | Bento arranging (reuses `decorate` step)                     | Lucky cat, fan, origami crane                                                        |
+| London      | Riverside with a clock-tower silhouette and a red bus                                 | Afternoon-tea stacking                                       | Double-decker model, umbrella, teacup                                                |
+| New York    | Rooftop at sunset with a skyline and a torch-raised statue silhouette in the distance | Food-cart order job (reuses café engine)                     | Snow globe, yellow-cab model, pretzel keychain (avoid the trademarked "I ♥ NY" logo) |
 
 Each new destination needs: 1 scene, 1 ticket price, 3–6 souvenirs, a sticker set, a stamp, and a cultural review. Activities reuse existing engines where possible.
 
@@ -584,3 +583,8 @@ Wave B adds a dress-up goal, an exploration collection and more doll-style cloth
 
 - The map is now 1170 x 3860: "Sparkle Street" (Glam Salon and Petal Garden) sits above the airport, which moved down 660 px. Both places show a badge when there is something to do.
 - 4 more stickers (35 in all): Glam Salon, Salon Star, First Bloom, Garden Party.
+
+### 10.5 Home window views
+
+- The home window can show 4 views, chosen in Decorate, then Colors, then Window view: Harbour (free), Meadow (pick a first flower), City lights (walk one Starlight Stage show), Snowfall (find 5 secret shells).
+- Views never expire and cost nothing. A locked view says how to open it. Saves without a view show the Harbour. Stored as optional `home.view`.

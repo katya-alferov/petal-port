@@ -4,6 +4,8 @@ import { resolveRoom } from '../content/resolve';
 import { type PoseId } from '../art/CharacterRig';
 import { FLOOR_Y, HarbourLoft } from '../art/scenes/HarbourLoft';
 import { furnitureFor, HARBOUR_LOFT } from '../content/furniture';
+import { WINDOW_VIEWS } from '../content/views';
+import { viewUnlocked } from '../game/views';
 import { HOME_SLOTS, type HomeSlot } from '../content/types';
 import { play } from '../platform/audio';
 import { useGame } from '../state/store';
@@ -27,6 +29,7 @@ const SLOT_NAMES: Record<HomeSlot, string> = {
 export function HomeScene() {
   const save = useGame((s) => s.save);
   const setTheme = useGame((s) => s.setTheme);
+  const setHomeView = useGame((s) => s.setHomeView);
   const setScene = useGame((s) => s.setScene);
   const showToast = useGame((s) => s.showToast);
   const placeFurniture = useGame((s) => s.placeFurniture);
@@ -74,6 +77,7 @@ export function HomeScene() {
             onSlotTap={onSlotTap}
             tappable={editing ? HOME_SLOTS : ['lamp', 'plant', 'seat', 'table']}
             editing={editing}
+            view={save.home.view}
             onTable={dish && <DishArt recipe={dish.recipeId} cook={dish.doneness} toppings={dish.toppings} />}
           >
             <g
@@ -182,6 +186,36 @@ export function HomeScene() {
                 {t.name}
               </button>
             ))}
+          </div>
+          <h3 className="display" style={{ fontSize: '1.05rem', margin: '4px 0 6px' }}>
+            Window view
+          </h3>
+          <div className="chip-row wrap" role="group" aria-label="Window view" style={{ marginBottom: 8 }}>
+            {WINDOW_VIEWS.map((v) => {
+              const open = viewUnlocked(v, save.progress);
+              return (
+                <button
+                  key={v.id}
+                  type="button"
+                  className="chip"
+                  aria-pressed={(save.home.view ?? 'harbour') === v.id}
+                  aria-disabled={!open}
+                  data-testid={`view-${v.id}`}
+                  data-locked={!open}
+                  onClick={() => {
+                    if (open) {
+                      play('swap');
+                      setHomeView(v.id);
+                    } else {
+                      play('soft');
+                      showToast(`To open ${v.name}: ${v.hint}`, 'sparkle');
+                    }
+                  }}
+                >
+                  {open ? v.name : `${v.name} (locked)`}
+                </button>
+              );
+            })}
           </div>
         </Sheet>
       )}

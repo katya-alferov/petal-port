@@ -43,6 +43,7 @@
 - Home Screen hint
 
 **Gate:**
+
 - 1–3 children aged 7–13 play unaided.
 - No dead taps.
 - They change outfits unprompted.
@@ -53,11 +54,11 @@
 
 - **Hair:** textures and head coverings, 15+ styles. Expanded creator (body shapes, adaptive options).
 - **Pattern designer:** stripes, dots, florals on tintable regions. This gives older players depth.
-- **Home:** wall/floor sets, 30+ furniture, rotate/flip, layers, "cozy score" feedback that is *descriptive* ("so bright and plant-y!"), never a grade.
+- **Home:** wall/floor sets, 30+ furniture, rotate/flip, layers, "cozy score" feedback that is _descriptive_ ("so bright and plant-y!"), never a grade.
 - **Job ranks** that unlock new verbs (e.g., latte art at Café rank 3).
 - **Sticker Album** with silhouettes for uncollected items.
 - **Weekly Post Box** gift.
-- **Gate:** play sessions over a week show voluntary return (ask the parents), and kids describe what they *made*, not what they *bought*.
+- **Gate:** play sessions over a week show voluntary return (ask the parents), and kids describe what they _made_, not what they _bought_.
 
 ## Stage 3: v0.3 "Around Town"
 
@@ -78,7 +79,7 @@
   - 6 souvenirs
 - **Memory Shelf** at home that visibly fills with souvenirs, and a **Passport** with stamps.
 - **Postcards:** compose a photo + a stamp + preset messages, saved as a PNG.
-- **Gate:** kids want the *next* destination. Souvenir display gets noticed and talked about.
+- **Gate:** kids want the _next_ destination. Souvenir display gets noticed and talked about.
 
 ## Stage 5: v0.5+ "Wide World"
 
@@ -90,11 +91,11 @@
 
 ## Stage 6: "Maybe later" (each needs a separate decision)
 
-| Idea | Why it's deferred |
-|---|---|
-| Sibling/friend sharing via offline "visit codes" (room or outfit encoded as text) | Low risk, no server. Needs a careful UX so codes can't carry free text. |
-| Native app wrapper | Apple Developer Program cost; review requirements for kids' apps |
-| Any online feature (cloud save, visiting, gifting) | Requires backend, accounts, parental consent, moderation. **Out of budget and against the safety charter.** |
+| Idea                                                                              | Why it's deferred                                                                                           |
+| --------------------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------- |
+| Sibling/friend sharing via offline "visit codes" (room or outfit encoded as text) | Low risk, no server. Needs a careful UX so codes can't carry free text.                                     |
+| Native app wrapper                                                                | Apple Developer Program cost; review requirements for kids' apps                                            |
+| Any online feature (cloud save, visiting, gifting)                                | Requires backend, accounts, parental consent, moderation. **Out of budget and against the safety charter.** |
 
 ---
 
@@ -116,9 +117,10 @@
 ## Proposed immediate next step
 
 **Stage 0, part 1:**
+
 1. Draft the art style guide.
 2. Build the **character rig + 3 outfits + the title scene** as a tiny standalone preview you can open on your iPhone.
 
 This tests the single biggest risk (can we hit a premium look with original SVG?) before investing in game systems. It's about one focused session of work and is easy to throw away if the look isn't right.
 
-*Awaiting your approval before any code is written.*
+_Awaiting your approval before any code is written._

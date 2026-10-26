@@ -15,6 +15,8 @@ import { HAIR_COLORS } from '../content/appearance';
 import { SALON_MENU, SEEDS } from '../content/wavec';
 import { BLOOM_AT, grow, pickBloom, plant, stage } from './garden';
 import { seasonFor } from './season';
+import { WINDOW_VIEWS, windowView } from '../content/views';
+import { viewUnlocked } from './views';
 import { CLIENTS_PER_SHIFT, SALON_PAY, SALON_TIP, checkLook, clientPay, salonOrders } from './salon';
 
 const fresh = () => newSave(SAVE_CONTEXT, 1_700_000_000_000);
@@ -328,5 +330,26 @@ describe('seasons (§10.3)', () => {
       'autumn',
       'winter',
     ]);
+  });
+});
+
+describe('window views (§10.5)', () => {
+  const p = () => newSave(SAVE_CONTEXT, 1).progress;
+  it('only the harbour is open on a new save and unknown ids fall back to it', () => {
+    expect(WINDOW_VIEWS.filter((v) => viewUnlocked(v, p())).map((v) => v.id)).toEqual(['harbour']);
+    expect(windowView(undefined).id).toBe('harbour');
+    expect(windowView('nope').id).toBe('harbour');
+  });
+  it('opens views from blooms, shows and shells', () => {
+    const q = p();
+    q.garden.bloomed = ['seed.rose'];
+    q.shows.done = 1;
+    q.shells = ['shell.beach', 'shell.pond', 'shell.windmill', 'shell.home', 'shell.cafe'];
+    expect(WINDOW_VIEWS.every((v) => viewUnlocked(v, q))).toBe(true);
+  });
+  it('an older save without a view still loads', () => {
+    const s = newSave(SAVE_CONTEXT, 1);
+    expect(s.home.view).toBeUndefined();
+    expect(sanitize(JSON.parse(JSON.stringify(s)), SAVE_CONTEXT).home.homeId).toBe('harbour-loft');
   });
 });

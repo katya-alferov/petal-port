@@ -115,6 +115,8 @@ export interface SaveGame {
   home: {
     homeId: 'harbour-loft' | 'meadow-cottage';
     themeId: string;
+    /** Window view id (content/views). Missing in older saves means the harbour. */
+    view?: string;
     slots: Record<HomeSlot, ItemId>;
     shelf: ItemId[];
   };

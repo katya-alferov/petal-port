@@ -30,14 +30,14 @@ Special: Recovery (boot only)
 
 ### 2.2 Persistent chrome
 
-| Element | Where | Visible in | Behavior |
-|---|---|---|---|
-| **Dock** | Bottom, above the home indicator | Home, Map, Closet, Album, Paris | 4 buttons: **Map · Home · Closet · Album**. Current one is raised and filled |
-| **Coin pill** | Top-right | Everywhere except Title, Creator, Photo | Coins + savings-goal ring. Tapping it opens the savings goal (info only, never a shop) |
-| **Journey notebook** | Top-left | Home and Map | Opens the Welcome Journey; hides itself after completion |
-| **Back** | Top-left | Every non-hub scene | Returns to the previous hub. In activities asks once if progress would be lost |
-| **Settings gear** | Top bar on Home and Map (next to the coin pill) | Home, Map | Child settings + "For grown-ups" |
-| **Version label** | Title screen corner; parent area | Title, parent area | Small `--ink-muted` text, e.g. `v0.1.0-m3+abc123` |
+| Element              | Where                                           | Visible in                              | Behavior                                                                               |
+| -------------------- | ----------------------------------------------- | --------------------------------------- | -------------------------------------------------------------------------------------- |
+| **Dock**             | Bottom, above the home indicator                | Home, Map, Closet, Album, Paris         | 4 buttons: **Map · Home · Closet · Album**. Current one is raised and filled           |
+| **Coin pill**        | Top-right                                       | Everywhere except Title, Creator, Photo | Coins + savings-goal ring. Tapping it opens the savings goal (info only, never a shop) |
+| **Journey notebook** | Top-left                                        | Home and Map                            | Opens the Welcome Journey; hides itself after completion                               |
+| **Back**             | Top-left                                        | Every non-hub scene                     | Returns to the previous hub. In activities asks once if progress would be lost         |
+| **Settings gear**    | Top bar on Home and Map (next to the coin pill) | Home, Map                               | Child settings + "For grown-ups"                                                       |
+| **Version label**    | Title screen corner; parent area                | Title, parent area                      | Small `--ink-muted` text, e.g. `v0.1.0-m3+abc123`                                      |
 
 **Activities (Café shift, Cooking, Photo) hide the dock** to give the play area full height. Only Back and the coin pill remain.
 
@@ -54,33 +54,33 @@ Special: Recovery (boot only)
 
 ### 3.1 UI tokens (from game-concept §7, unchanged)
 
-| Token | Hex | Use |
-|---|---|---|
-| `--sea` | `#3BB7C4` | Primary buttons, sea, brand |
-| `--sea-deep` | `#1F6F8B` | Headers, cool outlines; the only fill that may carry white text |
-| `--petal` | `#FF7BA9` | Accent, hearts, favorite looks |
-| `--sunshine` | `#FFC94A` | Coins, stars, "new" badges |
-| `--mint` | `#7ED6A7` | Success, confirm, parks |
-| `--lilac` | `#B39DFF` | Travel, magic, secondary accent |
-| `--coral` | `#FF8A65` | Warm alerts and error cards (never red) |
-| `--cream` | `#FFF7EC` | Panels, paper |
-| `--paper-2` | `#FFEBD2` | Pressed / selected panel, carousel tray *(new)* |
-| `--ink` | `#3A2E4F` | All body text |
-| `--ink-muted` | `#6B5C7E` | Secondary text on cream only *(new)* |
-| `--outline` | `#5B4A6E` | Illustration and sticker outlines |
-| `--night` | `#2B2950` | Night sky (cosmetic) |
-| `--lantern` | `#FFE08A` | Lit windows at night |
+| Token         | Hex       | Use                                                             |
+| ------------- | --------- | --------------------------------------------------------------- |
+| `--sea`       | `#3BB7C4` | Primary buttons, sea, brand                                     |
+| `--sea-deep`  | `#1F6F8B` | Headers, cool outlines; the only fill that may carry white text |
+| `--petal`     | `#FF7BA9` | Accent, hearts, favorite looks                                  |
+| `--sunshine`  | `#FFC94A` | Coins, stars, "new" badges                                      |
+| `--mint`      | `#7ED6A7` | Success, confirm, parks                                         |
+| `--lilac`     | `#B39DFF` | Travel, magic, secondary accent                                 |
+| `--coral`     | `#FF8A65` | Warm alerts and error cards (never red)                         |
+| `--cream`     | `#FFF7EC` | Panels, paper                                                   |
+| `--paper-2`   | `#FFEBD2` | Pressed / selected panel, carousel tray _(new)_                 |
+| `--ink`       | `#3A2E4F` | All body text                                                   |
+| `--ink-muted` | `#6B5C7E` | Secondary text on cream only _(new)_                            |
+| `--outline`   | `#5B4A6E` | Illustration and sticker outlines                               |
+| `--night`     | `#2B2950` | Night sky (cosmetic)                                            |
+| `--lantern`   | `#FFE08A` | Lit windows at night                                            |
 
 ### 3.2 Contrast (computed with the WCAG 2 formula)
 
-| Pair | Ratio | | Pair | Ratio |
-|---|---|---|---|---|
-| ink / cream | 11.7 | | ink / coral | 5.4 |
-| ink / sea | 5.2 | | ink / mint | 7.2 |
-| ink / petal | 5.1 | | ink / lilac | 5.5 |
-| ink / sunshine | 8.1 | | ink-muted / cream | 5.7 |
-| white / sea-deep | 5.7 | | outline / cream | 7.5 |
-| lantern / night | 10.6 | | white on sea or petal | **2.4 ✗** |
+| Pair             | Ratio |     | Pair                  | Ratio     |
+| ---------------- | ----- | --- | --------------------- | --------- |
+| ink / cream      | 11.7  |     | ink / coral           | 5.4       |
+| ink / sea        | 5.2   |     | ink / mint            | 7.2       |
+| ink / petal      | 5.1   |     | ink / lilac           | 5.5       |
+| ink / sunshine   | 8.1   |     | ink-muted / cream     | 5.7       |
+| white / sea-deep | 5.7   |     | outline / cream       | 7.5       |
+| lantern / night  | 10.6  |     | white on sea or petal | **2.4 ✗** |
 
 **Rule:** bright fills always carry `--ink` labels. White text only on `--sea-deep` or `--ink`.
 
@@ -92,13 +92,13 @@ Each swatch also defines a shadow (≈ 18% darker, hue shifted toward plum) and 
 
 ### 3.4 Scene palettes
 
-| Scene | Dominant | Accents |
-|---|---|---|
-| Harbour (map, loft, café) | sea, cream | coral awnings, sunshine flags |
-| Hill / Meadow Cottage | mint, sunshine | petal flowers, cocoa wood |
-| Boutique | cream, petal | lilac, gold trim |
-| Airport | sea-deep, cream | sunshine signage, lilac sky |
-| Paris | see §8 | |
+| Scene                     | Dominant        | Accents                       |
+| ------------------------- | --------------- | ----------------------------- |
+| Harbour (map, loft, café) | sea, cream      | coral awnings, sunshine flags |
+| Hill / Meadow Cottage     | mint, sunshine  | petal flowers, cocoa wood     |
+| Boutique                  | cream, petal    | lilac, gold trim              |
+| Airport                   | sea-deep, cream | sunshine signage, lilac sky   |
+| Paris                     | see §8          |                               |
 
 ---
 
@@ -106,15 +106,15 @@ Each swatch also defines a shadow (≈ 18% darker, hue shifted toward plum) and 
 
 All OFL-1.1, self-hosted WOFF2, Latin subset.
 
-| Role | Font | Size / line-height | Weight | Notes |
-|---|---|---|---|---|
-| Display XL (title, rank-up) | Fredoka | 40 / 44 | 600 | Max 3 words |
-| Display (scene titles) | Fredoka | 28 / 32 | 600 | |
-| Button primary | Fredoka | 22 / 24 | 600 | |
-| Label (buttons, tabs, signs) | Nunito | 20 / 24 | 800 | |
-| Body | Nunito | 17 / 24 | 600 | Minimum for any player-facing text |
-| Caption (parent area only) | Nunito | 15 / 20 | 600 | Never in child-facing UI |
-| Coins / numbers | Fredoka, tabular | 22 / 24 | 600 | Count-up animation |
+| Role                         | Font             | Size / line-height | Weight | Notes                              |
+| ---------------------------- | ---------------- | ------------------ | ------ | ---------------------------------- |
+| Display XL (title, rank-up)  | Fredoka          | 40 / 44            | 600    | Max 3 words                        |
+| Display (scene titles)       | Fredoka          | 28 / 32            | 600    |                                    |
+| Button primary               | Fredoka          | 22 / 24            | 600    |                                    |
+| Label (buttons, tabs, signs) | Nunito           | 20 / 24            | 800    |                                    |
+| Body                         | Nunito           | 17 / 24            | 600    | Minimum for any player-facing text |
+| Caption (parent area only)   | Nunito           | 15 / 20            | 600    | Never in child-facing UI           |
+| Coins / numbers              | Fredoka, tabular | 22 / 24            | 600    | Count-up animation                 |
 
 - Text sizes are in `rem`; **UI panels and text** must survive 150% text zoom without overlap (implementation-plan §7). Scene illustrations don't scale with text zoom; their signs are live text in panels that do.
 - No text baked into illustrations except the stylized logo; signs on buildings use an icon + live text overlay so they stay accessible.
@@ -125,12 +125,12 @@ All OFL-1.1, self-hosted WOFF2, Latin subset.
 
 ### 5.1 Reference viewports
 
-| Device class | CSS viewport | Notes |
-|---|---|---|
-| Small: iPhone SE (2nd/3rd gen) | 375 × 667 | No notch; Safari bars take ~110 px |
+| Device class                   | CSS viewport  | Notes                                  |
+| ------------------------------ | ------------- | -------------------------------------- |
+| Small: iPhone SE (2nd/3rd gen) | 375 × 667     | No notch; Safari bars take ~110 px     |
 | **Reference: iPhone 13/14/15** | **390 × 844** | Dynamic Island / notch; home indicator |
-| Large: Pro Max / Plus | 430 × 932 | |
-| Desktop | ≥ 1024 wide | Centered stage, see §5.5 |
+| Large: Pro Max / Plus          | 430 × 932     |                                        |
+| Desktop                        | ≥ 1024 wide   | Centered stage, see §5.5               |
 
 ### 5.2 Safe areas
 
@@ -143,17 +143,17 @@ All OFL-1.1, self-hosted WOFF2, Latin subset.
 
 ### 5.3 Touch targets & spacing
 
-| Element | Visual size | Minimum hit area |
-|---|---|---|
-| Primary button | 64 h × ≥ 180 w | 64 × 180 |
-| Secondary button | 56 h | 56 × 120 |
-| Icon button (Back, gear) | 48 × 48 | 48 × 48 |
-| Dock button | 64 × 64 with label below | 64 × 72 |
-| Carousel tile | 88 × 88 (SE: 76 × 76) | same |
-| Swatch | 40 × 40 visual | 48 × 48 (padding) |
-| Map location | Building + sign | ≥ 120 × 120 |
-| Scene hotspot | Object | ≥ 64 × 64; bigger objects use their shape |
-| Shutter | 72 × 72 | 80 × 80 |
+| Element                  | Visual size              | Minimum hit area                          |
+| ------------------------ | ------------------------ | ----------------------------------------- |
+| Primary button           | 64 h × ≥ 180 w           | 64 × 180                                  |
+| Secondary button         | 56 h                     | 56 × 120                                  |
+| Icon button (Back, gear) | 48 × 48                  | 48 × 48                                   |
+| Dock button              | 64 × 64 with label below | 64 × 72                                   |
+| Carousel tile            | 88 × 88 (SE: 76 × 76)    | same                                      |
+| Swatch                   | 40 × 40 visual           | 48 × 48 (padding)                         |
+| Map location             | Building + sign          | ≥ 120 × 120                               |
+| Scene hotspot            | Object                   | ≥ 64 × 64; bigger objects use their shape |
+| Shutter                  | 72 × 72                  | 80 × 80                                   |
 
 - Minimum 12 px between adjacent targets (8 px within swatch rows).
 - Primary actions live in the **bottom 40%** of the screen (thumb zone).
@@ -177,19 +177,19 @@ All OFL-1.1, self-hosted WOFF2, Latin subset.
 
 ## 6. Components (the "sticker" UI kit)
 
-| Component | Spec |
-|---|---|
-| Panel / Card | `--cream` fill, 3 px `--outline` stroke, radius 24, shadow `0 4px 0 rgba(58,46,79,.18)` |
-| Primary button | `--sea` fill, ink label, radius 999, 3 px outline, bottom shadow 4 px; pressed: translateY(3px) + shadow 1 px + scale .97 |
-| Secondary button | `--cream` fill, ink label, same shape |
-| Confirm (success) | `--mint` fill |
-| Disabled | 50% saturation, label still ≥ 4.5:1, never hidden; tapping it explains why (e.g. "Need 15 more coins") |
-| Bottom sheet | Slides up 280 ms, rounded top 28, grabber bar, dismiss by swipe down, tap outside or Back |
-| Carousel | Horizontal, snap per tile, next tile peeks 40%, arrow buttons on desktop |
-| Tabs | Pill segmented control, icons + labels, 56 px tall |
-| Toast | Top-center under the HUD, 2.5 s, ink on cream with an icon; never covers primary buttons |
-| Progress ring | 4 px stroke, sunshine on paper-2 |
-| Badge | 22 px sunshine dot with ink glyph, on a corner |
+| Component         | Spec                                                                                                                      |
+| ----------------- | ------------------------------------------------------------------------------------------------------------------------- |
+| Panel / Card      | `--cream` fill, 3 px `--outline` stroke, radius 24, shadow `0 4px 0 rgba(58,46,79,.18)`                                   |
+| Primary button    | `--sea` fill, ink label, radius 999, 3 px outline, bottom shadow 4 px; pressed: translateY(3px) + shadow 1 px + scale .97 |
+| Secondary button  | `--cream` fill, ink label, same shape                                                                                     |
+| Confirm (success) | `--mint` fill                                                                                                             |
+| Disabled          | 50% saturation, label still ≥ 4.5:1, never hidden; tapping it explains why (e.g. "Need 15 more coins")                    |
+| Bottom sheet      | Slides up 280 ms, rounded top 28, grabber bar, dismiss by swipe down, tap outside or Back                                 |
+| Carousel          | Horizontal, snap per tile, next tile peeks 40%, arrow buttons on desktop                                                  |
+| Tabs              | Pill segmented control, icons + labels, 56 px tall                                                                        |
+| Toast             | Top-center under the HUD, 2.5 s, ink on cream with an icon; never covers primary buttons                                  |
+| Progress ring     | 4 px stroke, sunshine on paper-2                                                                                          |
+| Badge             | 22 px sunshine dot with ink glyph, on a corner                                                                            |
 
 ---
 
@@ -206,14 +206,14 @@ All OFL-1.1, self-hosted WOFF2, Latin subset.
 
 ### 7.2 Scene scale
 
-| Scene | Character height as % of scene height | Notes |
-|---|---|---|
-| Creator / Closet preview | 80% | Feet visible, centered |
-| Home | 52% | Door frame = 1.35 × character; table top at 0.42 × |
-| Café (customer at counter) | 60% from the waist up | Counter hides the legs |
-| Boutique fitting room | 70% | Mirror frame behind |
-| Paris | 45% | Tower occupies the upper 70% of the frame, tip ≈ 8% below the top |
-| Map | Not shown (a small head-icon marker on the Home pin) | |
+| Scene                      | Character height as % of scene height                | Notes                                                             |
+| -------------------------- | ---------------------------------------------------- | ----------------------------------------------------------------- |
+| Creator / Closet preview   | 80%                                                  | Feet visible, centered                                            |
+| Home                       | 52%                                                  | Door frame = 1.35 × character; table top at 0.42 ×                |
+| Café (customer at counter) | 60% from the waist up                                | Counter hides the legs                                            |
+| Boutique fitting room      | 70%                                                  | Mirror frame behind                                               |
+| Paris                      | 45%                                                  | Tower occupies the upper 70% of the frame, tip ≈ 8% below the top |
+| Map                        | Not shown (a small head-icon marker on the Home pin) |                                                                   |
 
 ### 7.3 Environment art
 
@@ -240,14 +240,14 @@ All OFL-1.1, self-hosted WOFF2, Latin subset.
 
 ### 9.1 Timing tokens
 
-| Token | Duration | Easing | Use |
-|---|---|---|---|
-| `tap` | 120 ms | spring (stiffness 600, damping 30) | Press squash 0.94 → 1.0 overshoot |
-| `swap` | 200 ms | spring | Item swap twirl, decor plop |
-| `sheet` | 280 ms | ease-out | Bottom sheets, cards |
-| `scene` | 400 ms | ease-in-out | Map ⇄ location "postcard zoom" |
-| `flight` | 1200 ms | custom, skippable | Plane + clouds wipe |
-| `reward` | 600 ms | ease-out arc | Coins fly to the counter, count up |
+| Token    | Duration | Easing                             | Use                                |
+| -------- | -------- | ---------------------------------- | ---------------------------------- |
+| `tap`    | 120 ms   | spring (stiffness 600, damping 30) | Press squash 0.94 → 1.0 overshoot  |
+| `swap`   | 200 ms   | spring                             | Item swap twirl, decor plop        |
+| `sheet`  | 280 ms   | ease-out                           | Bottom sheets, cards               |
+| `scene`  | 400 ms   | ease-in-out                        | Map ⇄ location "postcard zoom"     |
+| `flight` | 1200 ms  | custom, skippable                  | Plane + clouds wipe                |
+| `reward` | 600 ms   | ease-out arc                       | Coins fly to the counter, count up |
 
 ### 9.2 Signature transitions
 
@@ -268,21 +268,21 @@ All OFL-1.1, self-hosted WOFF2, Latin subset.
 
 ## 10. States
 
-| State | Where | Design |
-|---|---|---|
-| **Boot loading** | Title | Waterfront with a little boat sailing left → right as the progress bar; "Tap to start" appears when ready |
-| **Scene loading** (lazy chunk, normally < 300 ms) | Any | Keep the old scene, show a spinning petal on the tapped pin after 200 ms; never a blank screen |
-| **Empty: closet category** | Closet | Hanger illustration: "Nothing here yet!" + "Visit the Boutique" |
-| **Empty: album** | Album | Blank polaroid: "Your first photo is waiting in Paris!" + "Go to the Airport" |
-| **Empty: shelf** | Home shelf | Dotted outlines: "Souvenirs from your trips go here" |
-| **Empty: decor carousel** | Decorate | "More in the Boutique" tile |
-| **Locked** | Recipe, rank gift, ticket | Silhouette + lock + condition as icon + words ("Cook Pancakes once") |
-| **Not enough coins** | Boutique, Airport | Disabled-looking Buy that still responds: "Need 25 more" + "Save for it" |
-| **Success** | Any reward | Mint flash, sparkle, chime, coin arc; a short word ("Yum!", "Perfect!", "Saved!") |
-| **Soft mistake** | Café, cooking | Wobble + gentle sound + highlight of the right answer. Never red, never ✗ on the player |
-| **Error** | Error boundary, save, photo | Coral card with a friendly character pose, one sentence, one button |
-| **Offline** | Anywhere | Nothing: the game is offline-first. Only the parent area mentions update status |
-| **Saving paused** | Banner | Cream banner with coral icon at the top, dismissible for the session |
+| State                                             | Where                       | Design                                                                                                    |
+| ------------------------------------------------- | --------------------------- | --------------------------------------------------------------------------------------------------------- |
+| **Boot loading**                                  | Title                       | Waterfront with a little boat sailing left → right as the progress bar; "Tap to start" appears when ready |
+| **Scene loading** (lazy chunk, normally < 300 ms) | Any                         | Keep the old scene, show a spinning petal on the tapped pin after 200 ms; never a blank screen            |
+| **Empty: closet category**                        | Closet                      | Hanger illustration: "Nothing here yet!" + "Visit the Boutique"                                           |
+| **Empty: album**                                  | Album                       | Blank polaroid: "Your first photo is waiting in Paris!" + "Go to the Airport"                             |
+| **Empty: shelf**                                  | Home shelf                  | Dotted outlines: "Souvenirs from your trips go here"                                                      |
+| **Empty: decor carousel**                         | Decorate                    | "More in the Boutique" tile                                                                               |
+| **Locked**                                        | Recipe, rank gift, ticket   | Silhouette + lock + condition as icon + words ("Cook Pancakes once")                                      |
+| **Not enough coins**                              | Boutique, Airport           | Disabled-looking Buy that still responds: "Need 25 more" + "Save for it"                                  |
+| **Success**                                       | Any reward                  | Mint flash, sparkle, chime, coin arc; a short word ("Yum!", "Perfect!", "Saved!")                         |
+| **Soft mistake**                                  | Café, cooking               | Wobble + gentle sound + highlight of the right answer. Never red, never ✗ on the player                   |
+| **Error**                                         | Error boundary, save, photo | Coral card with a friendly character pose, one sentence, one button                                       |
+| **Offline**                                       | Anywhere                    | Nothing: the game is offline-first. Only the parent area mentions update status                           |
+| **Saving paused**                                 | Banner                      | Cream banner with coral icon at the top, dismissible for the session                                      |
 
 ---
 
@@ -314,14 +314,14 @@ All OFL-1.1, self-hosted WOFF2, Latin subset.
 
 ~230 pieces drafted over many sessions will drift unless consistency is enforced by tools, not memory.
 
-| Control | What it is | When |
-|---|---|---|
-| **Construction kit** | Shared SVG primitives in `src/art/kit/`: head shapes, hands per pose, fabric fold strokes, shadow shapes, rim light, wood/fabric/metal swatches, standard corner radius. New items compose these instead of drawing from scratch | M0 |
-| **Golden references** | 6 approved pieces (rig in starter outfit, one top, one hat on coily hair, one furniture item, one café prop, a room corner) frozen in the gallery as the comparison row for every review | M0 gate |
-| **Style sheet** | One gallery page: palette, outline widths per canvas, shading example, do/don't pairs | M0 |
-| **Automated art lint** (Vitest over `src/art`) | Fills only from `colors` props or palette defs; outline color `--outline`; stroke widths within ±0.5 px of the canvas rule; correct viewBox; node count ≤ 120 per wearable and ≤ 2,000 per scene; no filters/foreignObject/external refs; every tint region has `data-tint` | Every commit |
-| **Batch lineups** | Review by group (all tops side by side on the rig, all hats on all hair) rather than item by item; each batch is one gallery URL | Each milestone |
-| **Fallback style** | A pre-agreed flatter "paper cut-out" variant: same palette and proportions, fewer curves, no interior fold lines, shading as one flat shadow shape. Switch if (a) the M0 gate fails twice, or (b) more than 1 in 4 items in a batch needs a third revision | Decided at the M0 gate |
+| Control                                        | What it is                                                                                                                                                                                                                                                                  | When                   |
+| ---------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ---------------------- |
+| **Construction kit**                           | Shared SVG primitives in `src/art/kit/`: head shapes, hands per pose, fabric fold strokes, shadow shapes, rim light, wood/fabric/metal swatches, standard corner radius. New items compose these instead of drawing from scratch                                            | M0                     |
+| **Golden references**                          | 6 approved pieces (rig in starter outfit, one top, one hat on coily hair, one furniture item, one café prop, a room corner) frozen in the gallery as the comparison row for every review                                                                                    | M0 gate                |
+| **Style sheet**                                | One gallery page: palette, outline widths per canvas, shading example, do/don't pairs                                                                                                                                                                                       | M0                     |
+| **Automated art lint** (Vitest over `src/art`) | Fills only from `colors` props or palette defs; outline color `--outline`; stroke widths within ±0.5 px of the canvas rule; correct viewBox; node count ≤ 120 per wearable and ≤ 2,000 per scene; no filters/foreignObject/external refs; every tint region has `data-tint` | Every commit           |
+| **Batch lineups**                              | Review by group (all tops side by side on the rig, all hats on all hair) rather than item by item; each batch is one gallery URL                                                                                                                                            | Each milestone         |
+| **Fallback style**                             | A pre-agreed flatter "paper cut-out" variant: same palette and proportions, fewer curves, no interior fold lines, shading as one flat shadow shape. Switch if (a) the M0 gate fails twice, or (b) more than 1 in 4 items in a batch needs a third revision                  | Decided at the M0 gate |
 
 ## 14. 2009 doll glam (owner's direction, Oct 2026)
 

@@ -10,14 +10,14 @@
 
 Before choosing tools, here is the workload, so we don't pick an engine because "games use engines":
 
-| Feature | Rendering need | Interaction need |
-|---|---|---|
-| Dress-up | ~15 stacked vector layers on one character, recolourable | Tap swatches, carousels |
-| Home decorating | ~10–40 objects in a 2D room | Drag, drop, flip, z-order |
-| City map | One large illustrated scene, scroll/pan, ~10 hotspots | Tap, scroll |
-| Job mini-games (café, boutique, florist) | Tens of objects, simple tweens | Drag-and-drop, sequence, timing |
-| Photo studio | Compose layers → export PNG | Tap, drag stickers |
-| Menus, shop, album, settings | Text, grids, buttons | Accessible UI |
+| Feature                                  | Rendering need                                           | Interaction need                |
+| ---------------------------------------- | -------------------------------------------------------- | ------------------------------- |
+| Dress-up                                 | ~15 stacked vector layers on one character, recolourable | Tap swatches, carousels         |
+| Home decorating                          | ~10–40 objects in a 2D room                              | Drag, drop, flip, z-order       |
+| City map                                 | One large illustrated scene, scroll/pan, ~10 hotspots    | Tap, scroll                     |
+| Job mini-games (café, boutique, florist) | Tens of objects, simple tweens                           | Drag-and-drop, sequence, timing |
+| Photo studio                             | Compose layers → export PNG                              | Tap, drag stickers              |
+| Menus, shop, album, settings             | Text, grids, buttons                                     | Accessible UI                   |
 
 **[H] Conclusion:** this is overwhelmingly **UI + layered vector art + drag-and-drop**. Nothing in v1 needs physics, hundreds of moving sprites, tilemaps or shaders. That is the territory where a DOM/SVG approach is strongest and a canvas engine adds cost.
 
@@ -63,7 +63,7 @@ Before choosing tools, here is the workload, so we don't pick an engine because 
 
 ### Option C: PixiJS 8 (+ @pixi/react)
 
-- **Facts:** pixi.js 8.22 (MIT); @pixi/react 8.0.5 (MIT) [V npm]. A fast 2D renderer, *not* a full engine.
+- **Facts:** pixi.js 8.22 (MIT); @pixi/react 8.0.5 (MIT) [V npm]. A fast 2D renderer, _not_ a full engine.
 - **Pros:** an excellent renderer for sprite-heavy scenes and effects.
 - **Cons:**
   - Same accessibility and UI problems as Phaser.
@@ -83,19 +83,19 @@ Before choosing tools, here is the workload, so we don't pick an engine because 
 
 ### Comparison table
 
-| Criterion | A: React+SVG | B: Phaser 4 | C: PixiJS 8 |
-|---|---|---|---|
-| iPhone Safari compat | ✔ Standard DOM/SVG | ✔ WebGL/Canvas | ✔ WebGL |
-| Touch / drag-and-drop | Pointer Events + Motion drag | Built-in input | Built-in events |
-| Animation perf (our workload) | Good (transform/opacity) [H] | Excellent | Excellent |
-| Runtime recolour of clothes | Trivial (CSS vars on fills) | Tint only (multiplicative) | Tint only |
-| Text, menus, forms | Native | Rebuild in canvas | Rebuild or DOM overlay |
-| Accessibility | Strong | Weak | Weak |
-| Asset pipeline | SVG components, sprite-free | Texture atlases | Texture atlases |
-| Photo export | SVG → canvas → PNG | `renderer.snapshot` | `extract` API |
-| Testing | Vitest + Testing Library + Playwright | Harder (canvas pixels) | Harder |
-| Maintainability | High; one paradigm | Two paradigms with React UI | Two paradigms |
-| Cost | Free (MIT/Apache) | Free (MIT) | Free (MIT) |
+| Criterion                     | A: React+SVG                          | B: Phaser 4                 | C: PixiJS 8            |
+| ----------------------------- | ------------------------------------- | --------------------------- | ---------------------- |
+| iPhone Safari compat          | ✔ Standard DOM/SVG                    | ✔ WebGL/Canvas              | ✔ WebGL                |
+| Touch / drag-and-drop         | Pointer Events + Motion drag          | Built-in input              | Built-in events        |
+| Animation perf (our workload) | Good (transform/opacity) [H]          | Excellent                   | Excellent              |
+| Runtime recolour of clothes   | Trivial (CSS vars on fills)           | Tint only (multiplicative)  | Tint only              |
+| Text, menus, forms            | Native                                | Rebuild in canvas           | Rebuild or DOM overlay |
+| Accessibility                 | Strong                                | Weak                        | Weak                   |
+| Asset pipeline                | SVG components, sprite-free           | Texture atlases             | Texture atlases        |
+| Photo export                  | SVG → canvas → PNG                    | `renderer.snapshot`         | `extract` API          |
+| Testing                       | Vitest + Testing Library + Playwright | Harder (canvas pixels)      | Harder                 |
+| Maintainability               | High; one paradigm                    | Two paradigms with React UI | Two paradigms          |
+| Cost                          | Free (MIT/Apache)                     | Free (MIT)                  | Free (MIT)             |
 
 ---
 
@@ -163,14 +163,14 @@ Before choosing tools, here is the workload, so we don't pick an engine because 
 
 ### Testing & debugging (all free)
 
-| Layer | Tool | Notes |
-|---|---|---|
-| Rules / economy | Vitest 5 (MIT) | Pure functions, property tests for "no negative coins", unlock order |
-| Components | Vitest + Testing Library (jsdom) | Accessible queries double as a11y checks |
-| End-to-end | Playwright 1.64 (Apache-2.0) with **WebKit** + `devices['iPhone 13']` emulation [V] | Emulation is *not* real iOS Safari [H]. Treat it as a smoke test. |
-| Real device | iPhone on the same Wi-Fi hitting `vite --host`; or a free static deploy | Safari Web Inspector remote debugging needs a Mac [H, widely known; not re-verified] |
-| No-Mac fallback | In-app debug overlay (FPS, storage status, last error), hidden behind a long-press | Built into `platform/` |
-| Visual regression | Playwright screenshots | Optional, later |
+| Layer             | Tool                                                                                | Notes                                                                                |
+| ----------------- | ----------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------ |
+| Rules / economy   | Vitest 5 (MIT)                                                                      | Pure functions, property tests for "no negative coins", unlock order                 |
+| Components        | Vitest + Testing Library (jsdom)                                                    | Accessible queries double as a11y checks                                             |
+| End-to-end        | Playwright 1.64 (Apache-2.0) with **WebKit** + `devices['iPhone 13']` emulation [V] | Emulation is _not_ real iOS Safari [H]. Treat it as a smoke test.                    |
+| Real device       | iPhone on the same Wi-Fi hitting `vite --host`; or a free static deploy             | Safari Web Inspector remote debugging needs a Mac [H, widely known; not re-verified] |
+| No-Mac fallback   | In-app debug overlay (FPS, storage status, last error), hidden behind a long-press  | Built into `platform/`                                                               |
+| Visual regression | Playwright screenshots                                                              | Optional, later                                                                      |
 
 ### Hosting (free)
 
@@ -184,15 +184,15 @@ Before choosing tools, here is the workload, so we don't pick an engine because 
 
 ## 4. Budget check: what fits "no paid services"
 
-| Need | Free solution | Fits? |
-|---|---|---|
-| Build tools, framework, tests | Vite, React, TS, Vitest, Playwright | ✔ |
-| Storage | IndexedDB on device | ✔ |
-| Offline | Service worker | ✔ |
-| Hosting | GitHub Pages (public repo) or local Wi-Fi | ✔ (public repo caveat) |
-| Art | Original SVG (Claude-drafted + your direction), CC0 placeholders | ✔ (time-intensive) |
-| Sound/music | Kenney CC0, Freesound CC0/CC-BY, Incompetech CC-BY | ✔ (credits screen) |
-| Fonts/icons | OFL fonts, MIT/ISC icons | ✔ |
+| Need                          | Free solution                                                    | Fits?                  |
+| ----------------------------- | ---------------------------------------------------------------- | ---------------------- |
+| Build tools, framework, tests | Vite, React, TS, Vitest, Playwright                              | ✔                      |
+| Storage                       | IndexedDB on device                                              | ✔                      |
+| Offline                       | Service worker                                                   | ✔                      |
+| Hosting                       | GitHub Pages (public repo) or local Wi-Fi                        | ✔ (public repo caveat) |
+| Art                           | Original SVG (Claude-drafted + your direction), CC0 placeholders | ✔ (time-intensive)     |
+| Sound/music                   | Kenney CC0, Freesound CC0/CC-BY, Incompetech CC-BY               | ✔ (credits screen)     |
+| Fonts/icons                   | OFL fonts, MIT/ISC icons                                         | ✔                      |
 
 ### Features that **cannot** realistically meet the zero-cost, zero-data constraints
 
@@ -208,9 +208,9 @@ Before choosing tools, here is the workload, so we don't pick an engine because 
 
 ## 5. Decisions to revisit later
 
-| Trigger | Revisit |
-|---|---|
-| A mini-game needs physics or 100+ moving sprites | Lazy-load PixiJS or Phaser for *that scene only*, mounted inside a React route |
-| SVG perf issues on older iPhones | Pre-rasterise static backgrounds to WebP; keep characters SVG |
-| Content > ~500 items | Code-split catalogs by district; lazy-load art |
-| Localisation | Add an i18n layer early (strings out of components) even if English only |
+| Trigger                                          | Revisit                                                                        |
+| ------------------------------------------------ | ------------------------------------------------------------------------------ |
+| A mini-game needs physics or 100+ moving sprites | Lazy-load PixiJS or Phaser for _that scene only_, mounted inside a React route |
+| SVG perf issues on older iPhones                 | Pre-rasterise static backgrounds to WebP; keep characters SVG                  |
+| Content > ~500 items                             | Code-split catalogs by district; lazy-load art                                 |
+| Localisation                                     | Add an i18n layer early (strings out of components) even if English only       |

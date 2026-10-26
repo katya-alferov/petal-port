@@ -1,4 +1,6 @@
 // The single game store (data-model §4). Only `save` is persisted; `ui` is session state.
+import { WINDOW_VIEWS } from '../content/views';
+import { viewUnlocked } from '../game/views';
 import { create } from 'zustand';
 import { SAVE_CONTEXT } from '../content/saveContext';
 import { WEARABLES } from '../content/wearables';
@@ -62,6 +64,7 @@ interface GameStore {
   setOutfit: (outfit: Outfit) => void;
   equipItem: (itemId: string) => void;
   setTheme: (themeId: string) => void;
+  setHomeView: (viewId: string) => void;
   setSetting: <K extends keyof SaveGame['settings']>(k: K, v: SaveGame['settings'][K]) => void;
   /** Buys a wearable or furniture item; returns false when it can't be afforded. */
   buy: (itemId: string) => boolean;
@@ -151,6 +154,12 @@ export const useGame = create<GameStore>((setState, getState) => ({
   setTheme: (themeId) => {
     const s = getState().save;
     setState({ save: touch({ ...s, home: { ...s.home, themeId } }) });
+  },
+  setHomeView: (view) => {
+    const s = getState().save;
+    const def = WINDOW_VIEWS.find((v) => v.id === view);
+    if (!def || !viewUnlocked(def, s.progress)) return;
+    setState({ save: touch({ ...s, home: { ...s.home, view } }) });
   },
   setSetting: (k, v) => {
     const s = getState().save;
