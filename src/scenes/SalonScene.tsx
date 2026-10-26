@@ -171,13 +171,7 @@ function SalonShift({ onAgain }: { onAgain: () => void }) {
           <b>{client.name} wants:</b>
           <div className="salon-card-body">
             <div className="face">
-              <Character
-                appearance={target.appearance}
-                outfit={target.outfit}
-                crop="100 20 200 200"
-                animate={false}
-                title="The style card"
-              />
+              <Character appearance={target.appearance} outfit={target.outfit} crop="70 0 260 330" animate={false} title="The style card" />
             </div>
             <ul>
               <li>{styleName(want.style)}</li>

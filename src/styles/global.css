@@ -1537,21 +1537,21 @@ g[role='button']:focus-visible {
   gap: 2px;
   padding: 6px 10px;
   font-size: 0.95rem;
-  max-width: 44%;
+  max-width: 50%;
   z-index: 3;
-  font-size: 0.85rem;
+  font-size: 1rem;
 }
 .salon-card::after {
   display: none;
 }
 .salon-card-body {
-  display: flex;
-  gap: 8px;
-  align-items: center;
+  display: grid;
+  gap: 4px;
+  justify-items: center;
 }
 .salon-card .face {
-  width: 48px;
-  height: 48px;
+  width: 120px;
+  height: 150px;
   flex: none;
 }
 .salon-card ul {
@@ -1559,8 +1559,9 @@ g[role='button']:focus-visible {
   padding: 0;
   list-style: none;
   font-weight: 800;
-  font-size: 0.9rem;
+  font-size: 1.05rem;
   line-height: 1.25;
+  text-align: center;
 }
 .salon-wrong {
   position: absolute;
