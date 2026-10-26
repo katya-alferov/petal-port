@@ -1,4 +1,5 @@
 // SaveGame model + validate / sanitize / migrate (data-model §3, §5.4). Pure: no DOM, storage or clock.
+import { MAX_PHOTOS, newTravel, type PhotoRecipe, type Travel } from './travel';
 import type { HomeSlot, ItemId, WearSlot } from '../content/types';
 import type { SwatchId } from '../content/palette';
 
@@ -93,6 +94,8 @@ export interface Progress {
   salon: { clients: number; shifts: number };
   /** Petal Garden beds: the seed planted and the growth it has gathered. */
   garden: { beds: (GardenBed | null)[]; bloomed: string[]; picked: number };
+  /** Wave D (game-systems §11): the Paris trip, souvenirs and photos kept as small recipes. */
+  travel: Travel;
 }
 
 export interface GardenBed {
@@ -154,6 +157,7 @@ export function newProgress(): Progress {
     shells: [],
     salon: { clients: 0, shifts: 0 },
     garden: { beds: Array.from({ length: GARDEN_BEDS }, () => null), bloomed: [], picked: 0 },
+    travel: newTravel(),
   };
 }
 
@@ -330,6 +334,13 @@ function sanitizeProgress(raw: unknown): Progress {
     if (Array.isArray(g.bloomed)) p.garden.bloomed = [...new Set(g.bloomed.filter(isStr))];
     p.garden.picked = clampInt(g.picked);
   }
+  const tr = raw.travel;
+  if (isObj(tr)) {
+    p.travel.ticket = tr.ticket === true;
+    p.travel.trips = clampInt(tr.trips);
+    if (Array.isArray(tr.souvenirs)) p.travel.souvenirs = [...new Set(tr.souvenirs.filter(isStr))];
+    if (Array.isArray(tr.photos)) p.travel.photos = tr.photos.filter(isPhoto).slice(0, MAX_PHOTOS);
+  }
   return p;
 }
 
@@ -383,4 +394,19 @@ export function load(raw: unknown, ctx: SaveContext): LoadResult {
   const errors = validate(migrated);
   if (errors.length) return { kind: 'invalid', errors };
   return { kind: 'ok', save: sanitize(migrated as SaveGame, ctx) };
+}
+
+function isPhoto(v: unknown): v is PhotoRecipe {
+  return (
+    isObj(v) &&
+    v.place === 'paris' &&
+    isStr(v.pose) &&
+    ['idle', 'wave', 'hips', 'cheer'].includes(v.pose) &&
+    isStr(v.prop) &&
+    ['none', 'beret', 'croissant', 'balloon'].includes(v.prop) &&
+    Array.isArray(v.stickers) &&
+    v.stickers.length <= 6 &&
+    v.stickers.every((x) => x === null || isStr(x)) &&
+    isNum(v.at)
+  );
 }

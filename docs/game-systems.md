@@ -588,3 +588,13 @@ Wave B adds a dress-up goal, an exploration collection and more doll-style cloth
 
 - The home window can show 4 views, chosen in Decorate, then Colors, then Window view: Harbour (free), Meadow (pick a first flower), City lights (walk one Starlight Stage show), Snowfall (find 5 secret shells).
 - Views never expire and cost nothing. A locked view says how to open it. Saves without a view show the Harbour. Stored as optional `home.view`.
+
+## 11. Paris trip (Wave D, implements §7)
+
+- **Airport** is now open from the map: ticket desk (Paris ticket **400 coins**, one-time, never expires), departures board (PARIS ON TIME, other rows blank), luggage trolley. With a ticket the desk shows "Fly to Paris!".
+- **Paris** (original stylized golden-hour drawing; tower behind a tree-lined path, café terrace left, souvenir kiosk right): photo spot, souvenir kiosk, café bell, pigeon, painter's easel (5 taps finish a tiny tower painting).
+- **Photo mode:** 4 poses (wave, hands on hips, cheer, relax), props (none, beret, croissant, balloon), up to 6 stickers (heart, star, "Bonjour!", mini tower, macaron, sparkle) put on fixed spots by tapping (no dragging, keyboard friendly). No expressions yet (the rig has none). The first photo gives the free **Paris Postcard** souvenir.
+- **Photos are saved as tiny recipes** (pose, prop, stickers, date) in `progress.travel.photos`, not as image bytes. The album redraws them from the same art, so they always match the player's current look. A decision to revisit: "Save to my device" as an image is not built yet.
+- **Album Photos page:** polaroid grid (cap 60, newest first), tap for a larger view and Remove (asks first), plus the **Souvenir shelf** (Postcard free; Mini Tower 40, Little Beret 30, Macaron Box 35 at the kiosk).
+- 3 more stickers (38 in all): Bonjour Paris (first photo), Little Photographer (5 photos), Souvenir Shelf (all 4 souvenirs).
+- Save: `progress.travel {ticket, trips, souvenirs[], photos[]}`; older saves get an empty trip.

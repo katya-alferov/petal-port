@@ -18,7 +18,7 @@ const PLACES: Record<PlaceId, { name: string; line: string; go?: SceneId; soon?:
   boutique: { name: 'Ribbon Boutique', line: 'New clothes and things for your home. Try them on first!', go: 'boutique' },
   cafe: { name: 'Sunny Café', line: 'Make drinks for customers and earn coins.', go: 'cafe' },
   home: { name: 'Harbour Loft', line: 'Your cozy home. Cook, decorate and relax.', go: 'home' },
-  airport: { name: 'Airport', line: 'Fly to faraway places and take photos.', soon: 'Paris trips are coming soon!' },
+  airport: { name: 'Airport', line: 'Fly to Paris, take photos and bring home souvenirs.', go: 'airport' },
   park: { name: 'Petal Park', line: 'The ducks say quack! Picnics are coming soon.', soon: 'Picnics are coming soon!' },
   cottage: { name: 'Meadow Cottage', line: 'Your neighbour’s cottage on the hill.', soon: 'Nobody is home right now.' },
   petshop: { name: 'Paw Parlour', line: 'Adopt a pet friend, and find cute accessories for them.', go: 'petshop' },

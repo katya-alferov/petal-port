@@ -15,6 +15,7 @@ import { HAIR_COLORS } from '../content/appearance';
 import { SALON_MENU, SEEDS } from '../content/wavec';
 import { BLOOM_AT, grow, pickBloom, plant, stage } from './garden';
 import { seasonFor } from './season';
+import { MAX_PHOTOS, PARIS_TICKET, addPhoto, buySouvenir, buyTicket, newTravel, removePhoto, type PhotoRecipe } from './travel';
 import { WINDOW_VIEWS, windowView } from '../content/views';
 import { viewUnlocked } from './views';
 import { CLIENTS_PER_SHIFT, SALON_PAY, SALON_TIP, checkLook, clientPay, salonOrders } from './salon';
@@ -351,5 +352,58 @@ describe('window views (§10.5)', () => {
     const s = newSave(SAVE_CONTEXT, 1);
     expect(s.home.view).toBeUndefined();
     expect(sanitize(JSON.parse(JSON.stringify(s)), SAVE_CONTEXT).home.homeId).toBe('harbour-loft');
+  });
+});
+
+describe('Paris trip (§11)', () => {
+  const photo: PhotoRecipe = { place: 'paris', pose: 'wave', prop: 'none', stickers: [null, 'heart', null, null, null, null], at: 1 };
+  const rich = () => {
+    const s = newSave(SAVE_CONTEXT, 1);
+    s.wallet.coins = 500;
+    return s;
+  };
+  it('the ticket costs 400, once', () => {
+    const poor = newSave(SAVE_CONTEXT, 1);
+    poor.wallet.coins = 399;
+    expect(buyTicket(poor)).toBeNull();
+    const s = buyTicket(rich())!;
+    expect(s.wallet.coins).toBe(500 - PARIS_TICKET);
+    expect(s.progress.travel.ticket).toBe(true);
+    expect(buyTicket(s)).toBeNull();
+  });
+  it('souvenirs cost their price, once, and free ones cannot be bought', () => {
+    const s = rich();
+    const a = buySouvenir(s, 'souvenir.tower', 40)!;
+    expect(a.wallet.coins).toBe(460);
+    expect(buySouvenir(a, 'souvenir.tower', 40)).toBeNull();
+    expect(buySouvenir(s, 'souvenir.postcard', 0)).toBeNull();
+    const poor = newSave(SAVE_CONTEXT, 1);
+    poor.wallet.coins = 10;
+    expect(buySouvenir(poor, 'souvenir.tower', 40)).toBeNull();
+  });
+  it('the first photo brings the postcard; the album holds 60', () => {
+    const r = addPhoto(rich(), photo)!;
+    expect(r.first).toBe(true);
+    expect(r.save.progress.travel.souvenirs).toEqual(['souvenir.postcard']);
+    const r2 = addPhoto(r.save, photo)!;
+    expect(r2.first).toBe(false);
+    expect(r2.save.progress.travel.souvenirs).toEqual(['souvenir.postcard']);
+    const full = rich();
+    full.progress.travel.photos = Array.from({ length: MAX_PHOTOS }, () => photo);
+    expect(addPhoto(full, photo)).toBeNull();
+    expect(removePhoto(r2.save, 0).progress.travel.photos).toHaveLength(1);
+  });
+  it('old saves get an empty trip and bad photo data is dropped', () => {
+    const raw = JSON.parse(JSON.stringify(newSave(SAVE_CONTEXT, 1)));
+    delete raw.progress.travel;
+    expect(sanitize(raw, SAVE_CONTEXT).progress.travel).toEqual(newTravel());
+    raw.progress.travel = { ticket: true, trips: 2, souvenirs: ['souvenir.tower'], photos: [photo, { pose: 'moonwalk' }, 'x'] };
+    const out = sanitize(raw, SAVE_CONTEXT).progress.travel;
+    expect(out.photos).toEqual([photo]);
+    expect(out.ticket).toBe(true);
+    expect(out.trips).toBe(2);
+  });
+  it('travel stickers match the content', () => {
+    expect(STICKERS.find((s) => s.id === 'sticker.paris')!.cond).toEqual({ kind: 'photos', n: 1 });
   });
 });

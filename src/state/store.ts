@@ -1,4 +1,6 @@
 // The single game store (data-model §4). Only `save` is persisted; `ui` is session state.
+import { souvenir } from '../content/travel';
+import { addPhoto, buySouvenir as doBuySouvenir, buyTicket as doBuyTicket, removePhoto, type PhotoRecipe } from '../game/travel';
 import { WINDOW_VIEWS } from '../content/views';
 import { viewUnlocked } from '../game/views';
 import { create } from 'zustand';
@@ -29,6 +31,9 @@ import { log } from '../platform/log';
 import { readSaves, requestPersist, scheduleWrite } from '../platform/storage';
 
 export type SceneId =
+  | 'airport'
+  | 'paris'
+  | 'photo'
   | 'title'
   | 'town'
   | 'me'
@@ -93,6 +98,12 @@ interface GameStore {
   salonServed: (firstLook: boolean) => number;
   salonShiftDone: () => number;
   plantSeed: (bed: number, seed: string) => void;
+  /** Wave D (game-systems §11). Each returns whether it worked. */
+  buyTicket: () => boolean;
+  flyToParis: () => void;
+  buySouvenir: (id: string) => boolean;
+  takePhoto: (photo: PhotoRecipe) => { first: boolean } | null;
+  deletePhoto: (index: number) => void;
   pickFlower: (bed: number) => { coins: number; seed: string; first: boolean } | null;
   boot: (fixture?: string | null) => Promise<void>;
 }
@@ -316,6 +327,35 @@ export const useGame = create<GameStore>((setState, getState) => ({
     const shells = [...s.progress.shells, id];
     setState({ save: touch({ ...s, progress: { ...s.progress, shells } }) });
     return shells.length;
+  },
+  buyTicket: () => {
+    const next = doBuyTicket(getState().save);
+    if (!next) return false;
+    setState({ save: touch(next) });
+    return true;
+  },
+  flyToParis: () => {
+    const s = getState().save;
+    if (!s.progress.travel.ticket) return;
+    const t = s.progress.travel;
+    setState({ save: touch({ ...s, progress: { ...s.progress, travel: { ...t, trips: t.trips + 1 } } }) });
+    getState().setScene('paris');
+  },
+  buySouvenir: (id) => {
+    const price = souvenir(id)?.price ?? 0;
+    const next = doBuySouvenir(getState().save, id, price);
+    if (!next) return false;
+    setState({ save: touch(next) });
+    return true;
+  },
+  takePhoto: (photo) => {
+    const r = addPhoto(getState().save, photo);
+    if (!r) return null;
+    setState({ save: touch(r.save) });
+    return { first: r.first };
+  },
+  deletePhoto: (index) => {
+    setState({ save: touch(removePhoto(getState().save, index)) });
   },
   salonServed: (firstLook) => {
     let s = getState().save;

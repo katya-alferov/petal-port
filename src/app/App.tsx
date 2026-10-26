@@ -1,3 +1,6 @@
+import { AirportScene } from '../scenes/AirportScene';
+import { ParisScene } from '../scenes/ParisScene';
+import { PhotoScene } from '../scenes/PhotoScene';
 import { useEffect, useState } from 'react';
 import { BoutiqueScene } from '../scenes/BoutiqueScene';
 import { CafeScene } from '../scenes/CafeScene';
@@ -58,6 +61,9 @@ export function App() {
         {scene === 'show' && <ShowScene />}
         {scene === 'salon' && <SalonScene />}
         {scene === 'garden' && <GardenScene />}
+        {scene === 'airport' && <AirportScene />}
+        {scene === 'paris' && <ParisScene />}
+        {scene === 'photo' && <PhotoScene />}
         {scene === 'pet' && <PetScene />}
         {scene === 'board' && <BoardScene />}
         {scene === 'album' && <AlbumScene />}

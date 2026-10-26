@@ -90,6 +90,9 @@ test('no serious accessibility violations on each main scene', async ({ page }) 
     'petshop',
     'board',
     'album',
+    'airport',
+    'paris',
+    'photo',
     'show',
     'salon',
     'garden',
@@ -217,7 +220,7 @@ test('kitchen: cook pancakes start to finish and see them on the table', async (
   await shot(page, '12-home-with-dish');
 });
 
-test('town: every place opens a card; the airport says it is coming soon', async ({ page }) => {
+test('town: every place opens a card; the airport opens', async ({ page }) => {
   await page.goto('./?fixture=fresh&scene=town');
   const tapPlace = async (id: string) => {
     const place = page.getByTestId(`place-${id}`);
@@ -231,7 +234,7 @@ test('town: every place opens a card; the airport says it is coming soon', async
   }
   await tapPlace('airport');
   await page.getByTestId('place-go').click({ force: true });
-  await expect(page.getByRole('status').filter({ hasText: 'coming soon' })).toBeVisible();
+  await expect(page.getByTestId('airport-desk')).toBeVisible();
   await page.keyboard.press('Escape');
   await tapPlace('cafe');
   await page.getByTestId('place-go').click();
@@ -427,4 +430,42 @@ test('home window views: locked ones explain how to open, an open one changes th
   await page.getByTestId('view-meadow').click();
   await expect(page.getByTestId('view-meadow')).toHaveAttribute('aria-pressed', 'true');
   await shot(page, '19-home-meadow-view');
+});
+
+test('paris trip: save for the ticket, fly, take a photo, buy a souvenir, find them in the album', async ({ page }) => {
+  await page.goto('./?fixture=fresh&scene=airport');
+  await page.getByTestId('airport-open-desk').click();
+  // Too few coins: the ticket button explains instead of buying.
+  await page.getByTestId('airport-buy').click({ force: true });
+  await expect(page.getByTestId('airport-fly')).toHaveCount(0);
+  await patchSave(page, 's.wallet.coins = 500;');
+  await page.getByTestId('airport-buy').click();
+  await expect(page.getByTestId('airport-fly')).toBeVisible();
+  await page.getByTestId('airport-fly').click();
+  await expect(page.getByTestId('paris-art')).toBeVisible();
+  // Kiosk: buy a souvenir.
+  await page.getByTestId('paris-kiosk').click({ force: true });
+  await page.getByTestId('souvenir-souvenir.tower').click();
+  await expect(page.getByTestId('souvenir-souvenir.tower')).toContainText('Yours');
+  await page.getByTestId('sheet-close').click();
+  // Photo mode.
+  await page.getByTestId('paris-photo').click({ force: true });
+  await page.getByTestId('pose-cheer').click();
+  await page.getByRole('tab', { name: /Prop/ }).click();
+  await page.getByTestId('prop-croissant').click();
+  await page.getByRole('tab', { name: /Stickers/ }).click();
+  await page.getByTestId('pstick-heart').click();
+  await page.getByTestId('photo-shutter').click();
+  await expect(page.getByTestId('photo-saved')).toContainText('first photo');
+  await shot(page, '20-paris-photo-saved');
+  await page.getByTestId('photo-to-album').click();
+  await page.getByRole('tab', { name: /Photos/ }).click();
+  await expect(page.getByTestId('photo-0')).toBeVisible();
+  await expect(page.getByTestId('shelf-souvenir.postcard')).toHaveAttribute('data-earned', 'true');
+  await expect(page.getByTestId('shelf-souvenir.tower')).toHaveAttribute('data-earned', 'true');
+  // Remove asks first.
+  await page.getByTestId('photo-0').click();
+  await page.getByTestId('photo-remove').click();
+  await page.getByTestId('photo-remove-yes').click();
+  await expect(page.getByTestId('photos-empty')).toBeVisible();
 });

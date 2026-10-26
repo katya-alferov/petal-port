@@ -383,4 +383,28 @@ export const STICKERS: StickerDef[] = [
     color: '#7ED6A7',
     cond: { kind: 'blooms', n: 6 },
   },
+  {
+    id: 'sticker.paris',
+    name: 'Bonjour, Paris!',
+    hint: 'Take your first photo in Paris',
+    motif: 'map',
+    color: '#8EC9FF',
+    cond: { kind: 'photos', n: 1 },
+  },
+  {
+    id: 'sticker.photographer',
+    name: 'Little Photographer',
+    hint: 'Keep 5 photos in your album',
+    motif: 'star',
+    color: '#FFC94A',
+    cond: { kind: 'photos', n: 5 },
+  },
+  {
+    id: 'sticker.souvenirs',
+    name: 'Souvenir Shelf',
+    hint: 'Bring home every Paris souvenir',
+    motif: 'bag',
+    color: '#B692F6',
+    cond: { kind: 'souvenirs', n: 4 },
+  },
 ];
