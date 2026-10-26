@@ -45,7 +45,17 @@ export function TitleScene({ onOpenDebug }: { onOpenDebug: () => void }) {
           onPointerUp={() => window.clearTimeout(press.current)}
           onPointerLeave={() => window.clearTimeout(press.current)}
           onContextMenu={(e) => e.preventDefault()}
-          style={{ marginTop: 14, background: 'rgba(255,247,236,0.85)', border: 'none', borderRadius: 999, padding: '4px 12px', color: 'var(--ink)', font: 'inherit', fontSize: '0.9375rem', minHeight: 32 }}
+          style={{
+            marginTop: 14,
+            background: 'rgba(255,247,236,0.85)',
+            border: 'none',
+            borderRadius: 999,
+            padding: '4px 12px',
+            color: 'var(--ink)',
+            font: 'inherit',
+            fontSize: '0.9375rem',
+            minHeight: 32,
+          }}
         >
           {APP_VERSION}
         </button>

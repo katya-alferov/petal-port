@@ -20,7 +20,13 @@ function WindowView({ night }: { night: boolean }) {
       <g clipPath="url(#loft-window)">
         <rect x={640} y={600} width={400} height={540} fill={night ? '#2B2950' : '#BDE8EC'} />
         {night ? (
-          [[700, 660], [760, 720], [960, 650], [1000, 760], [880, 690]].map(([x, y]) => <circle key={x} cx={x} cy={y} r={4} fill="#FFE08A" />)
+          [
+            [700, 660],
+            [760, 720],
+            [960, 650],
+            [1000, 760],
+            [880, 690],
+          ].map(([x, y]) => <circle key={x} cx={x} cy={y} r={4} fill="#FFE08A" />)
         ) : (
           <circle cx={950} cy={700} r={46} fill="#FFC94A" />
         )}
@@ -30,7 +36,15 @@ function WindowView({ night }: { night: boolean }) {
         <rect x={680} y={866} width={14} height={14} fill={night ? '#FFE08A' : '#3BB7C4'} />
         <rect x={640} y={930} width={400} height={210} fill={night ? '#1F4F6B' : '#3BB7C4'} />
         {[960, 1000, 1040, 1080].map((y, i) => (
-          <path key={y} d={`M${660 + i * 30},${y} q20,-10 40,0 q20,10 40,0`} fill="none" stroke="#FFF7EC" strokeWidth={4} opacity={0.6} strokeLinecap="round" />
+          <path
+            key={y}
+            d={`M${660 + i * 30},${y} q20,-10 40,0 q20,10 40,0`}
+            fill="none"
+            stroke="#FFF7EC"
+            strokeWidth={4}
+            opacity={0.6}
+            strokeLinecap="round"
+          />
         ))}
         <g className="loft-boat">
           <path d="M860,960 L940,960 L928,984 L872,984 Z" fill="#FF7BA9" stroke={OUTLINE} strokeWidth={3} strokeLinejoin="round" />
@@ -88,7 +102,13 @@ export function HarbourLoft({ room, children, lampOn = true, onSlotTap, tappable
   };
 
   return (
-    <svg viewBox="0 0 1170 2532" preserveAspectRatio="xMidYMid slice" role="group" aria-label={`${room.name}, ${room.themeName} theme`} data-testid="room-harbour-loft">
+    <svg
+      viewBox="0 0 1170 2532"
+      preserveAspectRatio="xMidYMid slice"
+      role="group"
+      aria-label={`${room.name}, ${room.themeName} theme`}
+      data-testid="room-harbour-loft"
+    >
       <rect width={1170} height={FLOOR_Y} fill={room.walls} />
       {Array.from({ length: 9 }).flatMap((_, row) =>
         Array.from({ length: 7 }).map((__, col) => (
@@ -105,12 +125,29 @@ export function HarbourLoft({ room, children, lampOn = true, onSlotTap, tappable
 
       <rect y={FLOOR_Y} width={1170} height={2532 - FLOOR_Y} fill={floor.base} />
       {Array.from({ length: 6 }).map((_, i) => (
-        <path key={i} d={`M0,${FLOOR_Y + 90 + i * 140} L1170,${FLOOR_Y + 90 + i * 140}`} stroke={floor.shadow} strokeWidth={4} opacity={0.5} />
+        <path
+          key={i}
+          d={`M0,${FLOOR_Y + 90 + i * 140} L1170,${FLOOR_Y + 90 + i * 140}`}
+          stroke={floor.shadow}
+          strokeWidth={4}
+          opacity={0.5}
+        />
       ))}
       {Array.from({ length: 12 }).map((_, i) => (
-        <path key={i} d={`M${(i * 233) % 1170},${FLOOR_Y + 90 + (i % 6) * 140} l0,140`} stroke={floor.shadow} strokeWidth={4} opacity={0.4} />
+        <path
+          key={i}
+          d={`M${(i * 233) % 1170},${FLOOR_Y + 90 + (i % 6) * 140} l0,140`}
+          stroke={floor.shadow}
+          strokeWidth={4}
+          opacity={0.4}
+        />
       ))}
-      <Shaded d={`M0,${FLOOR_Y - 34} L1170,${FLOOR_Y - 34} L1170,${FLOOR_Y + 6} L0,${FLOOR_Y + 6} Z`} shade={trim} depth={4} outline={false} />
+      <Shaded
+        d={`M0,${FLOOR_Y - 34} L1170,${FLOOR_Y - 34} L1170,${FLOOR_Y + 6} L0,${FLOOR_Y + 6} Z`}
+        shade={trim}
+        depth={4}
+        outline={false}
+      />
       <path d={`M0,${FLOOR_Y + 6} L1170,${FLOOR_Y + 6}`} stroke={OUTLINE} strokeWidth={5} />
 
       {ordered.filter((s) => anchors[s].z <= 3).map(renderSlot)}

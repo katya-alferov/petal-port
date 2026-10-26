@@ -15,9 +15,7 @@ export type SleeveTrim = 'cuff' | 'stripe';
 export type Lifestyle = 'urban' | 'countryside';
 
 export type Source =
-  | { kind: 'starter'; lifestyle?: Lifestyle }
-  | { kind: 'shop'; shop: string; price: Coins }
-  | { kind: 'reward'; unlock: { kind: string } };
+  { kind: 'starter'; lifestyle?: Lifestyle } | { kind: 'shop'; shop: string; price: Coins } | { kind: 'reward'; unlock: { kind: string } };
 
 export interface TintRegion {
   id: 'main' | 'accent';

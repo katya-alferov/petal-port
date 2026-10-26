@@ -19,6 +19,28 @@ function bumpyArc(cx: number, cy: number, rx: number, ry: number, a0: number, a1
   return d;
 }
 
+/** Glossy "halo" band across the crown: the shine that makes hair look soft and pretty. */
+function Shine({ shade, y = 64 }: { shade: Shade; y?: number }) {
+  return (
+    <g opacity={0.85}>
+      <path
+        d={`M150,${y + 22} C164,${y + 2} 194,${y - 6} 218,${y}`}
+        fill="none"
+        stroke={shade.highlight}
+        strokeWidth={7}
+        strokeLinecap="round"
+      />
+      <path
+        d={`M228,${y + 3} C236,${y + 6} 242,${y + 10} 246,${y + 15}`}
+        fill="none"
+        stroke={shade.highlight}
+        strokeWidth={5}
+        strokeLinecap="round"
+      />
+    </g>
+  );
+}
+
 function Strand({ d, color }: { d: string; color: string }) {
   return <path d={d} fill="none" stroke={color} strokeWidth={3} strokeLinecap="round" opacity={0.9} />;
 }
@@ -43,6 +65,37 @@ export const HAIR_BACK: Record<string, (p: HairProps) => React.ReactElement> = {
       <Shaded shade={shade} shine={[252, 42, 10, 7]} d={scallopCircle(264, 58, 32, 9, 3, 0.1)} />
     </g>
   ),
+  'hair/ponytail': ({ shade }) => (
+    <g>
+      <Shaded
+        shade={shade}
+        depth={8}
+        d="M236,70 C282,52 306,92 300,140 C296,196 306,248 288,298 C278,322 258,314 264,284 C272,232 262,180 250,128 Z"
+      >
+        <Strand d="M272,120 C282,170 276,230 278,280" color={shade.shadow} />
+      </Shaded>
+      <Shaded
+        shade={shade}
+        depth={9}
+        d="M126,132 C118,72 156,38 200,38 C244,38 282,72 274,132 C276,150 272,160 266,164 L134,164 C128,160 124,150 126,132 Z"
+      />
+      <circle cx={244} cy={74} r={11} fill="#FF7BA9" stroke={OUTLINE} strokeWidth={2.5} />
+    </g>
+  ),
+  'hair/bob': ({ shade }) => (
+    <Shaded
+      shade={shade}
+      depth={9}
+      d="M124,130 C116,70 156,38 200,38 C244,38 284,70 276,130 C282,170 282,200 270,216 C256,226 238,222 232,212 L168,212 C162,222 144,226 130,216 C118,200 118,170 124,130 Z"
+    />
+  ),
+  'hair/braids': ({ shade }) => (
+    <Shaded
+      shade={shade}
+      depth={9}
+      d="M126,132 C118,72 156,38 200,38 C244,38 282,72 274,132 C278,160 276,184 268,196 L132,196 C124,184 122,160 126,132 Z"
+    />
+  ),
 };
 
 export const HAIR_FRONT: Record<string, (p: HairProps) => React.ReactElement> = {
@@ -50,21 +103,33 @@ export const HAIR_FRONT: Record<string, (p: HairProps) => React.ReactElement> = 
     <g>
       <Shaded
         shade={shade}
-        depth={6}
-        shine={[176, 60, 26, 9]}
-        d="M127,140 C120,80 156,40 200,40 C246,40 282,78 273,140 C268,118 258,102 246,94 C236,110 214,118 190,111 C168,104 156,94 150,90 C138,104 131,120 127,140 Z"
+        depth={4}
+        d="M128,96 C116,168 122,210 132,236 C140,250 152,250 150,236 C144,222 150,214 146,196 C142,172 150,130 156,96 Z"
       />
-      <Shaded shade={shade} depth={4} d="M128,128 C122,170 128,210 140,238 C150,214 148,170 146,128 Z" />
-      <Shaded shade={shade} depth={4} d="M272,128 C278,170 272,210 260,238 C250,214 252,170 254,128 Z" />
-      <path d="M244,58 C232,76 214,90 192,96" fill="none" stroke={shade.shadow} strokeWidth={3} strokeLinecap="round" />
+      <Shaded
+        shade={shade}
+        depth={4}
+        d="M272,96 C284,168 278,210 268,236 C260,250 248,250 250,236 C256,222 250,214 254,196 C258,172 250,130 244,96 Z"
+      />
+      <Shaded
+        shade={shade}
+        depth={6}
+        d="M126,142 C118,80 156,38 200,38 C246,38 284,78 274,142 C268,118 258,100 244,90 C234,108 212,118 186,112 C166,106 156,96 150,90 C138,104 130,122 126,142 Z"
+      />
+      <Shine shade={shade} />
+      <path d="M244,58 C232,78 212,92 188,98" fill="none" stroke={shade.shadow} strokeWidth={3} strokeLinecap="round" />
+      <path d="M150,92 C156,102 164,108 172,110" fill="none" stroke={shade.shadow} strokeWidth={2.5} strokeLinecap="round" />
     </g>
   ),
   'hair/coily-puff': ({ shade }) => (
-    <Shaded
-      shade={shade}
-      depth={5}
-      d={`M128,138 C122,90 156,58 200,58 C244,58 278,90 272,138 ${bumpyArc(200, 122, 72, 26, 0, -Math.PI, 9, -8).replace(/^ /, '')} Z`}
-    />
+    <g>
+      <Shaded
+        shade={shade}
+        depth={5}
+        d={`M128,138 C122,90 156,58 200,58 C244,58 278,90 272,138 ${bumpyArc(200, 122, 72, 26, 0, -Math.PI, 9, -8).replace(/^ /, '')} Z`}
+      />
+      <Shine shade={shade} y={72} />
+    </g>
   ),
   'hair/space-buns': ({ shade }) => (
     <g>
@@ -74,8 +139,69 @@ export const HAIR_FRONT: Record<string, (p: HairProps) => React.ReactElement> = 
         shine={[168, 62, 20, 8]}
         d="M127,142 C120,82 156,42 200,42 C244,42 280,82 273,142 C266,112 250,88 222,76 C214,82 206,88 200,96 C194,88 186,82 178,76 C150,88 134,112 127,142 Z"
       />
+      <Shine shade={shade} y={66} />
       <circle cx={152} cy={82} r={7} fill="#FF7BA9" stroke={OUTLINE} strokeWidth={2.5} />
       <circle cx={248} cy={82} r={7} fill="#FF7BA9" stroke={OUTLINE} strokeWidth={2.5} />
+    </g>
+  ),
+  'hair/ponytail': ({ shade }) => (
+    <g>
+      <Shaded
+        shade={shade}
+        depth={6}
+        d="M126,142 C120,80 156,40 200,40 C246,40 282,80 274,142 C268,110 248,88 218,82 C190,92 162,106 140,112 C134,120 129,130 126,142 Z"
+      />
+      <Shine shade={shade} />
+      <path d="M218,82 C196,96 170,106 146,110" fill="none" stroke={shade.shadow} strokeWidth={2.5} strokeLinecap="round" />
+    </g>
+  ),
+  'hair/bob': ({ shade }) => (
+    <g>
+      <Shaded shade={shade} depth={4} d="M128,110 C120,160 124,196 138,214 C150,206 150,170 148,110 Z" />
+      <Shaded shade={shade} depth={4} d="M272,110 C280,160 276,196 262,214 C250,206 250,170 252,110 Z" />
+      <Shaded
+        shade={shade}
+        depth={6}
+        d="M126,138 C120,80 156,40 200,40 C244,40 280,80 274,138 C268,124 264,114 260,106 L140,106 C136,114 132,124 126,138 Z"
+      />
+      <Shine shade={shade} y={62} />
+      {[166, 186, 214, 234].map((x) => (
+        <path key={x} d={`M${x},92 L${x + 1},106`} stroke={shade.shadow} strokeWidth={2.5} strokeLinecap="round" />
+      ))}
+    </g>
+  ),
+  'hair/braids': ({ shade }) => (
+    <g>
+      {([-1, 1] as const).map((side) => (
+        <g key={side}>
+          {Array.from({ length: 7 }, (_, i) => (
+            <ellipse
+              key={i}
+              cx={200 + side * (64 - i * 1.5)}
+              cy={200 + i * 19}
+              rx={13 - i * 0.6}
+              ry={12}
+              fill={i % 2 ? shade.shadow : shade.base}
+              stroke={OUTLINE}
+              strokeWidth={2.5}
+            />
+          ))}
+          <circle cx={200 + side * 54} cy={336} r={7} fill="#FF7BA9" stroke={OUTLINE} strokeWidth={2.5} />
+          <path
+            d={`M${200 + side * 54},342 l${side * -5},14 M${200 + side * 54},342 l${side * 2},15 M${200 + side * 54},342 l${side * 8},12`}
+            stroke={shade.shadow}
+            strokeWidth={3}
+            strokeLinecap="round"
+          />
+        </g>
+      ))}
+      <Shaded
+        shade={shade}
+        depth={6}
+        d="M126,142 C120,80 156,40 200,40 C244,40 280,80 274,142 C268,110 240,88 200,84 C160,88 132,110 126,142 Z"
+      />
+      <path d="M200,44 L200,84" stroke={shade.shadow} strokeWidth={3} strokeLinecap="round" />
+      <Shine shade={shade} y={60} />
     </g>
   ),
 };

@@ -184,7 +184,9 @@ body {
   justify-content: center;
   gap: 8px;
   font: inherit;
-  transition: transform var(--t-tap) var(--spring), box-shadow var(--t-tap) ease-out;
+  transition:
+    transform var(--t-tap) var(--spring),
+    box-shadow var(--t-tap) ease-out;
   touch-action: manipulation;
 }
 
@@ -406,7 +408,9 @@ body {
 }
 
 .swatch[aria-pressed='true'] span {
-  box-shadow: 0 0 0 3px var(--cream), 0 0 0 6px var(--ink);
+  box-shadow:
+    0 0 0 3px var(--cream),
+    0 0 0 6px var(--ink);
 }
 
 .badge {
@@ -658,9 +662,315 @@ body {
   z-index: 60;
   background: rgba(43, 41, 80, 0.94);
   color: #fff;
-  font: 13px/1.4 ui-monospace, Menlo, monospace;
+  font:
+    13px/1.4 ui-monospace,
+    Menlo,
+    monospace;
   padding: calc(var(--safe-top) + 12px) 12px calc(var(--safe-bottom) + 12px);
   overflow: auto;
   user-select: text;
   -webkit-user-select: text;
+}
+
+/* ---------- Town map ---------- */
+.map-scroll {
+  position: absolute;
+  inset: 0;
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  -webkit-overflow-scrolling: touch;
+}
+.windmill {
+  animation: spin 14s linear infinite;
+}
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+.steam {
+  animation: steam 3s ease-in-out infinite;
+}
+@keyframes steam {
+  50% {
+    transform: translateY(-14px);
+    opacity: 0.5;
+  }
+}
+.duck,
+.map-boat {
+  animation: bob 3.4s ease-in-out infinite;
+}
+@keyframes bob {
+  50% {
+    transform: translateY(8px);
+  }
+}
+.plane {
+  animation: taxi 20s ease-in-out infinite;
+}
+@keyframes taxi {
+  0%,
+  60%,
+  100% {
+    transform: translateX(0);
+  }
+  80% {
+    transform: translateX(80px) translateY(-8px);
+  }
+}
+.map-badge {
+  animation: badge 2.4s ease-in-out infinite;
+  transform-box: fill-box;
+  transform-origin: center;
+}
+@keyframes badge {
+  50% {
+    transform: scale(1.12);
+  }
+}
+
+/* ---------- Activity scenes (café, kitchen, boutique) ---------- */
+.activity-bar {
+  position: relative;
+  z-index: 5;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: calc(var(--safe-top) + 10px) calc(var(--safe-right) + 12px) 8px calc(var(--safe-left) + 12px);
+}
+.activity-bar .grow {
+  flex: 1;
+}
+.tray {
+  position: relative;
+  z-index: 5;
+  background: var(--cream);
+  border-top: var(--stroke);
+  border-radius: 28px 28px 0 0;
+  padding: 10px 12px calc(var(--safe-bottom) + 12px);
+  display: grid;
+  gap: 10px;
+}
+.jar-row {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 8px;
+}
+.jar {
+  all: unset;
+  box-sizing: border-box;
+  cursor: pointer;
+  display: grid;
+  justify-items: center;
+  gap: 2px;
+  padding: 6px 4px;
+  min-height: 72px;
+  border: var(--stroke);
+  border-radius: 18px;
+  background: #fff;
+  box-shadow: 0 4px 0 var(--outline);
+  font-size: 0.8rem;
+  font-weight: 800;
+  text-align: center;
+  line-height: 1.1;
+}
+.jar:active {
+  transform: translateY(3px);
+  box-shadow: 0 1px 0 var(--outline);
+}
+.jar svg {
+  width: 44px;
+  height: 44px;
+}
+.jar[aria-pressed='true'] {
+  background: var(--sunshine);
+}
+.jar.wrong {
+  animation: shake 0.4s;
+}
+.wobble {
+  animation: shake 0.45s;
+}
+@keyframes shake {
+  20% {
+    transform: translateX(-6px) rotate(-3deg);
+  }
+  50% {
+    transform: translateX(6px) rotate(3deg);
+  }
+  80% {
+    transform: translateX(-3px);
+  }
+}
+.squash {
+  animation: squash 0.25s;
+  transform-box: fill-box;
+  transform-origin: bottom center;
+}
+@keyframes squash {
+  40% {
+    transform: scale(1.05, 0.94);
+  }
+}
+.bubble {
+  position: absolute;
+  background: #fff;
+  border: var(--stroke);
+  border-radius: 24px;
+  padding: 8px 10px;
+  box-shadow: 0 4px 0 var(--outline);
+}
+.bubble::after {
+  content: '';
+  position: absolute;
+  left: 22px;
+  bottom: -14px;
+  width: 20px;
+  height: 20px;
+  background: #fff;
+  border-right: var(--stroke);
+  border-bottom: var(--stroke);
+  transform: rotate(45deg);
+}
+.hearts {
+  position: absolute;
+  pointer-events: none;
+  animation: floatUp 1.2s ease-out forwards;
+  font-size: 2rem;
+}
+@keyframes floatUp {
+  to {
+    transform: translateY(-80px);
+    opacity: 0;
+  }
+}
+.card-center {
+  position: absolute;
+  inset: 0;
+  z-index: 20;
+  display: grid;
+  place-items: center;
+  background: rgba(58, 46, 79, 0.35);
+  padding: 20px;
+}
+.card-center > .panel {
+  width: 100%;
+  max-width: 360px;
+  text-align: center;
+  display: grid;
+  gap: 12px;
+  justify-items: center;
+}
+.stars {
+  font-size: 2.4rem;
+  letter-spacing: 6px;
+  color: var(--sunshine);
+  -webkit-text-stroke: 2px var(--outline);
+}
+.price-tag {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  font-weight: 800;
+}
+.price-tag svg {
+  width: 20px;
+  height: 20px;
+}
+.item-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 8px;
+}
+.shop-tile {
+  all: unset;
+  box-sizing: border-box;
+  cursor: pointer;
+  border: var(--stroke);
+  border-radius: 20px;
+  background: #fff;
+  box-shadow: 0 4px 0 var(--outline);
+  padding: 6px;
+  display: grid;
+  gap: 2px;
+  justify-items: center;
+  font-size: 0.8rem;
+  font-weight: 800;
+  text-align: center;
+  position: relative;
+}
+.shop-tile[aria-pressed='true'] {
+  background: var(--sunshine);
+}
+.shop-tile .thumb {
+  width: 100%;
+  aspect-ratio: 1;
+}
+.shop-tile .thumb svg {
+  width: 100%;
+  height: 100%;
+}
+.shop-tile .owned {
+  position: absolute;
+  top: -8px;
+  right: -6px;
+  background: var(--mint);
+  border: var(--stroke);
+  border-radius: 999px;
+  padding: 0 8px;
+  font-size: 0.7rem;
+}
+.scroll-y {
+  overflow-y: auto;
+  min-height: 0;
+}
+.diff {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: center;
+  gap: 4px;
+}
+.diff-icon {
+  position: relative;
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  display: inline-grid;
+  place-items: center;
+}
+.diff-icon svg {
+  width: 30px;
+  height: 30px;
+}
+.diff-icon.missing {
+  border: 3px dashed var(--coral);
+}
+.diff-icon.extra b {
+  position: absolute;
+  inset: 0;
+  display: grid;
+  place-items: center;
+  color: #e5484d;
+  font-size: 1.6rem;
+}
+.customer-in {
+  animation: slideIn 0.5s ease-out;
+}
+@keyframes slideIn {
+  from {
+    transform: translateX(-60px);
+    opacity: 0;
+  }
+}
+.counter {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  height: 30%;
+  background: repeating-linear-gradient(90deg, #c98f5e 0 70px, #b57d4e 70px 74px);
+  border-top: 14px solid #fff7ec;
+  box-shadow: 0 -3px 0 var(--outline);
 }

@@ -42,7 +42,18 @@ export function Button({
         {children}
       </button>
       {explain && disabledReason && (
-        <span role="status" className="panel pop-in" style={{ position: 'absolute', bottom: '110%', left: '50%', transform: 'translateX(-50%)', whiteSpace: 'nowrap', padding: '8px 12px' }}>
+        <span
+          role="status"
+          className="panel pop-in"
+          style={{
+            position: 'absolute',
+            bottom: '110%',
+            left: '50%',
+            transform: 'translateX(-50%)',
+            whiteSpace: 'nowrap',
+            padding: '8px 12px',
+          }}
+        >
           {disabledReason}
         </span>
       )}
@@ -66,7 +77,17 @@ export function Panel({ children, className = '', style }: { children: ReactNode
   );
 }
 
-export function Tabs<T extends string>({ tabs, value, onChange, label }: { tabs: { id: T; label: string }[]; value: T; onChange: (id: T) => void; label: string }) {
+export function Tabs<T extends string>({
+  tabs,
+  value,
+  onChange,
+  label,
+}: {
+  tabs: { id: T; label: string }[];
+  value: T;
+  onChange: (id: T) => void;
+  label: string;
+}) {
   return (
     <div className="tabs" role="tablist" aria-label={label}>
       {tabs.map((t) => (
@@ -106,7 +127,21 @@ export function Carousel({ children, label }: { children: ReactNode; label: stri
   );
 }
 
-export function Tile({ children, label, selected, onClick, testId, badge }: { children: ReactNode; label: string; selected?: boolean; onClick?: () => void; testId?: string; badge?: string }) {
+export function Tile({
+  children,
+  label,
+  selected,
+  onClick,
+  testId,
+  badge,
+}: {
+  children: ReactNode;
+  label: string;
+  selected?: boolean;
+  onClick?: () => void;
+  testId?: string;
+  badge?: string;
+}) {
   return (
     <button type="button" className="tile" aria-label={label} aria-pressed={selected} onClick={onClick} data-testid={testId}>
       {children}
@@ -200,7 +235,14 @@ export function Dock({ items, current, onSelect }: { items: DockItem[]; current:
   return (
     <nav className="dock" aria-label="Main">
       {items.map((it) => (
-        <button key={it.id} type="button" className="dock-btn" aria-current={it.id === current ? 'page' : undefined} onClick={() => onSelect(it.id)} data-testid={`dock-${it.id}`}>
+        <button
+          key={it.id}
+          type="button"
+          className="dock-btn"
+          aria-current={it.id === current ? 'page' : undefined}
+          onClick={() => onSelect(it.id)}
+          data-testid={`dock-${it.id}`}
+        >
           <span className="dock-icon">
             <Icon name={it.icon} />
           </span>

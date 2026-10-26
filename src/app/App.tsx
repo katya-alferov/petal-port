@@ -1,9 +1,12 @@
 import { useEffect, useState } from 'react';
+import { BoutiqueScene } from '../scenes/BoutiqueScene';
+import { CafeScene } from '../scenes/CafeScene';
 import { DebugOverlay } from '../scenes/DebugOverlay';
 import { GalleryScene } from '../scenes/GalleryScene';
 import { HomeScene } from '../scenes/HomeScene';
 import { MeScene } from '../scenes/MeScene';
 import { TitleScene } from '../scenes/TitleScene';
+import { TownScene } from '../scenes/TownScene';
 import { setSfxEnabled } from '../platform/audio';
 import { testParam } from '../platform/hooks';
 import { useGame, type SceneId } from '../state/store';
@@ -37,6 +40,9 @@ export function App() {
     <div className="backdrop">
       <main className="stage" data-scene={scene}>
         {scene === 'title' && <TitleScene onOpenDebug={() => setGate(true)} />}
+        {scene === 'town' && <TownScene />}
+        {scene === 'cafe' && <CafeScene />}
+        {scene === 'boutique' && <BoutiqueScene />}
         {scene === 'me' && <MeScene />}
         {scene === 'home' && <HomeScene />}
         {scene === 'gallery' && <GalleryScene />}

@@ -27,11 +27,13 @@ export const HAIR_COLORS: HairColorDef[] = [
   { id: 'hair.sea-teal', name: 'Sea teal', base: '#4DBFC1', shadow: '#2F9497', shine: '#9BE3E2', fantasy: true },
 ];
 
-// M0 ships 3 of the 8 v0.1 styles so the rig can be judged with different silhouettes.
 export const HAIR_STYLES: HairStyleDef[] = [
   { id: 'hairstyle.wavy-long', name: 'Long waves', art: 'hair/wavy-long', texture: 'wavy', tintable: 'hairColor' },
   { id: 'hairstyle.coily-puff', name: 'Coily puff', art: 'hair/coily-puff', texture: 'coily', tintable: 'hairColor' },
   { id: 'hairstyle.space-buns', name: 'Space buns', art: 'hair/space-buns', texture: 'straight', tintable: 'hairColor' },
+  { id: 'hairstyle.ponytail', name: 'Ponytail', art: 'hair/ponytail', texture: 'straight', tintable: 'hairColor' },
+  { id: 'hairstyle.bob', name: 'Bob', art: 'hair/bob', texture: 'straight', tintable: 'hairColor' },
+  { id: 'hairstyle.braids', name: 'Two braids', art: 'hair/braids', texture: 'braids', tintable: 'hairColor' },
 ];
 
 export const EYE_COLORS: EyeColorDef[] = [

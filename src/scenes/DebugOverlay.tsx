@@ -32,7 +32,10 @@ export function DebugOverlay({ onClose }: { onClose: () => void }) {
   const [persisted, setPersisted] = useState<string>('…');
   const [copied, setCopied] = useState(false);
   useEffect(() => {
-    navigator.storage?.persisted?.().then((p) => setPersisted(String(p))).catch(() => setPersisted('unknown'));
+    navigator.storage
+      ?.persisted?.()
+      .then((p) => setPersisted(String(p)))
+      .catch(() => setPersisted('unknown'));
   }, []);
   return (
     <div className="debug" role="dialog" aria-label="Debug log" data-testid="debug-overlay">
@@ -53,9 +56,13 @@ export function DebugOverlay({ onClose }: { onClose: () => void }) {
       </div>
       <div>version: {APP_VERSION}</div>
       <div>fps: {fps}</div>
-      <div>standalone: {String(isStandalone())} · persisted: {persisted}</div>
+      <div>
+        standalone: {String(isStandalone())} · persisted: {persisted}
+      </div>
       <div>save updated: {new Date(save.updatedAt).toLocaleTimeString()}</div>
-      <div>viewport: {window.innerWidth}×{window.innerHeight} @{window.devicePixelRatio}x</div>
+      <div>
+        viewport: {window.innerWidth}×{window.innerHeight} @{window.devicePixelRatio}x
+      </div>
       <hr />
       {entries.length === 0 && <div>(no log entries)</div>}
       {[...entries].reverse().map((e, i) => (

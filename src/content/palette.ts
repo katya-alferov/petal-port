@@ -28,19 +28,7 @@ export interface Shade {
 }
 
 export type SwatchId =
-  | 'cream'
-  | 'charcoal'
-  | 'denim'
-  | 'sea'
-  | 'mint'
-  | 'olive'
-  | 'sunshine'
-  | 'coral'
-  | 'petal'
-  | 'berry'
-  | 'lilac'
-  | 'cocoa'
-  | 'sea-deep';
+  'cream' | 'charcoal' | 'denim' | 'sea' | 'mint' | 'olive' | 'sunshine' | 'coral' | 'petal' | 'berry' | 'lilac' | 'cocoa' | 'sea-deep';
 
 const SWATCH_BASE: Record<SwatchId, string> = {
   cream: '#FFF7EC',
@@ -81,7 +69,17 @@ function hexToRgb(hex: string): [number, number, number] {
 }
 
 function rgbToHex([r, g, b]: [number, number, number]): string {
-  return '#' + [r, g, b].map((v) => Math.round(Math.max(0, Math.min(255, v))).toString(16).padStart(2, '0')).join('').toUpperCase();
+  return (
+    '#' +
+    [r, g, b]
+      .map((v) =>
+        Math.round(Math.max(0, Math.min(255, v)))
+          .toString(16)
+          .padStart(2, '0'),
+      )
+      .join('')
+      .toUpperCase()
+  );
 }
 
 /** Linear mix of two hex colors, t in 0..1 (0 = a, 1 = b). */

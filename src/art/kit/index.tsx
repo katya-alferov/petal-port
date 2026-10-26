@@ -121,7 +121,9 @@ export function Limb({ pts, width, shade, outline = true }: { pts: Pt[]; width: 
   const lit = Math.max(2, width * 0.62);
   return (
     <g>
-      {outline && <path d={d} fill="none" stroke={OUTLINE} strokeWidth={width + OUTLINE_W * 2} strokeLinecap="round" strokeLinejoin="round" />}
+      {outline && (
+        <path d={d} fill="none" stroke={OUTLINE} strokeWidth={width + OUTLINE_W * 2} strokeLinecap="round" strokeLinejoin="round" />
+      )}
       <path d={d} fill="none" stroke={shade.shadow} strokeWidth={width} strokeLinecap="round" strokeLinejoin="round" />
       <path
         d={d}

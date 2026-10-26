@@ -1,7 +1,7 @@
 // The character rig (visual-design §7.1): viewBox 400×800, feet on y≈780, ~4.5 heads tall.
 // Layer order follows game-systems §1.2, with arms split into back and front layers so poses that
 // cross the body (hips, heart, point) draw above outerwear, bag and neck items.
-import type { ReactElement } from 'react';
+import { useId, type ReactElement } from 'react';
 import type { Shade } from '../content/palette';
 import type { RigItem, RigSpec } from '../content/resolve';
 import type { SleeveTrim, SleeveType, WearSlot } from '../content/types';
@@ -21,12 +21,44 @@ interface ArmPose {
 // "left"/"right" are the viewer's left/right.
 const ARM_POSES: Record<PoseId, { left: ArmPose; right: ArmPose }> = {
   idle: {
-    left: { pts: [[162, 264], [142, 352], [137, 438]], layer: 'back', hand: 'rest' },
-    right: { pts: [[238, 264], [258, 352], [263, 438]], layer: 'back', hand: 'rest' },
+    left: {
+      pts: [
+        [162, 264],
+        [142, 352],
+        [137, 438],
+      ],
+      layer: 'back',
+      hand: 'rest',
+    },
+    right: {
+      pts: [
+        [238, 264],
+        [258, 352],
+        [263, 438],
+      ],
+      layer: 'back',
+      hand: 'rest',
+    },
   },
   wave: {
-    left: { pts: [[162, 264], [142, 352], [137, 438]], layer: 'back', hand: 'rest' },
-    right: { pts: [[238, 264], [292, 230], [304, 150]], layer: 'back', hand: 'open' },
+    left: {
+      pts: [
+        [162, 264],
+        [142, 352],
+        [137, 438],
+      ],
+      layer: 'back',
+      hand: 'rest',
+    },
+    right: {
+      pts: [
+        [238, 264],
+        [292, 230],
+        [304, 150],
+      ],
+      layer: 'back',
+      hand: 'open',
+    },
   },
 };
 
@@ -40,7 +72,12 @@ function Sleeve({ arm, type, trim, main, accent }: { arm: Pt[]; type: SleeveType
   const len = SLEEVE_LENGTH[type];
   const part = polylineUpTo(arm, len);
   const end = part[part.length - 1];
-  const band = trim === 'cuff' ? polylineRange(arm, Math.max(0, len - 0.07), len) : trim === 'stripe' ? polylineRange(arm, len * 0.55, len * 0.7) : null;
+  const band =
+    trim === 'cuff'
+      ? polylineRange(arm, Math.max(0, len - 0.07), len)
+      : trim === 'stripe'
+        ? polylineRange(arm, len * 0.55, len * 0.7)
+        : null;
   return (
     <g data-sleeve={type}>
       <Limb pts={part} width={SLEEVE_W} shade={main} />
@@ -49,7 +86,13 @@ function Sleeve({ arm, type, trim, main, accent }: { arm: Pt[]; type: SleeveType
           <Limb pts={band} width={SLEEVE_W} shade={accent} outline={false} />
         </g>
       )}
-      {type === 'puff' && <Shaded d={scallopCircle(part[0][0] + (end[0] - part[0][0]) * 0.55, part[0][1] + (end[1] - part[0][1]) * 0.55, 18, 7, 2.5)} shade={main} depth={4} />}
+      {type === 'puff' && (
+        <Shaded
+          d={scallopCircle(part[0][0] + (end[0] - part[0][0]) * 0.55, part[0][1] + (end[1] - part[0][1]) * 0.55, 18, 7, 2.5)}
+          shade={main}
+          depth={4}
+        />
+      )}
       {trim === 'cuff' && <circle cx={end[0]} cy={end[1]} r={SLEEVE_W / 2} fill="none" stroke={OUTLINE} strokeWidth={2} opacity={0.6} />}
     </g>
   );
@@ -61,17 +104,41 @@ function Hand({ at, kind, skin }: { at: Pt; kind: ArmPose['hand']; skin: Shade }
     return (
       <g>
         {[-10, -3, 4, 11].map((dx, i) => (
-          <ellipse key={i} cx={x + dx} cy={y - 14 + Math.abs(dx) * 0.4} rx={4.6} ry={9} fill={skin.base} stroke={OUTLINE} strokeWidth={2.5} />
+          <ellipse
+            key={i}
+            cx={x + dx}
+            cy={y - 14 + Math.abs(dx) * 0.4}
+            rx={4.6}
+            ry={9}
+            fill={skin.base}
+            stroke={OUTLINE}
+            strokeWidth={2.5}
+          />
         ))}
         <ellipse cx={x} cy={y} rx={14} ry={13} fill={skin.base} stroke={OUTLINE} strokeWidth={OUTLINE_W} />
-        <ellipse cx={x - 15} cy={y + 2} rx={5} ry={8} fill={skin.base} stroke={OUTLINE} strokeWidth={2.5} transform={`rotate(-30 ${x - 15} ${y + 2})`} />
+        <ellipse
+          cx={x - 15}
+          cy={y + 2}
+          rx={5}
+          ry={8}
+          fill={skin.base}
+          stroke={OUTLINE}
+          strokeWidth={2.5}
+          transform={`rotate(-30 ${x - 15} ${y + 2})`}
+        />
       </g>
     );
   }
   return (
     <g>
       <ellipse cx={x} cy={y + 6} rx={12.5} ry={15} fill={skin.base} stroke={OUTLINE} strokeWidth={OUTLINE_W} />
-      <path d={`M${x - 4},${y + 12} Q${x},${y + 16} ${x + 4},${y + 12}`} fill="none" stroke={skin.shadow} strokeWidth={2} strokeLinecap="round" />
+      <path
+        d={`M${x - 4},${y + 12} Q${x},${y + 16} ${x + 4},${y + 12}`}
+        fill="none"
+        stroke={skin.shadow}
+        strokeWidth={2}
+        strokeLinecap="round"
+      />
     </g>
   );
 }
@@ -90,10 +157,15 @@ function Arm({ pose, skin, items }: { pose: ArmPose; skin: Shade; items: RigSpec
   );
 }
 
-const HEAD = 'M200,48 C247,48 273,84 273,136 C273,177 246,212 200,212 C154,212 127,177 127,136 C127,84 153,48 200,48 Z';
+const HEAD =
+  'M200,46 C250,46 276,84 276,134 C276,172 258,199 230,210 C219,215 210,217 200,217 C190,217 181,215 170,210 C142,199 124,172 124,134 C124,84 150,46 200,46 Z';
 const TORSO =
   'M182,240 C164,242 150,248 146,262 C142,290 152,330 160,372 C150,396 146,412 146,430 L254,430 C254,412 250,396 240,372 C248,330 258,290 254,262 C250,248 236,242 218,240 Z';
-const LEG_LEFT = 'M151,424 L198,424 C198,500 197,560 195,620 C193,680 192,720 191,752 L166,752 C164,720 161,680 159,620 C156,560 151,500 151,424 Z';
+const LEG_LEFT =
+  'M151,424 L198,424 C198,500 197,560 195,620 C193,680 192,720 191,752 L166,752 C164,720 161,680 160,640 C158,600 160,580 157,540 C154,500 151,470 151,424 Z';
+
+/** Head layers are drawn a little larger than the body: big heads read as cute (visual-design §7.1). */
+const HEAD_T = 'translate(200 226) scale(1.1) translate(-200 -226)';
 
 function Body({ skin }: { skin: Shade }) {
   return (
@@ -106,10 +178,78 @@ function Body({ skin }: { skin: Shade }) {
         <ellipse key={x} cx={x} cy={765} rx={20} ry={13} fill={skin.base} stroke={OUTLINE} strokeWidth={OUTLINE_W} />
       ))}
       <Shaded d={TORSO} shade={skin} />
-      <Shaded d="M184,192 L216,192 L218,248 L182,248 Z" shade={skin} depth={5} />
-      <circle cx={130} cy={148} r={14} fill={skin.base} stroke={OUTLINE} strokeWidth={OUTLINE_W} />
-      <circle cx={270} cy={148} r={14} fill={skin.shadow} stroke={OUTLINE} strokeWidth={OUTLINE_W} />
+      <Shaded d="M186,196 L214,196 L216,248 L184,248 Z" shade={skin} depth={5} />
+    </g>
+  );
+}
+
+function Head({ skin }: { skin: Shade }) {
+  return (
+    <g>
+      <ellipse cx={127} cy={150} rx={12} ry={15} fill={skin.base} stroke={OUTLINE} strokeWidth={OUTLINE_W} />
+      <ellipse cx={273} cy={150} rx={12} ry={15} fill={skin.shadow} stroke={OUTLINE} strokeWidth={OUTLINE_W} />
       <Shaded d={HEAD} shade={skin} depth={9} />
+    </g>
+  );
+}
+
+const LASH = '#2A2033';
+
+function Eye({ cx, iris, almond, side }: { cx: number; iris: string; almond: boolean; side: -1 | 1 }) {
+  const clip = useId().replace(/:/g, '');
+  const cy = 146;
+  const rx = almond ? 15 : 13.5;
+  const ry = almond ? 13 : 17;
+  const top = cy - ry;
+  // Outer corner is on the side away from the nose.
+  const ox = cx + side * (rx + 2);
+  return (
+    <g>
+      <defs>
+        <clipPath id={clip}>
+          <ellipse cx={cx} cy={cy} rx={rx} ry={ry} />
+        </clipPath>
+      </defs>
+      <ellipse cx={cx} cy={cy} rx={rx} ry={ry} fill={iris} />
+      <g clipPath={`url(#${clip})`}>
+        <rect x={cx - rx} y={top} width={rx * 2} height={ry * 0.55} fill={LASH} opacity={0.35} />
+        <ellipse cx={cx} cy={cy + ry * 0.75} rx={rx * 0.8} ry={ry * 0.45} fill="#FFFFFF" opacity={0.28} />
+        <ellipse cx={cx} cy={cy + 1} rx={rx * 0.45} ry={ry * 0.5} fill={LASH} />
+      </g>
+      <ellipse cx={cx} cy={cy} rx={rx} ry={ry} fill="none" stroke={LASH} strokeWidth={2} />
+      <ellipse cx={cx - 5} cy={cy - 6} rx={5} ry={5.5} fill="#FFFFFF" />
+      <circle cx={cx + 5} cy={cy + 7} r={2.2} fill="#FFFFFF" />
+      <circle cx={cx + 7} cy={cy - 8} r={1.3} fill="#FFFFFF" opacity={0.9} />
+      {/* Upper lash line, thicker toward the outer corner, with two flicks. */}
+      <path
+        d={`M${cx - side * (rx + 1)},${cy - ry * 0.35} Q${cx},${top - 5} ${ox},${cy - ry * 0.5}`}
+        fill="none"
+        stroke={LASH}
+        strokeWidth={4.5}
+        strokeLinecap="round"
+      />
+      <path
+        d={`M${ox - side * 2},${cy - ry * 0.55} q${side * 7},-3 ${side * 10},-9`}
+        fill="none"
+        stroke={LASH}
+        strokeWidth={3}
+        strokeLinecap="round"
+      />
+      <path
+        d={`M${ox - side * 6},${cy - ry * 0.8} q${side * 5},-4 ${side * 6},-11`}
+        fill="none"
+        stroke={LASH}
+        strokeWidth={2.6}
+        strokeLinecap="round"
+      />
+      <path
+        d={`M${cx - side * 4},${cy + ry + 3} Q${cx + side * 6},${cy + ry + 4} ${ox - side * 3},${cy + ry * 0.55}`}
+        fill="none"
+        stroke={LASH}
+        strokeWidth={1.6}
+        strokeLinecap="round"
+        opacity={0.55}
+      />
     </g>
   );
 }
@@ -120,40 +260,28 @@ function Face({ spec }: { spec: RigSpec }) {
   const almond = spec.eyeStyle === 'eyes.almond';
   return (
     <g>
-      <ellipse cx={154} cy={172} rx={13} ry={7.5} fill={blush} opacity={0.55} />
-      <ellipse cx={246} cy={172} rx={13} ry={7.5} fill={blush} opacity={0.55} />
+      <ellipse cx={156} cy={181} rx={14} ry={8.5} fill={blush} opacity={0.5} />
+      <ellipse cx={244} cy={181} rx={14} ry={8.5} fill={blush} opacity={0.5} />
+      <circle cx={151} cy={178} r={2} fill="#FFFFFF" opacity={0.7} />
+      <circle cx={239} cy={178} r={2} fill="#FFFFFF" opacity={0.7} />
       <g className="rig-blink">
-        {[170, 230].map((cx) => (
-          <g key={cx}>
-            <ellipse cx={cx} cy={142} rx={almond ? 12 : 10.5} ry={almond ? 10 : 13} fill={iris} stroke="#2A2033" strokeWidth={2} />
-            <ellipse cx={cx} cy={143} rx={almond ? 6 : 5.5} ry={almond ? 6 : 7.5} fill="#2A2033" />
-            <circle cx={cx - 4} cy={136} r={3.6} fill="#FFFFFF" />
-            <circle cx={cx + 4} cy={148} r={1.6} fill="#FFFFFF" opacity={0.85} />
-            <path
-              d={`M${cx - 13},${almond ? 139 : 136} Q${cx},${almond ? 127 : 124} ${cx + 13},${almond ? 139 : 136}`}
-              fill="none"
-              stroke="#2A2033"
-              strokeWidth={3.5}
-              strokeLinecap="round"
-            />
-            <path
-              d={cx < 200 ? `M${cx - 12},${137} L${cx - 17},${132}` : `M${cx + 12},${137} L${cx + 17},${132}`}
-              stroke="#2A2033"
-              strokeWidth={3}
-              strokeLinecap="round"
-            />
-          </g>
-        ))}
+        <Eye cx={167} iris={iris} almond={almond} side={-1} />
+        <Eye cx={233} iris={iris} almond={almond} side={1} />
       </g>
-      <path d="M156,116 Q170,108 184,114" fill="none" stroke={browColor} strokeWidth={5} strokeLinecap="round" />
-      <path d="M216,114 Q230,108 244,116" fill="none" stroke={browColor} strokeWidth={5} strokeLinecap="round" />
-      <path d="M195,162 Q200,168 205,162" fill="none" stroke={skin.shadow} strokeWidth={3} strokeLinecap="round" />
-      <path d="M185,178 Q200,197 215,178 Q200,185 185,178 Z" fill="#B5485F" stroke={OUTLINE} strokeWidth={2.5} strokeLinejoin="round" />
-      <path d="M193,186 Q200,191 207,186" fill="none" stroke="#F49AAE" strokeWidth={3} strokeLinecap="round" />
+      <path d="M152,113 Q166,105 182,110" fill="none" stroke={browColor} strokeWidth={4.5} strokeLinecap="round" />
+      <path d="M218,110 Q234,105 248,113" fill="none" stroke={browColor} strokeWidth={4.5} strokeLinecap="round" />
+      <path d="M196,170 Q200,174 204,170" fill="none" stroke={skin.shadow} strokeWidth={3} strokeLinecap="round" />
+      <path d="M187,186 Q200,201 213,186 Q200,191 187,186 Z" fill="#B84A63" stroke={OUTLINE} strokeWidth={2.2} strokeLinejoin="round" />
+      <path d="M194,193 Q200,197 206,193" fill="none" stroke="#F59AAF" strokeWidth={3} strokeLinecap="round" />
       {spec.freckles &&
-        [[178, 162], [170, 168], [184, 170], [222, 162], [230, 168], [216, 170]].map(([x, y]) => (
-          <circle key={`${x}-${y}`} cx={x} cy={y} r={1.8} fill={skin.shadow} />
-        ))}
+        [
+          [150, 168],
+          [160, 173],
+          [143, 174],
+          [250, 168],
+          [240, 173],
+          [257, 174],
+        ].map(([x, y]) => <circle key={`${x}-${y}`} cx={x} cy={y} r={1.8} fill={skin.shadow} />)}
     </g>
   );
 }
@@ -191,10 +319,20 @@ export function CharacterRig({ spec, pose = 'idle', title = 'Your character', cl
   const hat = items.headwear;
 
   return (
-    <svg viewBox={crop ?? '0 0 400 800'} className={className} {...frame} role="img" aria-label={title} data-testid="character-rig" data-pose={pose}>
+    <svg
+      viewBox={crop ?? '0 0 400 800'}
+      className={className}
+      {...frame}
+      role="img"
+      aria-label={title}
+      data-testid="character-rig"
+      data-pose={pose}
+    >
       <ellipse cx={200} cy={781} rx={70} ry={10} fill="#3A2E4F" opacity={0.12} />
       <g className={animate ? 'rig-breathe' : undefined}>
-        <g data-layer="hair-back">{HairBack && <HairBack shade={hair} />}</g>
+        <g data-layer="hair-back" transform={HEAD_T}>
+          {HairBack && <HairBack shade={hair} />}
+        </g>
         <g data-layer="body">
           <Body skin={skin} />
         </g>
@@ -223,12 +361,15 @@ export function CharacterRig({ spec, pose = 'idle', title = 'Your character', cl
             <Arm key={i} pose={a} skin={skin} items={items} />
           ))}
         </g>
-        <g data-layer="face">
-          <Face spec={spec} />
+        <g data-layer="head" transform={HEAD_T}>
+          <Head skin={skin} />
+          <g data-layer="face">
+            <Face spec={spec} />
+          </g>
+          <WearLayer items={items} slot="eyewear" />
+          <g data-layer="hair-front">{HairFront && !hat?.hidesHairFront && <HairFront shade={hair} />}</g>
+          <WearLayer items={items} slot="headwear" />
         </g>
-        <WearLayer items={items} slot="eyewear" />
-        <g data-layer="hair-front">{HairFront && !hat?.hidesHairFront && <HairFront shade={hair} />}</g>
-        <WearLayer items={items} slot="headwear" />
       </g>
     </svg>
   );

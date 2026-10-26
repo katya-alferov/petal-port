@@ -26,6 +26,27 @@ export interface FavoriteLook {
   savedAt: number;
 }
 
+export interface DishTopping {
+  id: string;
+  /** Position on the plate, 0..1 in both axes. */
+  x: number;
+  y: number;
+}
+
+export interface Dish {
+  recipeId: string;
+  doneness: 'pale' | 'golden' | 'toasty';
+  toppings: DishTopping[];
+}
+
+export interface Progress {
+  cafe: { correctOrders: number; shifts: number; rank: 1 | 2 | 3 };
+  recipes: Record<string, { cooked: number; stars: number }>;
+  dish: Dish | null;
+  /** Welcome Journey step ids that are done (game-systems §6.7). */
+  journey: string[];
+}
+
 export interface SaveGame {
   schemaVersion: 1;
   createdAt: number;
@@ -44,6 +65,8 @@ export interface SaveGame {
     slots: Record<HomeSlot, ItemId>;
     shelf: ItemId[];
   };
+  /** Added after M0 inside schema 1: older saves get defaults from sanitize(). */
+  progress: Progress;
   settings: {
     music: boolean;
     sfx: boolean;
@@ -55,6 +78,11 @@ export interface SaveGame {
 export const CURRENT_SCHEMA = 1;
 export const MAX_COINS = 99_999;
 export const MAX_NAME = 12;
+export const START_COINS = 120;
+
+export function newProgress(): Progress {
+  return { cafe: { correctOrders: 0, shifts: 0, rank: 1 }, recipes: {}, dish: null, journey: [] };
+}
 
 /** The content facts that sanitize() needs, injected so this module stays pure. */
 export interface SaveContext {
@@ -79,8 +107,9 @@ export function newSave(ctx: SaveContext, now: number): SaveGame {
       favoriteLooks: [null, null, null, null],
     },
     inventory: { owned },
-    wallet: { coins: 50, lifetimeEarned: 0 },
+    wallet: { coins: START_COINS, lifetimeEarned: 0 },
     home: { homeId: 'harbour-loft', themeId: 'theme.seaside', slots: { ...ctx.starterHome }, shelf: [] },
+    progress: newProgress(),
     settings: { music: true, sfx: true, reducedMotion: 'system' },
   };
 }
@@ -156,10 +185,38 @@ export function sanitize(save: SaveGame, ctx: SaveContext): SaveGame {
 
   for (const [slot, id] of Object.entries(s.home.slots) as [HomeSlot, ItemId][])
     if (!ctx.knownItems.has(id)) s.home.slots[slot] = ctx.starterHome[slot];
-  for (const slot of Object.keys(ctx.starterHome) as HomeSlot[])
-    if (!s.home.slots[slot]) s.home.slots[slot] = ctx.starterHome[slot];
+  for (const slot of Object.keys(ctx.starterHome) as HomeSlot[]) if (!s.home.slots[slot]) s.home.slots[slot] = ctx.starterHome[slot];
   s.home.shelf = s.home.shelf.filter((id) => ctx.knownItems.has(id)).slice(0, 3);
+  s.progress = sanitizeProgress((s as Partial<SaveGame>).progress);
   return s;
+}
+
+const clampInt = (v: unknown, max = 1_000_000) => (isNum(v) ? Math.max(0, Math.min(max, Math.floor(v))) : 0);
+
+function sanitizeProgress(raw: unknown): Progress {
+  const p = newProgress();
+  if (!isObj(raw)) return p;
+  const cafe = raw.cafe;
+  if (isObj(cafe)) {
+    p.cafe.correctOrders = clampInt(cafe.correctOrders);
+    p.cafe.shifts = clampInt(cafe.shifts);
+    p.cafe.rank = ([1, 2, 3] as const).find((r) => r === cafe.rank) ?? 1;
+  }
+  if (isObj(raw.recipes))
+    for (const [id, r] of Object.entries(raw.recipes))
+      if (isObj(r)) p.recipes[id] = { cooked: clampInt(r.cooked), stars: clampInt(r.stars, 3) };
+  const d = raw.dish;
+  if (isObj(d) && isStr(d.recipeId) && ['pale', 'golden', 'toasty'].includes(d.doneness as string) && Array.isArray(d.toppings))
+    p.dish = {
+      recipeId: d.recipeId,
+      doneness: d.doneness as Dish['doneness'],
+      toppings: d.toppings
+        .filter((t): t is DishTopping => isObj(t) && isStr(t.id) && isNum(t.x) && isNum(t.y))
+        .slice(0, 8)
+        .map((t) => ({ id: t.id, x: Math.max(0, Math.min(1, t.x)), y: Math.max(0, Math.min(1, t.y)) })),
+    };
+  if (Array.isArray(raw.journey)) p.journey = [...new Set(raw.journey.filter(isStr))];
+  return p;
 }
 
 type Migration = (old: Record<string, unknown>) => Record<string, unknown>;
@@ -178,9 +235,7 @@ export function migrate(raw: unknown): unknown {
   return cur;
 }
 
-export type LoadResult =
-  | { kind: 'ok'; save: SaveGame }
-  | { kind: 'invalid'; errors: string[] };
+export type LoadResult = { kind: 'ok'; save: SaveGame } | { kind: 'invalid'; errors: string[] };
 
 /** parse → migrate → validate → sanitize, for one stored value. */
 export function load(raw: unknown, ctx: SaveContext): LoadResult {

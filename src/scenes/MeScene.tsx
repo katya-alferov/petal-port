@@ -37,7 +37,17 @@ export function MeScene() {
     <section className="scene" aria-label="Me" style={{ background: 'linear-gradient(#FFEBD2, #FFF7EC 60%)' }}>
       <TopBar title="Me" />
       <div style={{ position: 'relative', flex: 1, minHeight: 0, display: 'grid', placeItems: 'center' }}>
-        <div aria-hidden="true" style={{ position: 'absolute', width: '70%', aspectRatio: '1', borderRadius: '50%', background: '#FFE7C2', border: '3px dashed #F2C48E' }} />
+        <div
+          aria-hidden="true"
+          style={{
+            position: 'absolute',
+            width: '70%',
+            aspectRatio: '1',
+            borderRadius: '50%',
+            background: '#FFE7C2',
+            border: '3px dashed #F2C48E',
+          }}
+        />
         <button
           type="button"
           onClick={wave}
@@ -49,7 +59,14 @@ export function MeScene() {
             <Character appearance={appearance} outfit={outfit} pose={pose} className="me-rig" />
           </div>
         </button>
-        <button type="button" className="icon-btn" aria-label="Wave" onClick={wave} style={{ position: 'absolute', right: 14, bottom: 14 }} data-testid="me-wave">
+        <button
+          type="button"
+          className="icon-btn"
+          aria-label="Wave"
+          onClick={wave}
+          style={{ position: 'absolute', right: 14, bottom: 14 }}
+          data-testid="me-wave"
+        >
           <Icon name="wave" />
         </button>
       </div>
@@ -72,7 +89,13 @@ export function MeScene() {
           {tab === 'looks' && (
             <Carousel label="Outfits">
               {TEST_OUTFITS.map((o) => (
-                <Tile key={o.id} label={o.name} selected={sameOutfit(o.outfit, outfit)} onClick={() => change(() => setOutfit(o.outfit))} testId={`look-${o.id}`}>
+                <Tile
+                  key={o.id}
+                  label={o.name}
+                  selected={sameOutfit(o.outfit, outfit)}
+                  onClick={() => change(() => setOutfit(o.outfit))}
+                  testId={`look-${o.id}`}
+                >
                   <Character appearance={appearance} outfit={o.outfit} animate={false} crop="60 200 280 600" title={o.name} />
                 </Tile>
               ))}
@@ -81,7 +104,13 @@ export function MeScene() {
           {tab === 'skin' && (
             <div className="swatches" role="group" aria-label="Skin tone">
               {SKIN_TONES.map((t) => (
-                <Swatch key={t.id} color={t.base} label={t.name} selected={appearance.skinTone === t.id} onClick={() => change(() => setAppearance({ skinTone: t.id }))} />
+                <Swatch
+                  key={t.id}
+                  color={t.base}
+                  label={t.name}
+                  selected={appearance.skinTone === t.id}
+                  onClick={() => change(() => setAppearance({ skinTone: t.id }))}
+                />
               ))}
             </div>
           )}
@@ -89,14 +118,32 @@ export function MeScene() {
             <div style={{ display: 'grid', gap: 6 }}>
               <Carousel label="Hairstyle">
                 {HAIR_STYLES.map((h) => (
-                  <Tile key={h.id} label={h.name} selected={appearance.hairStyle === h.id} onClick={() => change(() => setAppearance({ hairStyle: h.id }))} testId={`hair-${h.id}`}>
-                    <Character appearance={{ ...appearance, hairStyle: h.id }} outfit={{}} animate={false} crop="80 0 240 260" title={h.name} />
+                  <Tile
+                    key={h.id}
+                    label={h.name}
+                    selected={appearance.hairStyle === h.id}
+                    onClick={() => change(() => setAppearance({ hairStyle: h.id }))}
+                    testId={`hair-${h.id}`}
+                  >
+                    <Character
+                      appearance={{ ...appearance, hairStyle: h.id }}
+                      outfit={{}}
+                      animate={false}
+                      crop="80 0 240 260"
+                      title={h.name}
+                    />
                   </Tile>
                 ))}
               </Carousel>
               <div className="swatches" role="group" aria-label="Hair color">
                 {HAIR_COLORS.map((c) => (
-                  <Swatch key={c.id} color={c.base} label={c.name} selected={appearance.hairColor === c.id} onClick={() => change(() => setAppearance({ hairColor: c.id }))} />
+                  <Swatch
+                    key={c.id}
+                    color={c.base}
+                    label={c.name}
+                    selected={appearance.hairColor === c.id}
+                    onClick={() => change(() => setAppearance({ hairColor: c.id }))}
+                  />
                 ))}
               </div>
             </div>
@@ -105,14 +152,32 @@ export function MeScene() {
             <div style={{ display: 'grid', gap: 8 }}>
               <div className="swatches" role="group" aria-label="Eye color">
                 {EYE_COLORS.map((c) => (
-                  <Swatch key={c.id} color={c.iris} label={c.name} selected={appearance.eyeColor === c.id} onClick={() => change(() => setAppearance({ eyeColor: c.id }))} />
+                  <Swatch
+                    key={c.id}
+                    color={c.iris}
+                    label={c.name}
+                    selected={appearance.eyeColor === c.id}
+                    onClick={() => change(() => setAppearance({ eyeColor: c.id }))}
+                  />
                 ))}
               </div>
               <div style={{ display: 'flex', gap: 8, flexWrap: 'wrap' }}>
-                <button type="button" className="btn btn-secondary" aria-pressed={appearance.eyeStyle === 'eyes.almond'} onClick={() => change(() => setAppearance({ eyeStyle: appearance.eyeStyle === 'eyes.round' ? 'eyes.almond' : 'eyes.round' }))}>
+                <button
+                  type="button"
+                  className="btn btn-secondary"
+                  aria-pressed={appearance.eyeStyle === 'eyes.almond'}
+                  onClick={() =>
+                    change(() => setAppearance({ eyeStyle: appearance.eyeStyle === 'eyes.round' ? 'eyes.almond' : 'eyes.round' }))
+                  }
+                >
                   {appearance.eyeStyle === 'eyes.round' ? 'Round eyes' : 'Almond eyes'}
                 </button>
-                <button type="button" className="btn btn-secondary" aria-pressed={appearance.freckles} onClick={() => change(() => setAppearance({ freckles: !appearance.freckles }))}>
+                <button
+                  type="button"
+                  className="btn btn-secondary"
+                  aria-pressed={appearance.freckles}
+                  onClick={() => change(() => setAppearance({ freckles: !appearance.freckles }))}
+                >
                   Freckles {appearance.freckles ? 'on' : 'off'}
                 </button>
               </div>

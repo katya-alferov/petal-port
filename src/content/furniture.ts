@@ -2,25 +2,165 @@
 import type { FurnitureDef, HomeDef } from './types';
 
 const starter = { kind: 'starter', lifestyle: 'urban' } as const;
+const shop = (price: number) => ({ kind: 'shop', shop: 'boutique', price }) as const;
 
 export const FURNITURE: FurnitureDef[] = [
-  { id: 'furn.modern-sofa', type: 'furniture', slot: 'seat', name: 'Modern Sofa', source: starter, art: 'furn/seat/modern-sofa',
-    tints: [{ id: 'main', default: 'sea' }, { id: 'accent', default: 'sunshine' }] },
-  { id: 'furn.round-rug', type: 'furniture', slot: 'rug', name: 'Round Rug', source: starter, art: 'furn/rug/round',
-    tints: [{ id: 'main', default: 'cream' }, { id: 'accent', default: 'coral' }] },
-  { id: 'furn.harbour-print', type: 'furniture', slot: 'wall', name: 'Harbour Print', source: starter, art: 'furn/wall/harbour-print',
-    tints: [{ id: 'main', default: 'cocoa' }, { id: 'accent', default: 'sea' }] },
-  { id: 'furn.arc-lamp', type: 'furniture', slot: 'lamp', name: 'Arc Lamp', source: starter, art: 'furn/lamp/arc',
-    tints: [{ id: 'main', default: 'cream' }] },
-  { id: 'furn.fiddle-leaf', type: 'furniture', slot: 'plant', name: 'Fiddle-leaf Plant', source: starter, art: 'furn/plant/fiddle-leaf',
-    tints: [{ id: 'main', default: 'coral' }] },
-  { id: 'furn.bistro-table', type: 'furniture', slot: 'table', name: 'Bistro Table', source: starter, art: 'furn/table/bistro',
-    tints: [{ id: 'main', default: 'cream' }] },
-  { id: 'furn.floating-shelf', type: 'furniture', slot: 'shelf', name: 'Floating Shelf', source: starter, art: 'furn/shelf/floating',
-    tints: [{ id: 'main', default: 'cocoa' }] },
-  { id: 'furn.blinds', type: 'furniture', slot: 'window', name: 'Blinds', source: starter, art: 'furn/window/blinds',
-    tints: [{ id: 'main', default: 'cream' }, { id: 'accent', default: 'sea' }] },
+  {
+    id: 'furn.modern-sofa',
+    type: 'furniture',
+    slot: 'seat',
+    name: 'Modern Sofa',
+    source: starter,
+    art: 'furn/seat/modern-sofa',
+    tints: [
+      { id: 'main', default: 'sea' },
+      { id: 'accent', default: 'sunshine' },
+    ],
+  },
+  {
+    id: 'furn.round-rug',
+    type: 'furniture',
+    slot: 'rug',
+    name: 'Round Rug',
+    source: starter,
+    art: 'furn/rug/round',
+    tints: [
+      { id: 'main', default: 'cream' },
+      { id: 'accent', default: 'coral' },
+    ],
+  },
+  {
+    id: 'furn.harbour-print',
+    type: 'furniture',
+    slot: 'wall',
+    name: 'Harbour Print',
+    source: starter,
+    art: 'furn/wall/harbour-print',
+    tints: [
+      { id: 'main', default: 'cocoa' },
+      { id: 'accent', default: 'sea' },
+    ],
+  },
+  {
+    id: 'furn.arc-lamp',
+    type: 'furniture',
+    slot: 'lamp',
+    name: 'Arc Lamp',
+    source: starter,
+    art: 'furn/lamp/arc',
+    tints: [{ id: 'main', default: 'cream' }],
+  },
+  {
+    id: 'furn.fiddle-leaf',
+    type: 'furniture',
+    slot: 'plant',
+    name: 'Fiddle-leaf Plant',
+    source: starter,
+    art: 'furn/plant/fiddle-leaf',
+    tints: [{ id: 'main', default: 'coral' }],
+  },
+  {
+    id: 'furn.bistro-table',
+    type: 'furniture',
+    slot: 'table',
+    name: 'Bistro Table',
+    source: starter,
+    art: 'furn/table/bistro',
+    tints: [{ id: 'main', default: 'cream' }],
+  },
+  {
+    id: 'furn.floating-shelf',
+    type: 'furniture',
+    slot: 'shelf',
+    name: 'Floating Shelf',
+    source: starter,
+    art: 'furn/shelf/floating',
+    tints: [{ id: 'main', default: 'cocoa' }],
+  },
+  {
+    id: 'furn.blinds',
+    type: 'furniture',
+    slot: 'window',
+    name: 'Blinds',
+    source: starter,
+    art: 'furn/window/blinds',
+    tints: [
+      { id: 'main', default: 'cream' },
+      { id: 'accent', default: 'sea' },
+    ],
+  },
+  // Ribbon Boutique, Home tab
+  {
+    id: 'furn.heart-rug',
+    type: 'furniture',
+    slot: 'rug',
+    name: 'Heart Rug',
+    source: shop(60),
+    art: 'furn/rug/heart',
+    tints: [
+      { id: 'main', default: 'petal' },
+      { id: 'accent', default: 'cream' },
+    ],
+  },
+  {
+    id: 'furn.rainbow-print',
+    type: 'furniture',
+    slot: 'wall',
+    name: 'Rainbow Print',
+    source: shop(40),
+    art: 'furn/wall/rainbow-print',
+    tints: [{ id: 'main', default: 'sunshine' }],
+  },
+  {
+    id: 'furn.cactus',
+    type: 'furniture',
+    slot: 'plant',
+    name: 'Happy Cactus',
+    source: shop(30),
+    art: 'furn/plant/cactus',
+    tints: [{ id: 'main', default: 'sea' }],
+  },
+  {
+    id: 'furn.mushroom-lamp',
+    type: 'furniture',
+    slot: 'lamp',
+    name: 'Mushroom Lamp',
+    source: shop(70),
+    art: 'furn/lamp/mushroom',
+    tints: [
+      { id: 'main', default: 'coral' },
+      { id: 'accent', default: 'cream' },
+    ],
+  },
+  {
+    id: 'furn.loveseat',
+    type: 'furniture',
+    slot: 'seat',
+    name: 'Petal Loveseat',
+    source: shop(120),
+    art: 'furn/seat/loveseat',
+    tints: [
+      { id: 'main', default: 'petal' },
+      { id: 'accent', default: 'cream' },
+    ],
+  },
+  {
+    id: 'furn.curtains',
+    type: 'furniture',
+    slot: 'window',
+    name: 'Flowy Curtains',
+    source: shop(50),
+    art: 'furn/window/curtains',
+    tints: [
+      { id: 'main', default: 'lilac' },
+      { id: 'accent', default: 'sunshine' },
+    ],
+  },
 ];
+
+export function furnitureFor(slot: FurnitureDef['slot']): FurnitureDef[] {
+  return FURNITURE.filter((f) => f.slot === slot);
+}
 
 export function furniture(id: string): FurnitureDef | undefined {
   return FURNITURE.find((f) => f.id === id);

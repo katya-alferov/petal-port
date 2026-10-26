@@ -46,7 +46,13 @@ export function Waterfront({ sailing = false }: { sailing?: boolean }) {
     roof: HOUSE_SHADES[(i + 3) % HOUSE_SHADES.length],
   }));
   return (
-    <svg viewBox="0 0 1170 2532" preserveAspectRatio="xMidYMid slice" role="img" aria-label="The Petalport waterfront on a sunny morning" data-testid="waterfront">
+    <svg
+      viewBox="0 0 1170 2532"
+      preserveAspectRatio="xMidYMid slice"
+      role="img"
+      aria-label="The Petalport waterfront on a sunny morning"
+      data-testid="waterfront"
+    >
       <defs>
         <linearGradient id="wf-sky" x1="0" y1="0" x2="0" y2="1">
           <stop offset="0" stopColor="#C9B8FF" />
@@ -68,8 +74,18 @@ export function Waterfront({ sailing = false }: { sailing?: boolean }) {
         <path d={scallopCircle(960, 670, 40, 7, 6)} fill="#FFF7EC" />
       </g>
       {/* Hills */}
-      <path d="M0,1330 C200,1220 380,1260 560,1300 C760,1240 960,1200 1170,1290 L1170,1560 L0,1560 Z" fill="#8CCB9E" stroke={OUTLINE} strokeWidth={4} />
-      <path d="M0,1420 C240,1370 520,1400 760,1380 C920,1370 1060,1390 1170,1400 L1170,1560 L0,1560 Z" fill="#7ED6A7" stroke={OUTLINE} strokeWidth={4} />
+      <path
+        d="M0,1330 C200,1220 380,1260 560,1300 C760,1240 960,1200 1170,1290 L1170,1560 L0,1560 Z"
+        fill="#8CCB9E"
+        stroke={OUTLINE}
+        strokeWidth={4}
+      />
+      <path
+        d="M0,1420 C240,1370 520,1400 760,1380 C920,1370 1060,1390 1170,1400 L1170,1560 L0,1560 Z"
+        fill="#7ED6A7"
+        stroke={OUTLINE}
+        strokeWidth={4}
+      />
       {/* Houses along the quay */}
       {houses.map((h) => (
         <House key={h.x} x={h.x} y={1560 - h.h} w={h.w} h={h.h} color={h.color} roof={h.roof} />
@@ -120,7 +136,13 @@ export function Waterfront({ sailing = false }: { sailing?: boolean }) {
         <g key={x}>
           <rect x={x} y={2150} width={90} height={40} rx={8} fill="#C98F5E" stroke={OUTLINE} strokeWidth={4} />
           {[0, 1, 2].map((i) => (
-            <path key={i} d={scallopCircle(x + 18 + i * 27, 2140, 14, 6, 3)} fill={['#FF7BA9', '#FFC94A', '#B39DFF'][i]} stroke={OUTLINE} strokeWidth={3} />
+            <path
+              key={i}
+              d={scallopCircle(x + 18 + i * 27, 2140, 14, 6, 3)}
+              fill={['#FF7BA9', '#FFC94A', '#B39DFF'][i]}
+              stroke={OUTLINE}
+              strokeWidth={3}
+            />
           ))}
         </g>
       ))}

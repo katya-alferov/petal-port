@@ -4,6 +4,35 @@ import type { ReactElement } from 'react';
 const S = { stroke: '#5B4A6E', strokeWidth: 2.5, strokeLinejoin: 'round' as const, strokeLinecap: 'round' as const };
 
 export const ICONS: Record<string, ReactElement> = {
+  bin: (
+    <svg viewBox="0 0 32 32" aria-hidden="true">
+      <path d="M8,10 L24,10 L22,28 L10,28 Z" fill="#B39DFF" {...S} />
+      <path d="M6,10 L26,10 M13,6 L19,6 L20,10 L12,10 Z" fill="#FFF7EC" {...S} />
+      <path d="M13,14 L13.5,24 M19,14 L18.5,24" {...S} fill="none" />
+    </svg>
+  ),
+  bell: (
+    <svg viewBox="0 0 32 32" aria-hidden="true">
+      <path d="M6,24 C6,14 10,9 16,9 C22,9 26,14 26,24 Z" fill="#FFC94A" {...S} />
+      <path d="M3,24 L29,24 L29,27 L3,27 Z" fill="#FFF7EC" {...S} />
+      <circle cx={16} cy={7} r={2.5} fill="#FFC94A" {...S} />
+      <path d="M11,14 C12,12 13,11.5 14,11" fill="none" stroke="#FFFFFF" strokeWidth={2.5} strokeLinecap="round" />
+    </svg>
+  ),
+  bag: (
+    <svg viewBox="0 0 32 32" aria-hidden="true">
+      <path d="M6,11 L26,11 L28,28 L4,28 Z" fill="#FF7BA9" {...S} />
+      <path d="M11,13 L11,9 C11,5 21,5 21,9 L21,13" fill="none" {...S} />
+      <path d="M16,16 C14.5,14.5 12,15.5 13,18 L16,21 L19,18 C20,15.5 17.5,14.5 16,16 Z" fill="#FFF7EC" {...S} strokeWidth={1.8} />
+    </svg>
+  ),
+  pan: (
+    <svg viewBox="0 0 32 32" aria-hidden="true">
+      <ellipse cx={13} cy={18} rx={10} ry={8} fill="#5B4A6E" {...S} />
+      <ellipse cx={13} cy={17} rx={6.5} ry={5} fill="#FFC94A" />
+      <path d="M22,16 L30,12" {...S} strokeWidth={4} />
+    </svg>
+  ),
   map: (
     <svg viewBox="0 0 32 32" aria-hidden="true">
       <path d="M4,8 L11,5 L21,8 L28,5 L28,24 L21,27 L11,24 L4,27 Z" fill="#7ED6A7" {...S} />
@@ -20,7 +49,11 @@ export const ICONS: Record<string, ReactElement> = {
   ),
   closet: (
     <svg viewBox="0 0 32 32" aria-hidden="true">
-      <path d="M16,9 C16,6 19,5.5 19.5,8 C20,10 16,11 16,13 L28,22 C29,23 28.5,25 27,25 L5,25 C3.5,25 3,23 4,22 L16,13" fill="none" {...S} />
+      <path
+        d="M16,9 C16,6 19,5.5 19.5,8 C20,10 16,11 16,13 L28,22 C29,23 28.5,25 27,25 L5,25 C3.5,25 3,23 4,22 L16,13"
+        fill="none"
+        {...S}
+      />
       <path d="M8,25 L10,18 L22,18 L24,25 Z" fill="#FF7BA9" {...S} />
     </svg>
   ),
@@ -70,7 +103,11 @@ export const ICONS: Record<string, ReactElement> = {
   ),
   wave: (
     <svg viewBox="0 0 32 32" aria-hidden="true">
-      <path d="M11,27 C7,23 6,18 7,14 L9,9 C9.5,7.5 11.5,8 11.3,9.6 L10.8,13 L14,5 C14.6,3.6 16.6,4.2 16.2,5.8 L14,13 L18,4 C18.6,2.6 20.6,3.2 20.2,4.8 L17,13 L20.6,6.5 C21.4,5.2 23.2,6 22.6,7.5 L19,15.5 C21,14.5 23.5,15.5 24,17 C21,18 19,21 18,24 C17,27 14,28.5 11,27 Z" fill="#FFD9C9" {...S} />
+      <path
+        d="M11,27 C7,23 6,18 7,14 L9,9 C9.5,7.5 11.5,8 11.3,9.6 L10.8,13 L14,5 C14.6,3.6 16.6,4.2 16.2,5.8 L14,13 L18,4 C18.6,2.6 20.6,3.2 20.2,4.8 L17,13 L20.6,6.5 C21.4,5.2 23.2,6 22.6,7.5 L19,15.5 C21,14.5 23.5,15.5 24,17 C21,18 19,21 18,24 C17,27 14,28.5 11,27 Z"
+        fill="#FFD9C9"
+        {...S}
+      />
     </svg>
   ),
 };
