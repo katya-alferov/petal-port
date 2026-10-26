@@ -606,3 +606,15 @@ Wave B adds a dress-up goal, an exploration collection and more doll-style cloth
 - Pay **14** per customer, **+4** tip when no tap was wrong, **+12** shift bonus (max 4 x 18 + 12 = 84). A finished shift also grows the garden.
 - Orders are seeded by the shift number (deterministic). Toppings grow with each customer: 1, 2, 3, 4.
 - Stickers (40 in all): Burger Buddy (1 shift) and Burger Chef (5 shifts). Save: optional `progress.burger {orders, shifts}`.
+
+## 13. Sweet Spot cupcake shop (Wave D)
+
+- A fourth job on Snack Street, next to Bun & Bite. 3 customers per shift; each card names a **frosting** (6 colors), a **swirl** (tall or smooth) and a **topping** (cherry, sprinkles, gold star, candy heart, candle). The cupcake starts different from the card in every part. Serve it: a wrong look says which parts to check; nothing is lost.
+- Pay **12** per customer, **+4** tip when the first look is right, **+10** shift bonus (max 3 x 16 + 10 = 58). A finished shift grows the garden.
+- **Collection:** every different design served (6 x 2 x 5 = 60 possible) is kept once in the album's **Treats** page.
+- Stickers (42 in all): Sweet Helper (1 shift), Cupcake Designer (10 designs). Save: optional `progress.sweets {served, shifts, made[]}`.
+
+## 14. Next up ideas (Wave D)
+
+- A star button on the town map opens "Next up": up to 3 things the player has not tried yet, as tappable rows that open the place: pick a ready flower, save for or buy the Paris ticket, first Paris photo, plant a flower, runway, salon, burgers, cupcakes, adopt a pet, a Petal Note, secret shells, cupcake designs.
+- Only suggestions. Nothing expires, nothing is owed, no streaks or rewards for opening it.

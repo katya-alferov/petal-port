@@ -522,3 +522,11 @@ test('sweet spot: a wrong cupcake is explained, a match pays, and the design joi
   await page.getByRole('tab', { name: /Treats/ }).click();
   await expect(page.getByTestId(`treat-${want.frosting}|${want.swirl}|${want.topping}`)).toBeVisible();
 });
+
+test('next up: the ideas list opens a place when tapped', async ({ page }) => {
+  await page.goto('./?fixture=fresh&scene=town');
+  await page.getByTestId('ideas-open').click();
+  await expect(page.getByTestId('ideas-list').locator('li')).toHaveCount(3);
+  await page.getByTestId('idea-ticket').click();
+  await expect(page.getByTestId('airport-desk')).toBeVisible();
+});

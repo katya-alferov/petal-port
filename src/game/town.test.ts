@@ -15,6 +15,7 @@ import { HAIR_COLORS } from '../content/appearance';
 import { SALON_MENU, SEEDS } from '../content/wavec';
 import { BLOOM_AT, grow, pickBloom, plant, stage } from './garden';
 import { seasonFor } from './season';
+import { nextGoals } from './goals';
 import { addDesign, checkCupcake, designKey, MAX_DESIGNS, sweetOrders, sweetPay } from './sweets';
 import { SWEET_MENU } from '../content/sweets';
 import { BURGER_PAY, BURGER_TIP, burgerOrders, burgerPay, CUSTOMERS_PER_SHIFT, tapPart } from './burger';
@@ -471,5 +472,27 @@ describe('Sweet Spot (§13)', () => {
     expect(sanitize(raw, SAVE_CONTEXT).progress.sweets).toEqual({ served: 0, shifts: 0, made: [] });
     raw.progress.sweets = { served: 3, shifts: 1, made: ['a|b|c', 'a|b|c', 7] };
     expect(sanitize(raw, SAVE_CONTEXT).progress.sweets).toEqual({ served: 3, shifts: 1, made: ['a|b|c'] });
+  });
+});
+
+describe('Next up ideas (§14)', () => {
+  it('suggests at most 3 things, starting with the ticket on a new save', () => {
+    const g = nextGoals(newSave(SAVE_CONTEXT, 1));
+    expect(g).toHaveLength(3);
+    expect(g[0].id).toBe('ticket');
+    expect(g[0].text).toContain('120 of 400');
+  });
+  it('a ready flower comes first, and finished things drop off the list', () => {
+    const s = newSave(SAVE_CONTEXT, 1);
+    s.progress.garden.beds[0] = { seed: 'seed.tulip', growth: 5 };
+    s.progress.travel.ticket = true;
+    s.progress.shows.done = 1;
+    s.progress.salon.shifts = 1;
+    const g = nextGoals(s, 10).map((x) => x.id);
+    expect(g[0]).toBe('pick');
+    expect(g).toContain('photo');
+    expect(g).not.toContain('show');
+    expect(g).not.toContain('salon');
+    expect(g).not.toContain('plant');
   });
 });

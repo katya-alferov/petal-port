@@ -1936,3 +1936,21 @@ g[role='button']:focus-visible {
 .sweet-stage[data-wobble='true'] {
   animation: burger-wobble 0.35s;
 }
+
+/* Next up ideas (game-systems §14) */
+.idea-row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  width: 100%;
+  min-height: 56px;
+  padding: 8px 14px;
+  font: inherit;
+  color: var(--ink, #5b4a6e);
+  cursor: pointer;
+}
+.idea-row svg {
+  width: 28px;
+  height: 28px;
+  flex: none;
+}

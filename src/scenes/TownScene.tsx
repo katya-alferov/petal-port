@@ -1,3 +1,5 @@
+import { Icon } from '../ui/icons';
+import { nextGoals } from '../game/goals';
 import { useEffect, useRef, useState } from 'react';
 import { MAP_H, PLACE_Y, TownMap, type PlaceId } from '../art/scenes/TownMap';
 import { JOURNEY_COINS, JOURNEY_STEPS } from '../content/recipes';
@@ -40,6 +42,7 @@ export function TownScene() {
   const owned = useGame((s) => s.save.inventory.owned);
   const [open, setOpen] = useState<PlaceId | null>(null);
   const [journey, setJourney] = useState(false);
+  const [ideas, setIdeas] = useState(false);
   const journeyDone = useGame((s) => s.save.progress.journey);
   const scroller = useRef<HTMLDivElement>(null);
   const save = useGame((s) => s.save);
@@ -99,11 +102,36 @@ export function TownScene() {
       <div style={{ position: 'relative', zIndex: 5, padding: '0 12px', alignSelf: 'flex-start' }}>
         <div style={{ display: 'flex', gap: 8 }}>
           <IconButton icon="flag" label="Welcome Journey" onClick={() => (play('pop'), setJourney(true))} testId="journey-open" />
+          <IconButton icon="star" label="Next up" onClick={() => (play('pop'), setIdeas(true))} testId="ideas-open" />
           <IconButton icon="album" label="Sticker Album" onClick={() => (play('pop'), setScene('album'))} testId="album-open" />
         </div>
       </div>
       <div style={{ flex: 1 }} />
       <MainDock current="town" />
+      {ideas && (
+        <Sheet title="Next up" onClose={() => setIdeas(false)}>
+          <ul style={{ listStyle: 'none', padding: 0, margin: '0 0 12px', display: 'grid', gap: 8 }} data-testid="ideas-list">
+            {nextGoals(save).map((g) => (
+              <li key={g.id}>
+                <button
+                  type="button"
+                  className="panel idea-row"
+                  data-testid={`idea-${g.id}`}
+                  onClick={() => {
+                    play('chime');
+                    setIdeas(false);
+                    setScene(g.go);
+                  }}
+                >
+                  <span style={{ flex: 1, fontWeight: 800, textAlign: 'left' }}>{g.text}</span>
+                  <Icon name="star" />
+                </button>
+              </li>
+            ))}
+          </ul>
+          <p style={{ margin: 0 }}>Just ideas, in any order. Nothing runs out!</p>
+        </Sheet>
+      )}
       {journey && (
         <Sheet title="Welcome Journey" onClose={() => setJourney(false)}>
           <ul style={{ listStyle: 'none', padding: 0, margin: '0 0 12px', display: 'grid', gap: 8 }} data-testid="journey-list">
