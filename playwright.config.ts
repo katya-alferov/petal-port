@@ -10,7 +10,8 @@ export default defineConfig({
   outputDir: 'test-results',
   fullyParallel: true,
   retries: process.env.CI ? 1 : 0,
-  reporter: process.env.CI ? [['list'], ['html', { open: 'never' }]] : 'list',
+  // The github reporter turns failures into annotations, readable without downloading logs.
+  reporter: process.env.CI ? [['list'], ['github'], ['html', { open: 'never' }]] : 'list',
   use: {
     baseURL: 'http://localhost:4173/',
     reducedMotion: 'reduce',
@@ -29,6 +30,15 @@ export default defineConfig({
     {
       name: 'chromium-iphone',
       use: { viewport: { width: 390, height: 844 }, deviceScaleFactor: 3, isMobile: true, hasTouch: true, launchOptions },
+    },
+    // Same small viewports as the WebKit phones, for sandboxes that only have Chromium.
+    {
+      name: 'chromium-se',
+      use: { viewport: { width: 375, height: 667 }, deviceScaleFactor: 2, isMobile: true, hasTouch: true, launchOptions },
+    },
+    {
+      name: 'chromium-i13',
+      use: { viewport: { width: 390, height: 664 }, deviceScaleFactor: 3, isMobile: true, hasTouch: true, launchOptions },
     },
   ],
 });

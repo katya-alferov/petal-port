@@ -197,16 +197,21 @@ test('kitchen: cook pancakes start to finish and see them on the table', async (
 
 test('town: every place opens a card; the airport says it is coming soon', async ({ page }) => {
   await page.goto('./?fixture=fresh&scene=town');
+  const tapPlace = async (id: string) => {
+    const place = page.getByTestId(`place-${id}`);
+    await place.evaluate((e) => e.scrollIntoView({ block: 'center' }));
+    await place.click({ force: true });
+  };
   for (const id of ['cafe', 'boutique', 'home', 'park', 'airport']) {
-    await page.getByTestId(`place-${id}`).click({ force: true });
+    await tapPlace(id);
     await expect(page.getByRole('dialog'), id).toBeVisible();
     await page.keyboard.press('Escape');
   }
-  await page.getByTestId('place-airport').click({ force: true });
+  await tapPlace('airport');
   await page.getByTestId('place-go').click({ force: true });
   await expect(page.getByRole('status').filter({ hasText: 'coming soon' })).toBeVisible();
   await page.keyboard.press('Escape');
-  await page.getByTestId('place-cafe').click({ force: true });
+  await tapPlace('cafe');
   await page.getByTestId('place-go').click();
   await expect(page.getByTestId('order-bubble')).toBeVisible();
 });
