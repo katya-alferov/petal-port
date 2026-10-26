@@ -63,8 +63,10 @@ test('outfit, skin and room theme survive a reload', async ({ page }) => {
 
 test('every tappable thing on Home responds', async ({ page }) => {
   await page.goto('./?fixture=fresh&scene=home');
+  // Keyboard activation: the same handler as a tap, and independent of how small the screen is.
   for (const id of ['hotspot-plant', 'hotspot-seat']) {
-    await page.getByTestId(id).click({ force: true });
+    await page.getByTestId(id).focus();
+    await page.keyboard.press('Enter');
     await expect(page.getByRole('status')).toBeVisible();
   }
   await page.getByTestId('home-character').click({ force: true });
