@@ -322,3 +322,13 @@ All OFL-1.1, self-hosted WOFF2, Latin subset.
 | **Automated art lint** (Vitest over `src/art`) | Fills only from `colors` props or palette defs; outline color `--outline`; stroke widths within ±0.5 px of the canvas rule; correct viewBox; node count ≤ 120 per wearable and ≤ 2,000 per scene; no filters/foreignObject/external refs; every tint region has `data-tint` | Every commit |
 | **Batch lineups** | Review by group (all tops side by side on the rig, all hats on all hair) rather than item by item; each batch is one gallery URL | Each milestone |
 | **Fallback style** | A pre-agreed flatter "paper cut-out" variant: same palette and proportions, fewer curves, no interior fold lines, shading as one flat shadow shape. Switch if (a) the M0 gate fails twice, or (b) more than 1 in 4 items in a batch needs a third revision | Decided at the M0 gate |
+
+## 14. 2009 doll glam (owner's direction, Oct 2026)
+
+The owner asked for the look of the 2009 Israeli virtual-city "dolls". We keep crisp vector art (sharp on iPhone, tintable) and borrow the style, never the images:
+
+- **Eyes:** larger, two-tone glassy iris (dark under the lashes, bright glow at the bottom), a big top-left highlight plus a four-point white glint, a thick winged lash line with three lashes.
+- **Mouth and cheeks:** glossy pink open smile with a row of teeth and a shine dot; pink blush with white hatch shine.
+- **Hair:** a glossy halo of strand glints across the crown; "Doll curls" style with volume, ringlet ends and a flower clip (new default).
+- **Backdrops:** `GlamBackdrop` (glossy bubbles, hearts, twinkling sparkles; decorative, never tappable, reduced-motion aware) on Title, Me and the Boutique; pink-lilac gradients.
+- **Rooms:** Candy Doll (polka dots) and Lilac Dream (tufted quilting) themes.

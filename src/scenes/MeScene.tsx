@@ -9,7 +9,7 @@ import type { EquippedItem, Outfit } from '../game/save';
 import { equip, unequip } from '../game/wardrobe';
 import { play } from '../platform/audio';
 import { useGame } from '../state/store';
-import { Carousel, Swatch, Tabs, Tile } from '../ui/kit';
+import { Carousel, Swatch, Tabs, Tile, GlamBackdrop } from '../ui/kit';
 import { Icon } from '../ui/icons';
 import { Character, MainDock, SLOT_CROP, TopBar } from './common';
 
@@ -64,9 +64,10 @@ export function MeScene() {
   };
 
   return (
-    <section className="scene" aria-label="Me" style={{ background: 'linear-gradient(#FFEBD2, #FFF7EC 60%)' }}>
+    <section className="scene" aria-label="Me" style={{ background: 'linear-gradient(#FFD6E6, #FFF0F6 45%, #FFF7EC 75%)' }}>
       <TopBar title="Me" />
       <div style={{ position: 'relative', flex: 1, minHeight: 0, display: 'grid', placeItems: 'center' }}>
+        <GlamBackdrop />
         <div
           aria-hidden="true"
           style={{
@@ -74,8 +75,8 @@ export function MeScene() {
             width: '70%',
             aspectRatio: '1',
             borderRadius: '50%',
-            background: '#FFE7C2',
-            border: '3px dashed #F2C48E',
+            background: 'radial-gradient(circle at 35% 30%, #FFFFFF, #FFE3EE 55%, #FFC9DD)',
+            border: '3px dashed #FF9BBE',
           }}
         />
         <button

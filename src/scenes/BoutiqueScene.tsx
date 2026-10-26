@@ -6,7 +6,7 @@ import { priceOf, WEARABLES } from '../content/wearables';
 import { equip } from '../game/wardrobe';
 import { play } from '../platform/audio';
 import { useGame } from '../state/store';
-import { Button, Tabs } from '../ui/kit';
+import { Button, GlamBackdrop, Tabs } from '../ui/kit';
 import { Icon } from '../ui/icons';
 import { ActivityBar, Character, FurnitureThumb, SLOT_CROP } from './common';
 
@@ -58,6 +58,7 @@ export function BoutiqueScene() {
     <section className="scene" aria-label="Ribbon Boutique" style={{ background: 'linear-gradient(#FFD6E6, #FFF0F6 55%)' }}>
       <ActivityBar title="Ribbon Boutique" onBack={() => setScene('town')} />
       <div style={{ position: 'relative', flex: '0 0 38%', display: 'flex', alignItems: 'stretch', gap: 8, padding: '0 12px' }}>
+        <GlamBackdrop />
         <div
           aria-hidden="true"
           style={{

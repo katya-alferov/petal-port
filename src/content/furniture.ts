@@ -217,6 +217,8 @@ export const HARBOUR_LOFT: HomeDef = {
     { id: 'theme.seaside', name: 'Seaside', walls: '#CDEEEA', floor: '#E6C29A', trim: '#FFF7EC' },
     { id: 'theme.sunset', name: 'Sunset', walls: '#FFD9C9', floor: '#D7A07A', trim: '#B39DFF' },
     { id: 'theme.night-market', name: 'Night Market', walls: '#2F5F78', floor: '#8B5E3C', trim: '#FFC94A' },
+    { id: 'theme.candy', name: 'Candy Doll', walls: '#FFCFE1', floor: '#F7AECB', trim: '#FFF7EC', pattern: 'dots' },
+    { id: 'theme.lilac-dream', name: 'Lilac Dream', walls: '#E6DCFF', floor: '#CDBDF5', trim: '#FF9BBE', pattern: 'quilt' },
   ],
   slotAnchors: {
     wall: { x: 150, y: 640, w: 340, h: 340, z: 1 },

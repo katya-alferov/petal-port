@@ -88,6 +88,8 @@ export interface HomeTheme {
   walls: string;
   floor: string;
   trim: string;
+  /** Wallpaper motif; leaves by default. */
+  pattern?: 'leaf' | 'dots' | 'quilt';
 }
 
 export interface SlotAnchor {

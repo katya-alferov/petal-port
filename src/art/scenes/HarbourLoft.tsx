@@ -128,12 +128,45 @@ export function HarbourLoft({ room, children, lampOn = true, onSlotTap, tappable
       data-testid="room-harbour-loft"
     >
       <rect width={1170} height={FLOOR_Y} fill={room.walls} />
-      {Array.from({ length: 9 }).flatMap((_, row) =>
-        Array.from({ length: 7 }).map((__, col) => (
-          <g key={`${row}-${col}`} transform={`translate(${90 + col * 170 + (row % 2) * 85} ${400 + row * 150})`} opacity={0.55}>
-            <path d="M0,-12 C6,-4 6,4 0,12 C-6,4 -6,-4 0,-12 Z" fill={wallLine} />
-          </g>
-        )),
+      {room.pattern === 'leaf' &&
+        Array.from({ length: 9 }).flatMap((_, row) =>
+          Array.from({ length: 7 }).map((__, col) => (
+            <g key={`${row}-${col}`} transform={`translate(${90 + col * 170 + (row % 2) * 85} ${400 + row * 150})`} opacity={0.55}>
+              <path d="M0,-12 C6,-4 6,4 0,12 C-6,4 -6,-4 0,-12 Z" fill={wallLine} />
+            </g>
+          )),
+        )}
+      {room.pattern === 'dots' &&
+        Array.from({ length: 13 }).flatMap((_, row) =>
+          Array.from({ length: 10 }).map((__, col) => (
+            <circle
+              key={`${row}-${col}`}
+              cx={40 + col * 120 + (row % 2) * 60}
+              cy={360 + row * 100}
+              r={row % 3 === 1 ? 10 : 16}
+              fill={row % 3 === 1 ? trim.base : '#FFFFFF'}
+              opacity={0.8}
+            />
+          )),
+        )}
+      {room.pattern === 'quilt' && (
+        <g opacity={0.7}>
+          {/* Tufted quilting: 45° diamonds with a button at every crossing. */}
+          {Array.from({ length: 19 }).map((_, i) => (
+            <path key={`a${i}`} d={`M${-1260 + i * 140},${FLOOR_Y} l1300,-1300`} stroke={wallLine} strokeWidth={4} />
+          ))}
+          {Array.from({ length: 19 }).map((_, i) => (
+            <path key={`b${i}`} d={`M${i * 140},${FLOOR_Y} l-1300,-1300`} stroke={wallLine} strokeWidth={4} />
+          ))}
+          {Array.from({ length: 19 }).flatMap((_, k) =>
+            Array.from({ length: 18 })
+              .map((__, c) => c)
+              .filter((c) => (c + k) % 2 === 0)
+              .map((c) => (
+                <circle key={`q${k}-${c}`} cx={c * 70} cy={FLOOR_Y - k * 70} r={7} fill="#FFFFFF" stroke={wallLine} strokeWidth={2} />
+              )),
+          )}
+        </g>
       )}
       <rect x={620} y={580} width={440} height={580} rx={30} fill={trim.base} stroke={OUTLINE} strokeWidth={6} />
       <WindowView night={night} />

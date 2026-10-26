@@ -195,11 +195,37 @@ function Head({ skin }: { skin: Shade }) {
 
 const LASH = '#2A2033';
 
+/** Mixes a hex color toward another (t in 0..1); used for the two-tone doll iris. */
+function tone(a: string, b: string, t: number): string {
+  const n = (h: string) => [1, 3, 5].map((i) => parseInt(h.slice(i, i + 2), 16));
+  const [x, y] = [n(a), n(b)];
+  return (
+    '#' +
+    x
+      .map((v, i) =>
+        Math.round(v + (y[i] - v) * t)
+          .toString(16)
+          .padStart(2, '0'),
+      )
+      .join('')
+  );
+}
+
+/** Four-point sparkle, the classic glint of 2009 doll art. */
+function Glint({ x, y, r }: { x: number; y: number; r: number }) {
+  return (
+    <path
+      d={`M${x},${y - r} Q${x},${y} ${x + r},${y} Q${x},${y} ${x},${y + r} Q${x},${y} ${x - r},${y} Q${x},${y} ${x},${y - r} Z`}
+      fill="#FFFFFF"
+    />
+  );
+}
+
 function Eye({ cx, iris, almond, side }: { cx: number; iris: string; almond: boolean; side: -1 | 1 }) {
   const clip = useId().replace(/:/g, '');
-  const cy = 146;
-  const rx = almond ? 15 : 13.5;
-  const ry = almond ? 13 : 17;
+  const cy = 147;
+  const rx = almond ? 17 : 15.5;
+  const ry = almond ? 15 : 18.5;
   const top = cy - ry;
   // Outer corner is on the side away from the nose.
   const ox = cx + side * (rx + 2);
@@ -210,45 +236,43 @@ function Eye({ cx, iris, almond, side }: { cx: number; iris: string; almond: boo
           <ellipse cx={cx} cy={cy} rx={rx} ry={ry} />
         </clipPath>
       </defs>
-      <ellipse cx={cx} cy={cy} rx={rx} ry={ry} fill={iris} />
+      <ellipse cx={cx} cy={cy} rx={rx} ry={ry} fill={tone(iris, '#2A2033', 0.25)} />
       <g clipPath={`url(#${clip})`}>
-        <rect x={cx - rx} y={top} width={rx * 2} height={ry * 0.55} fill={LASH} opacity={0.35} />
-        <ellipse cx={cx} cy={cy + ry * 0.75} rx={rx * 0.8} ry={ry * 0.45} fill="#FFFFFF" opacity={0.28} />
-        <ellipse cx={cx} cy={cy + 1} rx={rx * 0.45} ry={ry * 0.5} fill={LASH} />
+        {/* Two-tone glassy iris: dark top under the lashes, bright glow at the bottom. */}
+        <ellipse cx={cx} cy={cy + ry * 0.45} rx={rx * 0.95} ry={ry * 0.7} fill={iris} />
+        <ellipse cx={cx} cy={cy + ry * 0.8} rx={rx * 0.75} ry={ry * 0.42} fill={tone(iris, '#FFFFFF', 0.45)} />
+        <rect x={cx - rx} y={top} width={rx * 2} height={ry * 0.5} fill={LASH} opacity={0.45} />
+        <ellipse cx={cx} cy={cy + 1} rx={rx * 0.42} ry={ry * 0.48} fill={LASH} />
       </g>
       <ellipse cx={cx} cy={cy} rx={rx} ry={ry} fill="none" stroke={LASH} strokeWidth={2} />
-      <ellipse cx={cx - 5} cy={cy - 6} rx={5} ry={5.5} fill="#FFFFFF" />
-      <circle cx={cx + 5} cy={cy + 7} r={2.2} fill="#FFFFFF" />
-      <circle cx={cx + 7} cy={cy - 8} r={1.3} fill="#FFFFFF" opacity={0.9} />
-      {/* Upper lash line, thicker toward the outer corner, with two flicks. */}
+      <ellipse cx={cx - 5} cy={cy - 6} rx={6} ry={6.5} fill="#FFFFFF" />
+      <circle cx={cx + 6} cy={cy + 8} r={2.6} fill="#FFFFFF" />
+      <Glint x={cx + 7} y={cy - 6} r={4.5} />
+      {/* Thick winged lash line with three lashes toward the outer corner. */}
       <path
-        d={`M${cx - side * (rx + 1)},${cy - ry * 0.35} Q${cx},${top - 5} ${ox},${cy - ry * 0.5}`}
+        d={`M${cx - side * (rx + 1)},${cy - ry * 0.3} Q${cx - side * 2},${top - 6} ${ox + side * 3},${cy - ry * 0.55}`}
         fill="none"
         stroke={LASH}
-        strokeWidth={4.5}
+        strokeWidth={6}
         strokeLinecap="round"
       />
+      {[0, 1, 2].map((i) => (
+        <path
+          key={i}
+          d={`M${ox - side * (2 + i * 7)},${cy - ry * (0.6 + i * 0.2)} q${side * 6},-3 ${side * 9},-${9 - i}`}
+          fill="none"
+          stroke={LASH}
+          strokeWidth={3 - i * 0.3}
+          strokeLinecap="round"
+        />
+      ))}
       <path
-        d={`M${ox - side * 2},${cy - ry * 0.55} q${side * 7},-3 ${side * 10},-9`}
+        d={`M${cx - side * 5},${cy + ry + 3} Q${cx + side * 6},${cy + ry + 4} ${ox - side * 2},${cy + ry * 0.5}`}
         fill="none"
         stroke={LASH}
-        strokeWidth={3}
+        strokeWidth={1.8}
         strokeLinecap="round"
-      />
-      <path
-        d={`M${ox - side * 6},${cy - ry * 0.8} q${side * 5},-4 ${side * 6},-11`}
-        fill="none"
-        stroke={LASH}
-        strokeWidth={2.6}
-        strokeLinecap="round"
-      />
-      <path
-        d={`M${cx - side * 4},${cy + ry + 3} Q${cx + side * 6},${cy + ry + 4} ${ox - side * 3},${cy + ry * 0.55}`}
-        fill="none"
-        stroke={LASH}
-        strokeWidth={1.6}
-        strokeLinecap="round"
-        opacity={0.55}
+        opacity={0.6}
       />
     </g>
   );
@@ -260,10 +284,15 @@ function Face({ spec }: { spec: RigSpec }) {
   const almond = spec.eyeStyle === 'eyes.almond';
   return (
     <g>
-      <ellipse cx={156} cy={181} rx={14} ry={8.5} fill={blush} opacity={0.5} />
-      <ellipse cx={244} cy={181} rx={14} ry={8.5} fill={blush} opacity={0.5} />
-      <circle cx={151} cy={178} r={2} fill="#FFFFFF" opacity={0.7} />
-      <circle cx={239} cy={178} r={2} fill="#FFFFFF" opacity={0.7} />
+      <ellipse cx={154} cy={182} rx={16} ry={9} fill={blush} opacity={0.6} />
+      <ellipse cx={246} cy={182} rx={16} ry={9} fill={blush} opacity={0.6} />
+      <path
+        d="M146,184 l5,-7 M153,185 l5,-7 M160,185 l4,-6 M240,185 l4,-6 M247,185 l5,-7 M254,184 l5,-7"
+        stroke="#FFFFFF"
+        strokeWidth={1.8}
+        strokeLinecap="round"
+        opacity={0.75}
+      />
       <g className="rig-blink">
         <Eye cx={167} iris={iris} almond={almond} side={-1} />
         <Eye cx={233} iris={iris} almond={almond} side={1} />
@@ -271,8 +300,11 @@ function Face({ spec }: { spec: RigSpec }) {
       <path d="M152,113 Q166,105 182,110" fill="none" stroke={browColor} strokeWidth={4.5} strokeLinecap="round" />
       <path d="M218,110 Q234,105 248,113" fill="none" stroke={browColor} strokeWidth={4.5} strokeLinecap="round" />
       <path d="M196,170 Q200,174 204,170" fill="none" stroke={skin.shadow} strokeWidth={3} strokeLinecap="round" />
-      <path d="M187,186 Q200,201 213,186 Q200,191 187,186 Z" fill="#B84A63" stroke={OUTLINE} strokeWidth={2.2} strokeLinejoin="round" />
-      <path d="M194,193 Q200,197 206,193" fill="none" stroke="#F59AAF" strokeWidth={3} strokeLinecap="round" />
+      {/* Glossy open smile: lip-gloss pink, a row of teeth, and a shine dot. */}
+      <path d="M185,185 Q200,205 215,185 Q200,189 185,185 Z" fill="#C84B6E" stroke={OUTLINE} strokeWidth={2.2} strokeLinejoin="round" />
+      <path d="M188,186.5 Q200,190 212,186.5 L210,190 Q200,193 190,190 Z" fill="#FFFFFF" />
+      <path d="M193,197 Q200,201 207,197" fill="none" stroke="#FF8FB1" strokeWidth={3} strokeLinecap="round" />
+      <circle cx={205} cy={196} r={1.5} fill="#FFFFFF" />
       {spec.freckles &&
         [
           [150, 168],

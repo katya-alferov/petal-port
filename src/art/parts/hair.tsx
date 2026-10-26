@@ -21,22 +21,17 @@ function bumpyArc(cx: number, cy: number, rx: number, ry: number, a0: number, a1
 
 /** Glossy "halo" band across the crown: the shine that makes hair look soft and pretty. */
 function Shine({ shade, y = 64 }: { shade: Shade; y?: number }) {
+  // A glossy halo of broken strand glints across the crown, like 2009 doll hair.
   return (
-    <g opacity={0.85}>
+    <g opacity={0.9} strokeLinecap="round" fill="none">
       <path
-        d={`M150,${y + 22} C164,${y + 2} 194,${y - 6} 218,${y}`}
-        fill="none"
+        d={`M146,${y + 24} C162,${y} 196,${y - 8} 222,${y - 2} C236,${y + 2} 246,${y + 10} 254,${y + 22}`}
         stroke={shade.highlight}
-        strokeWidth={7}
-        strokeLinecap="round"
+        strokeWidth={9}
+        strokeDasharray="44 6 26 6 60 0"
       />
-      <path
-        d={`M228,${y + 3} C236,${y + 6} 242,${y + 10} 246,${y + 15}`}
-        fill="none"
-        stroke={shade.highlight}
-        strokeWidth={5}
-        strokeLinecap="round"
-      />
+      <path d={`M156,${y + 30} C170,${y + 12} 196,${y + 6} 214,${y + 8}`} stroke="#FFFFFF" strokeWidth={3} opacity={0.75} />
+      <path d={`M232,${y + 6} l6,-8 M240,${y + 12} l7,-7`} stroke="#FFFFFF" strokeWidth={2.5} opacity={0.8} />
     </g>
   );
 }
@@ -46,6 +41,35 @@ function Strand({ d, color }: { d: string; color: string }) {
 }
 
 export const HAIR_BACK: Record<string, (p: HairProps) => React.ReactElement> = {
+  'hair/doll-curls': ({ shade }) => (
+    <Shaded
+      shade={shade}
+      depth={10}
+      d="M124,120 C112,60 158,30 200,30 C242,30 288,60 276,120 C290,170 280,200 296,236 C310,268 288,292 302,322 C312,346 294,368 272,356 C262,372 236,368 232,350 L168,350 C164,368 138,372 128,356 C106,368 88,346 98,322 C112,292 90,268 104,236 C120,200 110,170 124,120 Z"
+    >
+      {[1, -1].map((k) => (
+        <g key={k} transform={k === -1 ? 'translate(400 0) scale(-1 1)' : undefined}>
+          <path
+            d="M282,160 C294,196 278,226 292,258 C304,286 286,306 296,330"
+            fill="none"
+            stroke={shade.highlight}
+            strokeWidth={5}
+            strokeLinecap="round"
+            opacity={0.85}
+          />
+          <path d="M266,200 C274,232 262,262 272,296" fill="none" stroke={shade.shadow} strokeWidth={3} strokeLinecap="round" />
+          <path
+            d="M286,348 C296,344 298,332 288,330 C282,330 282,338 288,338"
+            fill="none"
+            stroke={shade.shadow}
+            strokeWidth={3}
+            strokeLinecap="round"
+          />
+          <path d="M248,356 C258,354 258,342 250,342" fill="none" stroke={shade.shadow} strokeWidth={3} strokeLinecap="round" />
+        </g>
+      ))}
+    </Shaded>
+  ),
   'hair/wavy-long': ({ shade }) => (
     <Shaded
       shade={shade}
@@ -99,6 +123,45 @@ export const HAIR_BACK: Record<string, (p: HairProps) => React.ReactElement> = {
 };
 
 export const HAIR_FRONT: Record<string, (p: HairProps) => React.ReactElement> = {
+  'hair/doll-curls': ({ shade }) => (
+    <g>
+      {[1, -1].map((k) => (
+        <g key={k} transform={k === -1 ? 'translate(400 0) scale(-1 1)' : undefined}>
+          <Shaded
+            shade={shade}
+            depth={4}
+            d="M130,100 C116,150 132,180 120,214 C110,240 122,266 142,262 C158,258 156,238 144,236 C150,226 146,210 148,196 C150,170 144,130 154,100 Z"
+          />
+          <path d="M126,150 C122,174 130,190 122,212" fill="none" stroke={shade.highlight} strokeWidth={3.5} strokeLinecap="round" />
+          <path d="M138,254 C132,248 138,240 145,244" fill="none" stroke={shade.shadow} strokeWidth={2.5} strokeLinecap="round" />
+        </g>
+      ))}
+      {/* Side-swept bangs with a soft curl at the left temple */}
+      <Shaded
+        shade={shade}
+        depth={6}
+        d="M126,142 C116,78 156,36 200,36 C248,36 286,76 274,140 C268,120 262,108 254,100 C230,116 196,118 172,108 C160,104 150,108 144,120 C142,128 136,136 126,142 Z"
+      />
+      <Shine shade={shade} y={58} />
+      <path d="M252,62 C236,84 206,100 176,104" fill="none" stroke={shade.shadow} strokeWidth={3} strokeLinecap="round" />
+      <path d="M214,48 C200,64 180,76 158,84" fill="none" stroke={shade.shadow} strokeWidth={2.5} strokeLinecap="round" opacity={0.8} />
+      {/* Flower clip */}
+      <g>
+        {[0, 72, 144, 216, 288].map((a) => (
+          <circle
+            key={a}
+            cx={256 + Math.cos((a * Math.PI) / 180) * 8}
+            cy={80 + Math.sin((a * Math.PI) / 180) * 8}
+            r={7}
+            fill="#FF9BBE"
+            stroke={OUTLINE}
+            strokeWidth={2}
+          />
+        ))}
+        <circle cx={256} cy={80} r={5} fill="#FFC94A" stroke={OUTLINE} strokeWidth={1.8} />
+      </g>
+    </g>
+  ),
   'hair/wavy-long': ({ shade }) => (
     <g>
       <Shaded

@@ -89,6 +89,7 @@ export interface RoomSpec {
   night: boolean;
   walls: string;
   wallPattern: string;
+  pattern: 'leaf' | 'dots' | 'quilt';
   floor: Shade;
   trim: Shade;
   anchors: HomeDef['slotAnchors'];
@@ -108,6 +109,7 @@ export function resolveRoom(home: HomeDef, themeId: string, slots: Partial<Recor
     night: theme.id === 'theme.night-market',
     walls: theme.walls,
     wallPattern: mix(theme.walls, '#4A3366', 0.1),
+    pattern: theme.pattern ?? 'leaf',
     floor: shadeOf(theme.floor),
     trim: shadeOf(theme.trim),
     anchors: home.slotAnchors,

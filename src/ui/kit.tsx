@@ -295,3 +295,54 @@ export function MathGate({ onPass, onCancel }: { onPass: () => void; onCancel: (
     </Sheet>
   );
 }
+
+/** Decorative 2009-style glam backdrop: glossy bubbles, hearts and twinkling sparkles. Never tappable. */
+export function GlamBackdrop({ tone = 'pink' }: { tone?: 'pink' | 'lilac' }) {
+  const hues = tone === 'pink' ? ['#FF9BBE', '#C7B4FF', '#FFC94A', '#8AD3DA'] : ['#C7B4FF', '#FF9BBE', '#8AD3DA', '#FFC94A'];
+  const heart = (x: number, y: number, r: number) =>
+    `M${x},${y + r} C${x - r * 1.6},${y - r * 0.2} ${x - r * 0.9},${y - r * 1.5} ${x},${y - r * 0.55} C${x + r * 0.9},${y - r * 1.5} ${x + r * 1.6},${y - r * 0.2} ${x},${y + r} Z`;
+  const bubbles: [number, number, number, number][] = [
+    [8, 18, 7, 0],
+    [88, 12, 9, 1],
+    [92, 62, 6, 2],
+    [6, 70, 8, 3],
+  ];
+  const hearts: [number, number, number, number][] = [
+    [18, 40, 4, 0],
+    [84, 36, 5, 1],
+    [74, 84, 4, 2],
+    [22, 88, 3.5, 3],
+  ];
+  const twinkles: [number, number, number][] = [
+    [30, 10, 2.4],
+    [70, 22, 3],
+    [12, 54, 2.2],
+    [94, 48, 2.6],
+    [60, 92, 2.4],
+    [40, 76, 1.8],
+  ];
+  return (
+    <svg className="glam" viewBox="0 0 100 100" preserveAspectRatio="xMidYMid slice" aria-hidden="true">
+      {bubbles.map(([x, y, r, i]) => (
+        <g key={`b${i}`} className="glam-float" style={{ animationDelay: `${i * -1.3}s` }}>
+          <ellipse cx={x} cy={y} rx={r} ry={r} fill={hues[i]} opacity={0.22} stroke="#FFFFFF" strokeWidth={0.6} />
+          <ellipse cx={x - r * 0.35} cy={y - r * 0.45} rx={r * 0.35} ry={r * 0.18} fill="#FFFFFF" opacity={0.85} />
+        </g>
+      ))}
+      {hearts.map(([x, y, r, i]) => (
+        <g key={`h${i}`} className="glam-float" style={{ animationDelay: `${i * -0.9}s` }}>
+          <path d={heart(x, y, r)} fill={hues[(i + 1) % 4]} opacity={0.55} />
+        </g>
+      ))}
+      {twinkles.map(([x, y, r], i) => (
+        <path
+          key={`t${i}`}
+          className="glam-twinkle"
+          style={{ animationDelay: `${i * -0.7}s` }}
+          d={`M${x},${y - r} Q${x},${y} ${x + r},${y} Q${x},${y} ${x},${y + r} Q${x},${y} ${x - r},${y} Q${x},${y} ${x},${y - r} Z`}
+          fill="#FFFFFF"
+        />
+      ))}
+    </svg>
+  );
+}

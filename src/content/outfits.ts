@@ -3,7 +3,7 @@ import type { Appearance, Outfit } from '../game/save';
 
 export const DEFAULT_APPEARANCE: Appearance = {
   skinTone: 'skin.caramel',
-  hairStyle: 'hairstyle.wavy-long',
+  hairStyle: 'hairstyle.doll-curls',
   hairColor: 'hair.dark-brown',
   eyeStyle: 'eyes.round',
   eyeColor: 'eye.brown',

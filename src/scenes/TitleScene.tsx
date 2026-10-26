@@ -3,12 +3,15 @@ import { Waterfront } from '../art/scenes/Waterfront';
 import { play, unlockAudio } from '../platform/audio';
 import { APP_VERSION } from '../platform/version';
 import { useGame } from '../state/store';
+import { GlamBackdrop } from '../ui/kit';
+import { Character } from './common';
 
 export function TitleScene({ onOpenDebug }: { onOpenDebug: () => void }) {
   const setScene = useGame((s) => s.setScene);
   const ready = useGame((s) => s.ready);
   const [sailing, setSailing] = useState(false);
   const press = useRef<number | undefined>(undefined);
+  const player = useGame((s) => s.save.player);
 
   const start = () => {
     if (!ready || sailing) return;
@@ -24,6 +27,10 @@ export function TitleScene({ onOpenDebug }: { onOpenDebug: () => void }) {
     <section className="scene" aria-label="Title">
       <div className="scene-art">
         <Waterfront sailing={sailing} />
+      </div>
+      <GlamBackdrop />
+      <div aria-hidden="true" className="title-doll">
+        <Character appearance={player.appearance} outfit={player.outfit} pose="wave" title="" />
       </div>
       <div className="safe" style={{ position: 'relative', flex: 1, display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
         <div className="panel pop-in" style={{ marginTop: '9vh', textAlign: 'center', padding: '18px 28px', transform: 'rotate(-2deg)' }}>

@@ -34,6 +34,7 @@ export const HAIR_STYLES: HairStyleDef[] = [
   { id: 'hairstyle.ponytail', name: 'Ponytail', art: 'hair/ponytail', texture: 'straight', tintable: 'hairColor' },
   { id: 'hairstyle.bob', name: 'Bob', art: 'hair/bob', texture: 'straight', tintable: 'hairColor' },
   { id: 'hairstyle.braids', name: 'Two braids', art: 'hair/braids', texture: 'braids', tintable: 'hairColor' },
+  { id: 'hairstyle.doll-curls', name: 'Doll curls', art: 'hair/doll-curls', texture: 'curly', tintable: 'hairColor' },
 ];
 
 export const EYE_COLORS: EyeColorDef[] = [
