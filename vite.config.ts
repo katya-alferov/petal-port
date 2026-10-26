@@ -5,7 +5,7 @@ import { VitePWA } from 'vite-plugin-pwa';
 import { viteSingleFile } from 'vite-plugin-singlefile';
 import pkg from './package.json' with { type: 'json' };
 
-const MILESTONE = 'm0';
+const MILESTONE = 'm1';
 
 function sha(): string {
   try {

@@ -1,14 +1,42 @@
 import { useState } from 'react';
 import { type PoseId } from '../art/CharacterRig';
 import { EYE_COLORS, HAIR_COLORS, HAIR_STYLES, SKIN_TONES } from '../content/appearance';
-import { TEST_OUTFITS } from '../content/outfits';
+import { STARTER_OUTFIT, TEST_OUTFITS } from '../content/outfits';
+import { FASHION_SWATCHES, SWATCHES } from '../content/palette';
+import type { WearableDef, WearSlot } from '../content/types';
+import { WEARABLES } from '../content/wearables';
+import type { EquippedItem, Outfit } from '../game/save';
+import { equip, unequip } from '../game/wardrobe';
 import { play } from '../platform/audio';
 import { useGame } from '../state/store';
 import { Carousel, Swatch, Tabs, Tile } from '../ui/kit';
 import { Icon } from '../ui/icons';
-import { Character, MainDock, TopBar } from './common';
+import { Character, MainDock, SLOT_CROP, TopBar } from './common';
 
-type Tab = 'looks' | 'skin' | 'hair' | 'eyes';
+type Tab = 'closet' | 'looks' | 'skin' | 'hair' | 'eyes';
+
+const CLOSET_SLOTS: { slot: WearSlot; label: string }[] = [
+  { slot: 'top', label: 'Tops' },
+  { slot: 'bottom', label: 'Bottoms' },
+  { slot: 'dress', label: 'Dresses' },
+  { slot: 'outerwear', label: 'Jackets' },
+  { slot: 'shoes', label: 'Shoes' },
+  { slot: 'headwear', label: 'Hats' },
+  { slot: 'eyewear', label: 'Glasses' },
+  { slot: 'neck', label: 'Necklaces' },
+  { slot: 'bag', label: 'Bags' },
+];
+const REMOVABLE: WearSlot[] = ['dress', 'outerwear', 'headwear', 'eyewear', 'neck', 'bag'];
+
+/** Equip, then make sure the outfit is still complete (a top needs a bottom once the dress comes off). */
+function wear(outfit: Outfit, def: WearableDef, tint?: EquippedItem['tint']): Outfit {
+  const next = equip(outfit, def, tint);
+  if (!next.dress) {
+    next.top = next.top ?? STARTER_OUTFIT.top;
+    next.bottom = next.bottom ?? STARTER_OUTFIT.bottom;
+  }
+  return next;
+}
 
 const sameOutfit = (a: object, b: object) => JSON.stringify(a) === JSON.stringify(b);
 
@@ -16,13 +44,15 @@ export function MeScene() {
   const save = useGame((s) => s.save);
   const setAppearance = useGame((s) => s.setAppearance);
   const setOutfit = useGame((s) => s.setOutfit);
-  const [tab, setTab] = useState<Tab>('looks');
+  const [tab, setTab] = useState<Tab>('closet');
+  const [slot, setSlot] = useState<WearSlot>('top');
   const [pose, setPose] = useState<PoseId>('idle');
   const [twirl, setTwirl] = useState(0);
   const { appearance, outfit } = save.player;
 
   const change = (fn: () => void) => {
     fn();
+    useGame.getState().completeJourney('journey.character');
     play('swap');
     setTwirl((n) => n + 1);
   };
@@ -79,13 +109,82 @@ export function MeScene() {
             setTab(t);
           }}
           tabs={[
-            { id: 'looks', label: 'Outfits' },
+            { id: 'closet', label: 'Closet' },
+            { id: 'looks', label: 'Looks' },
             { id: 'skin', label: 'Skin' },
             { id: 'hair', label: 'Hair' },
             { id: 'eyes', label: 'Eyes' },
           ]}
         />
         <div style={{ minHeight: 112 }}>
+          {tab === 'closet' && (
+            <div style={{ display: 'grid', gap: 6 }}>
+              <div className="chip-row" role="group" aria-label="Clothes type">
+                {CLOSET_SLOTS.map((c) => (
+                  <button
+                    key={c.slot}
+                    type="button"
+                    className="chip"
+                    aria-pressed={slot === c.slot}
+                    onClick={() => (play('pop'), setSlot(c.slot))}
+                    data-testid={`slot-${c.slot}`}
+                  >
+                    {c.label}
+                  </button>
+                ))}
+              </div>
+              <Carousel label="Your clothes">
+                {REMOVABLE.includes(slot) && (
+                  <Tile
+                    label="None"
+                    selected={!outfit[slot]}
+                    onClick={() => change(() => setOutfit(unequip(outfit, slot, STARTER_OUTFIT)))}
+                    testId="wear-none"
+                  >
+                    <span style={{ fontSize: '2rem', fontWeight: 800 }}>∅</span>
+                  </Tile>
+                )}
+                {WEARABLES.filter((w) => w.slot === slot && save.inventory.owned[w.id]).map((w) => (
+                  <Tile
+                    key={w.id}
+                    label={w.name}
+                    selected={outfit[slot]?.itemId === w.id}
+                    onClick={() => change(() => setOutfit(wear(outfit, w)))}
+                    testId={`wear-${w.id}`}
+                  >
+                    <Character
+                      appearance={appearance}
+                      outfit={equip(STARTER_OUTFIT, w)}
+                      animate={false}
+                      crop={SLOT_CROP[w.slot]}
+                      title={w.name}
+                    />
+                  </Tile>
+                ))}
+              </Carousel>
+              {outfit[slot] && (
+                <div className="swatches" role="group" aria-label="Color">
+                  {FASHION_SWATCHES.map((c) => {
+                    const eq = outfit[slot]!;
+                    const def = WEARABLES.find((w) => w.id === eq.itemId);
+                    const current = eq.tint?.main ?? def?.tints[0]?.default;
+                    return (
+                      <Swatch
+                        key={c}
+                        color={SWATCHES[c].base}
+                        label={c}
+                        selected={current === c}
+                        onClick={() => def && change(() => setOutfit(wear(outfit, def, { ...eq.tint, main: c })))}
+                      />
+                    );
+                  })}
+                </div>
+              )}
+              {!WEARABLES.some((w) => w.slot === slot && save.inventory.owned[w.id]) && (
+                <p style={{ margin: 0 }}>Nothing here yet. Visit the Ribbon Boutique!</p>
+              )}
+            </div>
+          )}
           {tab === 'looks' && (
             <Carousel label="Outfits">
               {TEST_OUTFITS.map((o) => (

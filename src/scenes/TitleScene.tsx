@@ -15,7 +15,9 @@ export function TitleScene({ onOpenDebug }: { onOpenDebug: () => void }) {
     unlockAudio();
     play('chime');
     setSailing(true);
-    window.setTimeout(() => setScene('me'), 700);
+    // New players make their character first; returning players land in town.
+    const first = !useGame.getState().save.progress.journey.includes('journey.character');
+    window.setTimeout(() => setScene(first ? 'me' : 'town'), 700);
   };
 
   return (

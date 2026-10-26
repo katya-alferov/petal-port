@@ -63,9 +63,13 @@ export interface HarbourLoftProps {
   /** Makes furniture tappable (scene hotspots). */
   onSlotTap?: (slot: HomeSlot) => void;
   tappable?: HomeSlot[];
+  /** Drawn on top of the table (the cooked dish). */
+  onTable?: ReactNode;
+  /** Decorate mode: dashed outline on every slot. */
+  editing?: boolean;
 }
 
-export function HarbourLoft({ room, children, lampOn = true, onSlotTap, tappable = [] }: HarbourLoftProps) {
+export function HarbourLoft({ room, children, lampOn = true, onSlotTap, tappable = [], onTable, editing = false }: HarbourLoftProps) {
   const { night, floor, trim, anchors } = room;
   const wallLine = room.wallPattern;
   const ordered = (Object.keys(anchors) as HomeSlot[]).sort((a, b) => anchors[a].z - anchors[b].z);
@@ -96,6 +100,20 @@ export function HarbourLoft({ room, children, lampOn = true, onSlotTap, tappable
         onClick={hot ? () => onSlotTap(slot) : undefined}
         onKeyDown={hot ? (e) => (e.key === 'Enter' || e.key === ' ') && onSlotTap(slot) : undefined}
       >
+        {editing && (
+          <rect
+            x={0}
+            y={0}
+            width={300}
+            height={300}
+            rx={24}
+            fill="#FFFFFF"
+            fillOpacity={0.25}
+            stroke={OUTLINE}
+            strokeWidth={6}
+            strokeDasharray="18 14"
+          />
+        )}
         <Art main={main} accent={accent} />
       </svg>
     );
@@ -165,6 +183,18 @@ export function HarbourLoft({ room, children, lampOn = true, onSlotTap, tappable
       {ordered.filter((s) => anchors[s].z === 4).map(renderSlot)}
       {children}
       {ordered.filter((s) => anchors[s].z > 4).map(renderSlot)}
+      {onTable && (
+        <svg
+          x={anchors.table.x + anchors.table.w / 2 - 110}
+          y={anchors.table.y + anchors.table.h * 0.47 - 120}
+          width={220}
+          height={147}
+          viewBox="0 0 300 200"
+          pointerEvents="none"
+        >
+          {onTable}
+        </svg>
+      )}
     </svg>
   );
 }

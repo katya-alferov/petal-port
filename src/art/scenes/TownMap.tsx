@@ -98,12 +98,14 @@ function Place({
   label,
   onTap,
   badge,
+  hit,
   children,
 }: {
   id: PlaceId;
   label: string;
   onTap?: (id: PlaceId) => void;
   badge?: ReactNode;
+  hit: [number, number, number, number];
   children: ReactNode;
 }) {
   return (
@@ -116,6 +118,8 @@ function Place({
       onClick={() => onTap?.(id)}
       onKeyDown={(e) => (e.key === 'Enter' || e.key === ' ') && onTap?.(id)}
     >
+      {/* Invisible hit area so gaps between the building and its sign still count (§5.1). */}
+      <rect x={hit[0]} y={hit[1]} width={hit[2]} height={hit[3]} rx={40} fill="transparent" />
       {children}
       {badge}
     </g>
@@ -228,6 +232,7 @@ export function TownMap({ onTap, onCat, badges = {}, homeName = 'Harbour Loft' }
       {/* Ribbon Boutique */}
       <Place
         id="boutique"
+        hit={[670, 730, 380, 500]}
         label="Ribbon Boutique"
         onTap={onTap}
         badge={badges.boutique && <Badge x={990} y={800} kind={badges.boutique} />}
@@ -250,7 +255,7 @@ export function TownMap({ onTap, onCat, badges = {}, homeName = 'Harbour Loft' }
       <Tree x={330} y={1010} s={0.8} />
 
       {/* Petal Park (scenery: pond and ducks) */}
-      <Place id="park" label="Petal Park" onTap={onTap}>
+      <Place id="park" hit={[50, 1200, 500, 400]} label="Petal Park" onTap={onTap}>
         <ellipse cx={260} cy={1400} rx={200} ry={90} fill="#5CC6D0" stroke={OUTLINE} strokeWidth={5} />
         <ellipse cx={220} cy={1385} rx={70} ry={16} fill="#FFFFFF" opacity={0.4} />
         {[
@@ -304,7 +309,13 @@ export function TownMap({ onTap, onCat, badges = {}, homeName = 'Harbour Loft' }
       </g>
 
       {/* Sunny Café */}
-      <Place id="cafe" label="Sunny Café" onTap={onTap} badge={badges.cafe && <Badge x={1010} y={1640} kind={badges.cafe} />}>
+      <Place
+        id="cafe"
+        hit={[610, 1540, 420, 540]}
+        label="Sunny Café"
+        onTap={onTap}
+        badge={badges.cafe && <Badge x={1010} y={1640} kind={badges.cafe} />}
+      >
         <rect x={930} y={1600} width={44} height={80} fill={CORAL.base} stroke={OUTLINE} strokeWidth={4} />
         <g className="steam">
           <path
@@ -329,7 +340,7 @@ export function TownMap({ onTap, onCat, badges = {}, homeName = 'Harbour Loft' }
       </Place>
 
       {/* Harbour Loft (home) */}
-      <Place id="home" label={`Home: ${homeName}`} onTap={onTap}>
+      <Place id="home" hit={[240, 1780, 300, 500]} label={`Home: ${homeName}`} onTap={onTap}>
         <Shaded d={rect(270, 1980, 240, 290)} shade={SEA} depth={10} />
         <Shaded d="M250,1988 L390,1880 L530,1988 Z" shade={SUN} depth={6} />
         <Window x={300} y={2020} w={70} h={70} lit />
@@ -373,7 +384,7 @@ export function TownMap({ onTap, onCat, badges = {}, homeName = 'Harbour Loft' }
 
       {/* Airport on the point */}
       <path d="M0,2740 C300,2700 800,2720 1170,2700 L1170,3200 L0,3200 Z" fill="#A5DDB4" stroke={OUTLINE} strokeWidth={5} />
-      <Place id="airport" label="Airport" onTap={onTap}>
+      <Place id="airport" hit={[110, 2640, 980, 530]} label="Airport" onTap={onTap}>
         <path d="M120,3080 L1060,2980 L1080,3060 L140,3160 Z" fill="#8E86A0" stroke={OUTLINE} strokeWidth={5} strokeLinejoin="round" />
         <path d="M200,3110 L1000,3024" stroke="#FFF7EC" strokeWidth={8} strokeDasharray="40 30" />
         <Shaded d={rect(700, 2800, 300, 150)} shade={CREAM} depth={8} />

@@ -150,6 +150,7 @@ function CafeShift({ onAgain }: { onAgain: () => void }) {
         <div
           className="bubble"
           data-testid="order-bubble"
+          data-order={JSON.stringify(order)}
           style={{ right: '4%', top: '4%', width: '50%', display: 'grid', gap: 4, justifyItems: 'center' }}
         >
           <span style={{ fontWeight: 800, fontSize: '0.85rem' }}>{regular.name} wants:</span>
@@ -172,7 +173,7 @@ function CafeShift({ onAgain }: { onAgain: () => void }) {
           )}
         </div>
         {cheer && (
-          <div className="hearts" style={{ left: '20%', top: '20%' }} key={cheer.n}>
+          <div className="hearts" style={{ left: '20%', top: '20%' }} key={`cheer-${cheer.n}`}>
             💖{' '}
             <span className="panel" style={{ fontSize: '1rem', padding: '4px 10px' }}>
               {cheer.text}

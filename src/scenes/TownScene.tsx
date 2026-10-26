@@ -1,9 +1,10 @@
 import { useEffect, useRef, useState } from 'react';
 import { MAP_H, PLACE_Y, TownMap, type PlaceId } from '../art/scenes/TownMap';
+import { JOURNEY_COINS, JOURNEY_STEPS } from '../content/recipes';
 import { WEARABLES, priceOf } from '../content/wearables';
 import { play } from '../platform/audio';
 import { useGame, type SceneId } from '../state/store';
-import { Button, Sheet } from '../ui/kit';
+import { Button, IconButton, Sheet } from '../ui/kit';
 import { MainDock, TopBar } from './common';
 
 const PLACES: Record<PlaceId, { name: string; line: string; go?: SceneId; soon?: string }> = {
@@ -23,6 +24,8 @@ export function TownScene() {
   const coins = useGame((s) => s.save.wallet.coins);
   const owned = useGame((s) => s.save.inventory.owned);
   const [open, setOpen] = useState<PlaceId | null>(null);
+  const [journey, setJourney] = useState(false);
+  const journeyDone = useGame((s) => s.save.progress.journey);
   const scroller = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
@@ -54,8 +57,32 @@ export function TownScene() {
         />
       </div>
       <TopBar title="Petalport" />
+      <div style={{ position: 'relative', zIndex: 5, padding: '0 12px', alignSelf: 'flex-start' }}>
+        <IconButton icon="album" label="Welcome Journey" onClick={() => (play('pop'), setJourney(true))} testId="journey-open" />
+      </div>
       <div style={{ flex: 1 }} />
       <MainDock current="town" />
+      {journey && (
+        <Sheet title="Welcome Journey" onClose={() => setJourney(false)}>
+          <ul style={{ listStyle: 'none', padding: 0, margin: '0 0 12px', display: 'grid', gap: 8 }} data-testid="journey-list">
+            {JOURNEY_STEPS.map((st) => {
+              const done = journeyDone.includes(st.id);
+              return (
+                <li
+                  key={st.id}
+                  className="panel"
+                  style={{ padding: '8px 12px', display: 'flex', gap: 10, alignItems: 'center', background: done ? '#DFF5EC' : '#fff' }}
+                >
+                  <span style={{ fontSize: '1.4rem' }}>{done ? '✅' : '⬜'}</span>
+                  <span style={{ flex: 1, fontWeight: 700 }}>{st.label}</span>
+                  <span style={{ fontWeight: 800 }}>{done ? 'Done!' : `+${JOURNEY_COINS}`}</span>
+                </li>
+              );
+            })}
+          </ul>
+          <p style={{ margin: 0 }}>Do them in any order. There’s no rush!</p>
+        </Sheet>
+      )}
       {place && open && (
         <Sheet title={place.name} onClose={() => setOpen(null)}>
           <p style={{ marginBottom: 16 }}>{place.line}</p>

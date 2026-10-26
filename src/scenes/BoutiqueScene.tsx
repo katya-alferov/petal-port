@@ -139,7 +139,6 @@ export function BoutiqueScene() {
                 type="button"
                 className="shop-tile"
                 aria-pressed={picked === d.id}
-                aria-label={`${d.name}, ${priceOf(d)} coins`}
                 data-testid={`shop-${d.id}`}
                 onClick={() => (play('pop'), setPicked(d.id))}
               >

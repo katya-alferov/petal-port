@@ -679,6 +679,9 @@ body {
   overflow-y: auto;
   overscroll-behavior: contain;
   -webkit-overflow-scrolling: touch;
+  /* Lets the airport scroll clear of the dock. */
+  padding-bottom: calc(var(--safe-bottom) + 120px);
+  background: #a5ddb4;
 }
 .windmill {
   animation: spin 14s linear infinite;
@@ -973,4 +976,52 @@ body {
   background: repeating-linear-gradient(90deg, #c98f5e 0 70px, #b57d4e 70px 74px);
   border-top: 14px solid #fff7ec;
   box-shadow: 0 -3px 0 var(--outline);
+}
+.steps {
+  list-style: none;
+  margin: 0;
+  padding: 0 12px 6px;
+  display: flex;
+  gap: 4px;
+  justify-content: center;
+  flex-wrap: wrap;
+  position: relative;
+  z-index: 5;
+}
+.steps li {
+  border: var(--stroke);
+  border-radius: 999px;
+  padding: 2px 10px;
+  background: #fff;
+  font-weight: 800;
+  font-size: 0.85rem;
+}
+.steps li.done {
+  background: var(--mint);
+}
+.steps li[aria-current='step'] {
+  background: var(--sunshine);
+}
+.chip-row {
+  display: flex;
+  gap: 6px;
+  overflow-x: auto;
+  padding: 2px 2px 6px;
+  scrollbar-width: none;
+}
+.chip {
+  all: unset;
+  cursor: pointer;
+  flex: none;
+  border: var(--stroke);
+  border-radius: 999px;
+  padding: 6px 12px;
+  min-height: 32px;
+  box-sizing: border-box;
+  background: #fff;
+  font-weight: 800;
+  font-size: 0.9rem;
+}
+.chip[aria-pressed='true'] {
+  background: var(--sunshine);
 }

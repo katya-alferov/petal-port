@@ -12,6 +12,7 @@ import { cookReward } from '../game/cooking';
 import { earn, grant, purchase } from '../game/economy';
 import { load, newSave, validate, type Appearance, type Dish, type Outfit, type SaveGame } from '../game/save';
 import { equip } from '../game/wardrobe';
+import { TEST_HOOKS_ENABLED } from '../platform/hooks';
 import { log } from '../platform/log';
 import { readSaves, requestPersist, scheduleWrite } from '../platform/storage';
 
@@ -96,7 +97,7 @@ export const useGame = create<GameStore>((setState, getState) => ({
   },
   placeFurniture: (slot, itemId) => {
     const s = getState().save;
-    if (!s.inventory.owned[itemId] || furniture(itemId)?.slot !== slot) return;
+    if (!s.inventory.owned[itemId] || furniture(itemId)?.slot !== slot || s.home.slots[slot] === itemId) return;
     setState({ save: touch({ ...s, home: { ...s.home, slots: { ...s.home.slots, [slot]: itemId } } }) });
     getState().completeJourney('journey.decorate');
   },
@@ -181,3 +182,6 @@ useGame.subscribe((state, prev) => {
     void requestPersist().then((r) => log('info', `storage.persist() → ${String(r)}`));
   }
 });
+
+// Preview builds only: lets e2e tests and AI testers read state and jump between scenes.
+if (TEST_HOOKS_ENABLED) (window as unknown as { __petal: typeof useGame }).__petal = useGame;
