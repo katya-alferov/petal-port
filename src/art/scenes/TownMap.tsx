@@ -5,7 +5,20 @@ import { OUTLINE, Shaded, scallopCircle } from '../kit';
 import { ShellArt } from '../shells';
 
 export type PlaceId =
-  'boutique' | 'park' | 'cafe' | 'home' | 'airport' | 'cottage' | 'petshop' | 'board' | 'postbox' | 'stage' | 'salon' | 'garden' | 'burger';
+  | 'boutique'
+  | 'park'
+  | 'cafe'
+  | 'home'
+  | 'airport'
+  | 'cottage'
+  | 'petshop'
+  | 'board'
+  | 'postbox'
+  | 'stage'
+  | 'salon'
+  | 'garden'
+  | 'burger'
+  | 'sweets';
 
 export const MAP_W = 1170;
 /** Sparkle Street (Glam Salon and Petal Garden) sits between the harbour and the airport. */
@@ -26,6 +39,7 @@ export const PLACE_Y: Record<PlaceId, number> = {
   salon: 3000,
   garden: 3000,
   burger: 3500,
+  sweets: 3500,
   airport: 2860 + STREET,
 };
 
@@ -669,9 +683,39 @@ export function TownMap({
         />
         <Sign x={350} y={3750} label="Bun & Bite" color="#FF7BA9" />
       </Place>
-      <Tree x={820} y={3560} s={0.7} />
-      <Tree x={1000} y={3600} s={0.6} />
-      <Flowers x={720} y={3660} n={5} />
+      {/* Sweet Spot: a mint cupcake shop */}
+      <Place
+        id="sweets"
+        hit={[640, 3330, 490, 420]}
+        label="Sweet Spot"
+        onTap={onTap}
+        badge={badges.sweets && <Badge x={1100} y={3390} kind={badges.sweets} />}
+      >
+        <Shaded d={rect(680, 3430, 380, 250)} shade={MINT} depth={10} />
+        <Shaded d="M660,3440 L870,3340 L1080,3440 Z" shade={LILAC} depth={6} />
+        <Awning x={670} y={3510} w={400} a="#FFF7EC" b="#FF9EC4" />
+        <rect x={710} y={3590} width={130} height={90} rx={10} fill="#BDE8EC" stroke={OUTLINE} strokeWidth={4} />
+        <path d="M728,3610 L748,3596" stroke="#FFFFFF" strokeWidth={5} strokeLinecap="round" opacity={0.85} />
+        <rect x={900} y={3580} width={100} height={100} rx={34} fill={LILAC.base} stroke={OUTLINE} strokeWidth={4} />
+        <path
+          d="M840,3425 L900,3425 L894,3395 Q870,3388 846,3395 Z"
+          fill="#FFB3D0"
+          stroke={OUTLINE}
+          strokeWidth={4}
+          strokeLinejoin="round"
+        />
+        <path
+          d="M838,3400 C830,3372 858,3366 864,3374 C864,3356 888,3358 886,3374 C906,3372 910,3392 902,3400 Z"
+          fill="#FF9EC4"
+          stroke={OUTLINE}
+          strokeWidth={4}
+          strokeLinejoin="round"
+        />
+        <circle cx={875} cy={3356} r={9} fill="#E8335A" stroke={OUTLINE} strokeWidth={3} />
+        <Sign x={870} y={3750} label="Sweet Spot" color="#B39DFF" />
+      </Place>
+      <Tree x={1140} y={3640} s={0.5} />
+      <Flowers x={620} y={3660} n={3} />
 
       <g transform={`translate(0 ${STREET})`}>
         {/* Airport on the point */}

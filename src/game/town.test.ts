@@ -15,6 +15,8 @@ import { HAIR_COLORS } from '../content/appearance';
 import { SALON_MENU, SEEDS } from '../content/wavec';
 import { BLOOM_AT, grow, pickBloom, plant, stage } from './garden';
 import { seasonFor } from './season';
+import { addDesign, checkCupcake, designKey, MAX_DESIGNS, sweetOrders, sweetPay } from './sweets';
+import { SWEET_MENU } from '../content/sweets';
 import { BURGER_PAY, BURGER_TIP, burgerOrders, burgerPay, CUSTOMERS_PER_SHIFT, tapPart } from './burger';
 import { MAX_PHOTOS, PARIS_TICKET, addPhoto, buySouvenir, buyTicket, newTravel, removePhoto, type PhotoRecipe } from './travel';
 import { WINDOW_VIEWS, windowView } from '../content/views';
@@ -438,5 +440,36 @@ describe('Bun & Bite (§12)', () => {
     const raw = JSON.parse(JSON.stringify(newSave(SAVE_CONTEXT, 1)));
     delete raw.progress.burger;
     expect(sanitize(raw, SAVE_CONTEXT).progress.burger).toEqual({ orders: 0, shifts: 0 });
+  });
+});
+
+describe('Sweet Spot (§13)', () => {
+  it('a shift has 3 different orders, the same for the same shift', () => {
+    const o = sweetOrders(2, SWEET_MENU);
+    expect(o).toHaveLength(3);
+    expect(new Set(o.map(designKey)).size).toBe(3);
+    expect(sweetOrders(2, SWEET_MENU)).toEqual(o);
+  });
+  it('checks each part and pays 12 plus a 4 tip for a first-look match', () => {
+    const want = { frosting: 'pink', swirl: 'swirl', topping: 'cherry' };
+    expect(checkCupcake(want, want)).toEqual({ correct: true, wrong: [] });
+    expect(checkCupcake(want, { ...want, topping: 'star' })).toEqual({ correct: false, wrong: ['topping'] });
+    expect(sweetPay(false)).toBe(12);
+    expect(sweetPay(true)).toBe(16);
+  });
+  it('the collection keeps each design once and stops at the cap', () => {
+    const c = { frosting: 'pink', swirl: 'flat', topping: 'star' };
+    const a = addDesign([], c);
+    expect(a).toEqual(['pink|flat|star']);
+    expect(addDesign(a, c)).toBe(a);
+    const full = Array.from({ length: MAX_DESIGNS }, (_, i) => `x${i}`);
+    expect(addDesign(full, c)).toBe(full);
+  });
+  it('old saves get an empty collection and bad data is cleaned', () => {
+    const raw = JSON.parse(JSON.stringify(newSave(SAVE_CONTEXT, 1)));
+    delete raw.progress.sweets;
+    expect(sanitize(raw, SAVE_CONTEXT).progress.sweets).toEqual({ served: 0, shifts: 0, made: [] });
+    raw.progress.sweets = { served: 3, shifts: 1, made: ['a|b|c', 'a|b|c', 7] };
+    expect(sanitize(raw, SAVE_CONTEXT).progress.sweets).toEqual({ served: 3, shifts: 1, made: ['a|b|c'] });
   });
 });

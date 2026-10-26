@@ -118,7 +118,8 @@ export type StickerMotif =
   | 'shell'
   | 'scissors'
   | 'flower'
-  | 'burger';
+  | 'burger'
+  | 'cupcake';
 
 export interface StickerDef {
   id: string;
@@ -423,5 +424,21 @@ export const STICKERS: StickerDef[] = [
     motif: 'burger',
     color: '#FF7BA9',
     cond: { kind: 'burgerShifts', n: 5 },
+  },
+  {
+    id: 'sticker.sweet',
+    name: 'Sweet Helper',
+    hint: 'Finish a shift at Sweet Spot',
+    motif: 'cupcake',
+    color: '#FF9EC4',
+    cond: { kind: 'sweetShifts', n: 1 },
+  },
+  {
+    id: 'sticker.sweet-designer',
+    name: 'Cupcake Designer',
+    hint: 'Serve 10 different cupcake designs',
+    motif: 'cupcake',
+    color: '#C8B3FF',
+    cond: { kind: 'designs', n: 10 },
   },
 ];

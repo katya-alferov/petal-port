@@ -1,4 +1,5 @@
 // SaveGame model + validate / sanitize / migrate (data-model §3, §5.4). Pure: no DOM, storage or clock.
+import { MAX_DESIGNS } from './sweets';
 import { MAX_PHOTOS, newTravel, type PhotoRecipe, type Travel } from './travel';
 import type { HomeSlot, ItemId, WearSlot } from '../content/types';
 import type { SwatchId } from '../content/palette';
@@ -94,6 +95,8 @@ export interface Progress {
   salon: { clients: number; shifts: number };
   /** Wave D (game-systems §12): Bun & Bite orders served and shifts finished. */
   burger: { orders: number; shifts: number };
+  /** Wave D (game-systems §13): Sweet Spot customers, shifts and every different design served. */
+  sweets: { served: number; shifts: number; made: string[] };
   /** Petal Garden beds: the seed planted and the growth it has gathered. */
   garden: { beds: (GardenBed | null)[]; bloomed: string[]; picked: number };
   /** Wave D (game-systems §11): the Paris trip, souvenirs and photos kept as small recipes. */
@@ -159,6 +162,7 @@ export function newProgress(): Progress {
     shells: [],
     salon: { clients: 0, shifts: 0 },
     burger: { orders: 0, shifts: 0 },
+    sweets: { served: 0, shifts: 0, made: [] },
     garden: { beds: Array.from({ length: GARDEN_BEDS }, () => null), bloomed: [], picked: 0 },
     travel: newTravel(),
   };
@@ -329,6 +333,13 @@ function sanitizeProgress(raw: unknown): Progress {
   if (isObj(salon)) p.salon = { clients: clampInt(salon.clients), shifts: clampInt(salon.shifts) };
   const bg = raw.burger;
   if (isObj(bg)) p.burger = { orders: clampInt(bg.orders), shifts: clampInt(bg.shifts) };
+  const sw = raw.sweets;
+  if (isObj(sw))
+    p.sweets = {
+      served: clampInt(sw.served),
+      shifts: clampInt(sw.shifts),
+      made: Array.isArray(sw.made) ? [...new Set(sw.made.filter(isStr))].slice(0, MAX_DESIGNS) : [],
+    };
   const g = raw.garden;
   if (isObj(g)) {
     if (Array.isArray(g.beds))

@@ -1,4 +1,5 @@
 // The single game store (data-model §4). Only `save` is persisted; `ui` is session state.
+import { addDesign, SWEET_SHIFT_BONUS, sweetPay, type Cupcake } from '../game/sweets';
 import { BURGER_SHIFT_BONUS, burgerPay } from '../game/burger';
 import { souvenir } from '../content/travel';
 import { addPhoto, buySouvenir as doBuySouvenir, buyTicket as doBuyTicket, removePhoto, type PhotoRecipe } from '../game/travel';
@@ -32,6 +33,7 @@ import { log } from '../platform/log';
 import { readSaves, requestPersist, scheduleWrite } from '../platform/storage';
 
 export type SceneId =
+  | 'sweets'
   | 'burger'
   | 'airport'
   | 'paris'
@@ -102,6 +104,9 @@ interface GameStore {
   /** Wave D (game-systems §12). */
   burgerServed: (clean: boolean) => number;
   burgerShiftDone: () => number;
+  /** Wave D (game-systems §13): returns the coins paid and whether the design is new to the collection. */
+  sweetServed: (c: Cupcake, firstLook: boolean) => { coins: number; isNew: boolean };
+  sweetShiftDone: () => number;
   plantSeed: (bed: number, seed: string) => void;
   /** Wave D (game-systems §11). Each returns whether it worked. */
   buyTicket: () => boolean;
@@ -389,6 +394,22 @@ export const useGame = create<GameStore>((setState, getState) => ({
     s = grown({ ...s, progress: { ...s.progress, burger: { ...s.progress.burger, shifts: s.progress.burger.shifts + 1 } } });
     setState({ save: touch(s) });
     return BURGER_SHIFT_BONUS;
+  },
+  sweetServed: (c, firstLook) => {
+    let s = getState().save;
+    const coins = sweetPay(firstLook);
+    s = earn(s, coins);
+    const sw = s.progress.sweets;
+    const made = addDesign(sw.made, c);
+    s = { ...s, progress: { ...s.progress, sweets: { ...sw, served: sw.served + 1, made: [...made] } } };
+    setState({ save: touch(s) });
+    return { coins, isNew: made.length !== sw.made.length };
+  },
+  sweetShiftDone: () => {
+    let s = earn(getState().save, SWEET_SHIFT_BONUS);
+    s = grown({ ...s, progress: { ...s.progress, sweets: { ...s.progress.sweets, shifts: s.progress.sweets.shifts + 1 } } });
+    setState({ save: touch(s) });
+    return SWEET_SHIFT_BONUS;
   },
   plantSeed: (bed, seedId) => {
     const s = getState().save;

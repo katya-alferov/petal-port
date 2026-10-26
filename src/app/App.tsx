@@ -1,3 +1,4 @@
+import { SweetsScene } from '../scenes/SweetsScene';
 import { BurgerScene } from '../scenes/BurgerScene';
 import { AirportScene } from '../scenes/AirportScene';
 import { ParisScene } from '../scenes/ParisScene';
@@ -63,6 +64,7 @@ export function App() {
         {scene === 'salon' && <SalonScene />}
         {scene === 'garden' && <GardenScene />}
         {scene === 'burger' && <BurgerScene />}
+        {scene === 'sweets' && <SweetsScene />}
         {scene === 'airport' && <AirportScene />}
         {scene === 'paris' && <ParisScene />}
         {scene === 'photo' && <PhotoScene />}

@@ -6,6 +6,8 @@ import { StickerArt } from '../art/stickers';
 import { SHELLS } from '../content/show';
 import { SOUVENIRS } from '../content/travel';
 import { PhotosPage } from './PhotosPage';
+import { TreatsPage } from './TreatsPage';
+import { MAX_DESIGNS } from '../game/sweets';
 import { STICKERS } from '../content/town';
 import { play } from '../platform/audio';
 import { useGame } from '../state/store';
@@ -17,7 +19,8 @@ export function AlbumScene() {
   const earned = useGame((s) => s.save.progress.stickers);
   const shells = useGame((s) => s.save.progress.shells);
   const travel = useGame((s) => s.save.progress.travel);
-  const [page, setPage] = useState<'stickers' | 'shells' | 'photos'>('stickers');
+  const sweets = useGame((s) => s.save.progress.sweets);
+  const [page, setPage] = useState<'stickers' | 'shells' | 'photos' | 'treats'>('stickers');
   const [open, setOpen] = useState<string | null>(null);
   const def = STICKERS.find((d) => d.id === open);
   const have = new Set(earned);
@@ -26,7 +29,7 @@ export function AlbumScene() {
     <section className="scene" aria-label="Sticker album" style={{ background: 'linear-gradient(#E9DEFF, #FFF0F6 60%)' }}>
       <ActivityBar title="Sticker Album" onBack={() => setScene('town')} />
       <div style={{ padding: '0 12px', display: 'grid', gap: 8 }}>
-        <Tabs<'stickers' | 'shells' | 'photos'>
+        <Tabs<'stickers' | 'shells' | 'photos' | 'treats'>
           label="Album pages"
           value={page}
           onChange={(p) => (play('pop'), setPage(p))}
@@ -34,6 +37,7 @@ export function AlbumScene() {
             { id: 'stickers', label: 'Stickers' },
             { id: 'shells', label: 'Shells' },
             { id: 'photos', label: 'Photos' },
+            { id: 'treats', label: 'Treats' },
           ]}
         />
         <p className="panel" style={{ margin: 0, padding: '6px 12px', textAlign: 'center', fontWeight: 800 }} data-testid="album-count">
@@ -41,7 +45,9 @@ export function AlbumScene() {
             ? `${have.size} of ${STICKERS.length} stickers`
             : page === 'shells'
               ? `${shells.length} of ${SHELLS.length} secret shells`
-              : `${travel.photos.length} ${travel.photos.length === 1 ? 'photo' : 'photos'} · ${travel.souvenirs.length} of ${SOUVENIRS.length} souvenirs`}
+              : page === 'treats'
+                ? `${sweets.made.length} of ${MAX_DESIGNS} cupcake designs`
+                : `${travel.photos.length} ${travel.photos.length === 1 ? 'photo' : 'photos'} · ${travel.souvenirs.length} of ${SOUVENIRS.length} souvenirs`}
         </p>
       </div>
       <div className="scroll-y" style={{ flex: 1, minHeight: 0, padding: 12 }}>
@@ -68,6 +74,8 @@ export function AlbumScene() {
           </div>
         ) : page === 'photos' ? (
           <PhotosPage />
+        ) : page === 'treats' ? (
+          <TreatsPage />
         ) : (
           <>
             <p style={{ margin: '0 0 10px', textAlign: 'center' }}>Shiny shells are hidden all around Petalport. Tap one to pick it up!</p>

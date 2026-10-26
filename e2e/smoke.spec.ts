@@ -92,6 +92,7 @@ test('no serious accessibility violations on each main scene', async ({ page }) 
     'album',
     'airport',
     'burger',
+    'sweets',
     'paris',
     'photo',
     'show',
@@ -228,7 +229,7 @@ test('town: every place opens a card; the airport opens', async ({ page }) => {
     await place.evaluate((e) => e.scrollIntoView({ block: 'center' }));
     await place.click({ force: true });
   };
-  for (const id of ['cafe', 'boutique', 'home', 'park', 'airport', 'salon', 'garden', 'burger']) {
+  for (const id of ['cafe', 'boutique', 'home', 'park', 'airport', 'salon', 'garden', 'burger', 'sweets']) {
     await tapPlace(id);
     await expect(page.getByRole('dialog'), id).toBeVisible();
     await page.keyboard.press('Escape');
@@ -495,4 +496,29 @@ test('bun and bite: a wrong tap names the next layer, a full shift pays with tip
   }
   await expect(page.getByTestId('burger-done')).toContainText('+');
   expect((await coins()) - start).toBe(14 + 18 * 3 + 12);
+});
+
+test('sweet spot: a wrong cupcake is explained, a match pays, and the design joins the Treats page', async ({ page }) => {
+  await page.goto('./?fixture=fresh&scene=sweets');
+  const want = JSON.parse((await page.getByTestId('sweet-card').getAttribute('data-want'))!) as {
+    frosting: string;
+    swirl: string;
+    topping: string;
+  };
+  await page.getByTestId('sweet-serve').click();
+  await expect(page.getByTestId('sweet-wrong')).toContainText('Almost');
+  await page.getByTestId(`sweet-opt-${want.frosting}`).click();
+  await page.getByRole('tab', { name: /Swirl/ }).click();
+  await page.getByTestId(`sweet-opt-${want.swirl}`).click();
+  await page.getByRole('tab', { name: /Topping/ }).click();
+  await page.getByTestId(`sweet-opt-${want.topping}`).click();
+  await page.getByTestId('sweet-serve').click();
+  // The first look was wrong, so the pay is 12 without the tip.
+  await expect(page.getByTestId('sweet-served')).toContainText('+12');
+  await expect(page.getByTestId('sweet-served')).toContainText('new design');
+  await page.evaluate(() =>
+    (window as unknown as { __petal: { getState: () => { setScene: (s: string) => void } } }).__petal.getState().setScene('album'),
+  );
+  await page.getByRole('tab', { name: /Treats/ }).click();
+  await expect(page.getByTestId(`treat-${want.frosting}|${want.swirl}|${want.topping}`)).toBeVisible();
 });

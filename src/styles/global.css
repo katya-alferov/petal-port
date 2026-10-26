@@ -1917,3 +1917,22 @@ g[role='button']:focus-visible {
   width: 100%;
   height: 28px;
 }
+
+/* Sweet Spot (game-systems §13) */
+.sweet-preview {
+  width: 96px;
+  height: 106px;
+  flex: none;
+}
+.sweet-stage {
+  flex: 1;
+  min-height: 0;
+  padding: 0 60px;
+}
+.sweet-stage > svg {
+  width: 100%;
+  height: 100%;
+}
+.sweet-stage[data-wobble='true'] {
+  animation: burger-wobble 0.35s;
+}
