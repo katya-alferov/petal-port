@@ -339,3 +339,7 @@ The owner asked for the look of the 2009 Israeli virtual-city "dolls". We keep c
 - **Characters stand on something.** A character drawn over a scene sits inside the scene SVG (via the rig's `frame` prop) so its feet stay on the floor at every screen shape. The title doll stands on the boardwalk, which is tall enough to show on 375×667 and 390×844; the title art is anchored to the bottom (`xMidYMax slice`).
 - **Grown-up details stay quiet.** The build version is a tiny, faint "v0.2" tag in a corner (full version in `data-version` and the debug overlay; press and hold opens the log).
 - **Secret shells** look like treasure (gloss, twinkle, gentle scale animation), never like scenery, and always have a 44 px+ target.
+
+## 16. Wave C art
+
+- Salon, garden flowers, scissors/flower sticker motifs and seasonal drift follow the kit rules (§13): plum outline, `Shaded`, no filters or `var(--`. Flower art takes `petal` and `center` colors by prop. Season drift shapes are tiny SVGs animated by transform and opacity only.

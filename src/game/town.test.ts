@@ -6,11 +6,16 @@ import { LETTERS, REQUEST_POOLS, STICKERS } from '../content/town';
 import { letterGift, letterWaiting, nextLetter, weekIndex } from './mail';
 import { adopt, ballSpot, bowls, care, careToNextTrick, tricksKnown, wantedFood } from './pets';
 import { addHeart, applyEvent, BOARD_SIZE, fillBoard, GIFT_AT, isReady, makeNote, VISIT_AT } from './requests';
-import { load, newSave, sanitize, type SaveGame } from './save';
+import { GARDEN_BEDS, load, newSave, sanitize, type SaveGame } from './save';
 import { newStickers } from './stickers';
 import { FIRST_STARS_BONUS, fits, fitting, judgesFor, SHOW_PAY, showReward, showStars, themeFor } from './show';
 import { SHELLS, SHOW_THEMES } from '../content/show';
-import { WEARABLES } from '../content/wearables';
+import { WEARABLES, wearable } from '../content/wearables';
+import { HAIR_COLORS } from '../content/appearance';
+import { SALON_MENU, SEEDS } from '../content/wavec';
+import { BLOOM_AT, grow, pickBloom, plant, stage } from './garden';
+import { seasonFor } from './season';
+import { CLIENTS_PER_SHIFT, SALON_PAY, SALON_TIP, checkLook, clientPay, salonOrders } from './salon';
 
 const fresh = () => newSave(SAVE_CONTEXT, 1_700_000_000_000);
 const ctx = { hasPet: true, unlockedRecipes: ['recipe.pancakes'] };
@@ -159,7 +164,8 @@ describe('save: Wave A fields', () => {
   it('an old save without Wave A fields loads with safe defaults', () => {
     const s = fresh() as unknown as Record<string, unknown>;
     const old = structuredClone(s) as { progress: Record<string, unknown> };
-    for (const k of ['pet', 'friends', 'requests', 'mail', 'stickers', 'visitor', 'shows', 'shells']) delete old.progress[k];
+    for (const k of ['pet', 'friends', 'requests', 'mail', 'stickers', 'visitor', 'shows', 'shells', 'salon', 'garden'])
+      delete old.progress[k];
     const r = load(JSON.stringify(old), SAVE_CONTEXT);
     expect(r.kind).toBe('ok');
     if (r.kind === 'ok') {
@@ -228,5 +234,99 @@ describe('secret shells (§9.2)', () => {
     const out = sanitize(s, SAVE_CONTEXT);
     expect(out.progress.shows).toEqual({ done: 0, best: {} });
     expect(out.progress.shells).toEqual(['shell.pond']);
+  });
+});
+
+describe('Glam Salon (§10.1)', () => {
+  it('a shift has three different wishes, the same every time for the same shift', () => {
+    const a = salonOrders(4, SALON_MENU);
+    expect(a).toEqual(salonOrders(4, SALON_MENU));
+    expect(a).toHaveLength(CLIENTS_PER_SHIFT);
+    expect(new Set(a.map((l) => `${l.style}|${l.color}|${l.accessory}`)).size).toBe(CLIENTS_PER_SHIFT);
+    expect(salonOrders(5, SALON_MENU)).not.toEqual(a);
+  });
+  it('checks which parts still differ, and pays a tip only for a right first look', () => {
+    const want = { style: 'hairstyle.bob', color: 'hair.lilac', accessory: 'headwear.tiara' };
+    expect(checkLook(want, want)).toEqual({ correct: true, wrong: [] });
+    expect(checkLook(want, { style: 'hairstyle.bob' })).toEqual({ correct: false, wrong: ['color', 'accessory'] });
+    expect(clientPay(true)).toBe(SALON_PAY + SALON_TIP);
+    expect(clientPay(false)).toBe(SALON_PAY);
+  });
+  it('every menu item exists in the catalogs', () => {
+    for (const id of SALON_MENU.colors)
+      expect(
+        HAIR_COLORS.some((c) => c.id === id),
+        id,
+      ).toBe(true);
+    for (const id of SALON_MENU.accessories) expect(wearable(id)?.slot, id).toBe('headwear');
+  });
+});
+
+describe('Petal Garden (§10.2)', () => {
+  const empty = () => newSave(SAVE_CONTEXT, 1).progress.garden;
+  it('plants once per bed, and growth stops at bloom', () => {
+    let g = plant(empty(), 0, 'seed.tulip');
+    expect(plant(g, 0, 'seed.rose')).toBe(g);
+    expect(g.beds[0]).toEqual({ seed: 'seed.tulip', growth: 0 });
+    for (let i = 0; i < 9; i++) g = grow(g);
+    expect(g.beds[0]!.growth).toBe(BLOOM_AT);
+    expect(stage(g.beds[0]!.growth)).toBe('bloom');
+    expect(grow(g)).toBe(g);
+  });
+  it('stages follow growth and the empty garden never changes', () => {
+    expect([0, 1, 2, 3, 4, 5].map(stage)).toEqual(['seed', 'sprout', 'sprout', 'bud', 'bud', 'bloom']);
+    const e = empty();
+    expect(grow(e)).toBe(e);
+  });
+  it('only a bloom can be picked; picking empties the bed and collects the kind once', () => {
+    let g = plant(empty(), 1, 'seed.rose');
+    expect(pickBloom(g, 1)).toBeNull();
+    for (let i = 0; i < BLOOM_AT; i++) g = grow(g);
+    const r = pickBloom(g, 1)!;
+    expect(r.first).toBe(true);
+    expect(r.garden.beds[1]).toBeNull();
+    expect(r.garden.bloomed).toEqual(['seed.rose']);
+    let again = plant(r.garden, 2, 'seed.rose');
+    for (let i = 0; i < BLOOM_AT; i++) again = grow(again);
+    const second = pickBloom(again, 2)!;
+    expect(second.first).toBe(false);
+    expect(second.garden.bloomed).toEqual(['seed.rose']);
+    expect(second.garden.picked).toBe(2);
+  });
+  it('old saves get an empty garden and salon, and broken garden data is cleaned', () => {
+    const s = fresh();
+    const raw = s.progress as unknown as Record<string, unknown>;
+    delete raw.salon;
+    raw.garden = { beds: [{ seed: 'seed.tulip', growth: 999 }, 'x'], bloomed: ['seed.rose', 'seed.rose', 3], picked: -4 };
+    const out = sanitize(s, SAVE_CONTEXT);
+    expect(out.progress.salon).toEqual({ clients: 0, shifts: 0 });
+    expect(out.progress.garden.beds).toHaveLength(GARDEN_BEDS);
+    expect(out.progress.garden.beds[0]).toEqual({ seed: 'seed.tulip', growth: 99 });
+    expect(out.progress.garden.beds[1]).toBeNull();
+    expect(out.progress.garden.bloomed).toEqual(['seed.rose']);
+    expect(out.progress.garden.picked).toBe(0);
+  });
+  it('Wave C stickers match the content', () => {
+    const star = STICKERS.find((s) => s.id === 'sticker.garden')!;
+    expect(star.cond).toEqual({ kind: 'blooms', n: SEEDS.length });
+  });
+});
+
+describe('seasons (§10.3)', () => {
+  it('maps each calendar month to one season', () => {
+    expect(Array.from({ length: 12 }, (_, m) => seasonFor(m))).toEqual([
+      'winter',
+      'winter',
+      'spring',
+      'spring',
+      'spring',
+      'summer',
+      'summer',
+      'summer',
+      'autumn',
+      'autumn',
+      'autumn',
+      'winter',
+    ]);
   });
 });

@@ -1,5 +1,7 @@
 import { useRef, useState } from 'react';
 import { BOARDWALK_Y, Waterfront } from '../art/scenes/Waterfront';
+import { SeasonDrift } from '../art/Season';
+import { seasonFor } from '../game/season';
 import { play, unlockAudio } from '../platform/audio';
 import { APP_VERSION } from '../platform/version';
 import { useGame } from '../state/store';
@@ -43,6 +45,7 @@ export function TitleScene({ onOpenDebug }: { onOpenDebug: () => void }) {
         </Waterfront>
       </div>
       <GlamBackdrop />
+      <SeasonDrift season={seasonFor(new Date().getMonth())} />
       <div className="safe" style={{ position: 'relative', flex: 1, display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
         <div className="panel pop-in" style={{ marginTop: '9vh', textAlign: 'center', padding: '18px 28px', transform: 'rotate(-2deg)' }}>
           <h1 className="logo">

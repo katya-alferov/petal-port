@@ -115,7 +115,9 @@ export type StickerMotif =
   | 'envelope'
   | 'coin'
   | 'dress'
-  | 'shell';
+  | 'shell'
+  | 'scissors'
+  | 'flower';
 
 export interface StickerDef {
   id: string;
@@ -347,5 +349,38 @@ export const STICKERS: StickerDef[] = [
     motif: 'shell',
     color: '#3BB7C4',
     cond: { kind: 'shells', n: 10 },
+  },
+  // Wave C (game-systems §10)
+  {
+    id: 'sticker.salon',
+    name: 'Snip Snip',
+    hint: 'Finish a Glam Salon shift',
+    motif: 'scissors',
+    color: '#B39DFF',
+    cond: { kind: 'salonShifts', n: 1 },
+  },
+  {
+    id: 'sticker.salon-star',
+    name: 'Star Stylist',
+    hint: 'Finish 5 Glam Salon shifts',
+    motif: 'scissors',
+    color: '#FF7BA9',
+    cond: { kind: 'salonShifts', n: 5 },
+  },
+  {
+    id: 'sticker.first-bloom',
+    name: 'First Bloom',
+    hint: 'Grow a flower in Petal Garden',
+    motif: 'flower',
+    color: '#FF7BA9',
+    cond: { kind: 'blooms', n: 1 },
+  },
+  {
+    id: 'sticker.garden',
+    name: 'Green Thumb',
+    hint: 'Grow every kind of flower',
+    motif: 'flower',
+    color: '#7ED6A7',
+    cond: { kind: 'blooms', n: 6 },
   },
 ];

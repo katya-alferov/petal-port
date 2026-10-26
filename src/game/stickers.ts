@@ -21,7 +21,9 @@ export type StickerCond =
   | { kind: 'coins'; n: number }
   | { kind: 'shows'; n: number }
   | { kind: 'showStars'; n: number }
-  | { kind: 'shells'; n: number };
+  | { kind: 'shells'; n: number }
+  | { kind: 'salonShifts'; n: number }
+  | { kind: 'blooms'; n: number };
 
 export interface StickerFacts {
   journeySteps: number;
@@ -68,6 +70,10 @@ export function meets(save: SaveGame, c: StickerCond, facts: StickerFacts): bool
       return Object.values(p.shows.best).filter((b) => b >= 3).length >= c.n;
     case 'shells':
       return p.shells.length >= c.n;
+    case 'salonShifts':
+      return p.salon.shifts >= c.n;
+    case 'blooms':
+      return p.garden.bloomed.length >= c.n;
   }
 }
 

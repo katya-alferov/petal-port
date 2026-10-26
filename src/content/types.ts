@@ -109,3 +109,6 @@ export interface HomeDef {
   slotAnchors: Record<HomeSlot, SlotAnchor>;
   starterFurniture: Record<HomeSlot, ItemId>;
 }
+
+/** Flower drawings in the Petal Garden (game-systems §10.2). */
+export type FlowerArt = 'tulip' | 'sunflower' | 'daisy' | 'rose' | 'bell' | 'star';

@@ -139,6 +139,29 @@ const MOTIF: Record<string, (ink: string) => ReactElement> = {
       <path d="M50,52 L52,57 L57,58 L53,61 L54,66 L50,63 L46,66 L47,61 L43,58 L48,57 Z" fill={W} strokeWidth={1.5} />
     </g>
   ),
+  scissors: (c) => (
+    <g {...sw}>
+      <path d="M40,22 L60,64 M60,22 L40,64" fill="none" strokeWidth={5} />
+      <circle cx={36} cy={70} r={10} fill={c} />
+      <circle cx={64} cy={70} r={10} fill={c} />
+      <circle cx={50} cy={43} r={3} fill={W} />
+    </g>
+  ),
+  flower: (c) => (
+    <g {...sw}>
+      <path d="M50,58 C48,68 50,76 50,84" fill="none" stroke="#5FA67A" strokeWidth={5} />
+      {[0, 72, 144, 216, 288].map((a) => (
+        <circle
+          key={a}
+          cx={50 + Math.cos(((a - 90) * Math.PI) / 180) * 14}
+          cy={40 + Math.sin(((a - 90) * Math.PI) / 180) * 14}
+          r={11}
+          fill={c}
+        />
+      ))}
+      <circle cx={50} cy={40} r={8} fill="#FFC94A" />
+    </g>
+  ),
   shell: (c) => (
     <g transform="translate(14 12) scale(0.72)">
       <ShellArt kind="scallop" color={c} />

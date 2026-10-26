@@ -79,7 +79,22 @@ test('every tappable thing on Home responds', async ({ page }) => {
 
 test('no serious accessibility violations on each main scene', async ({ page }) => {
   test.setTimeout(120_000);
-  for (const scene of ['title', 'town', 'me', 'home', 'cafe', 'boutique', 'kitchen', 'petshop', 'board', 'album', 'show', 'gallery']) {
+  for (const scene of [
+    'title',
+    'town',
+    'me',
+    'home',
+    'cafe',
+    'boutique',
+    'kitchen',
+    'petshop',
+    'board',
+    'album',
+    'show',
+    'salon',
+    'garden',
+    'gallery',
+  ]) {
     await page.goto(`./?fixture=fresh&scene=${scene}`);
     await page.waitForTimeout(300);
     const results = await new AxeBuilder({ page }).disableRules(['color-contrast']).analyze();
@@ -209,7 +224,7 @@ test('town: every place opens a card; the airport says it is coming soon', async
     await place.evaluate((e) => e.scrollIntoView({ block: 'center' }));
     await place.click({ force: true });
   };
-  for (const id of ['cafe', 'boutique', 'home', 'park', 'airport']) {
+  for (const id of ['cafe', 'boutique', 'home', 'park', 'airport', 'salon', 'garden']) {
     await tapPlace(id);
     await expect(page.getByRole('dialog'), id).toBeVisible();
     await page.keyboard.press('Escape');
@@ -347,4 +362,51 @@ test('secret shells: pick one up and see it on the album’s Shells page', async
   await page.getByRole('tab', { name: 'Shells' }).click();
   await expect(page.getByTestId('album-count')).toContainText('1 of 10 secret shells');
   await expect(page.getByTestId('album-shell.boutique')).toHaveAttribute('data-earned', 'true');
+});
+
+test('glam salon: wash, style to match the card, and get paid', async ({ page }) => {
+  await page.goto('./?fixture=fresh&scene=town');
+  const salon = page.getByTestId('place-salon');
+  await salon.evaluate((e) => e.scrollIntoView({ block: 'center' }));
+  await salon.click({ force: true });
+  await page.getByTestId('place-go').click();
+  await expect(page.getByTestId('salon-client')).toBeVisible();
+  const want = JSON.parse((await page.getByTestId('salon-card').getAttribute('data-want'))!) as {
+    style: string;
+    color: string;
+    accessory: string;
+  };
+  for (let i = 0; i < 5; i++) await page.getByTestId(`foam-${i}`).click({ force: true });
+  await expect(page.getByTestId('salon-mirror')).toBeVisible();
+  // A wrong first look explains what to change and takes nothing away.
+  await page.getByTestId('salon-mirror').click();
+  await expect(page.getByTestId('salon-wrong')).toContainText('Almost');
+  await page.getByTestId(`salon-opt-${want.style}`).click();
+  await page.getByTestId('tab-color').click();
+  await page.getByTestId(`salon-opt-${want.color}`).click();
+  await page.getByTestId('tab-accessory').click();
+  await page.getByTestId(`salon-opt-${want.accessory}`).click();
+  await shot(page, '18-salon-style');
+  await page.getByTestId('salon-mirror').click();
+  await expect(page.getByTestId('salon-next')).toBeVisible();
+  const coins = async () => (await page.getByTestId('salon-progress').textContent()) ?? '';
+  expect(await coins()).toContain('1/3');
+});
+
+test('petal garden: plant a seed, it grows from finished activities, and a bloom can be picked', async ({ page }) => {
+  await page.goto('./?fixture=fresh&scene=garden');
+  await page.getByTestId('bed-0').click();
+  await page.getByTestId('seed-seed.tulip').click();
+  await expect(page.getByTestId('bed-0')).toHaveAttribute('data-stage', 'seed');
+  // A finished café shift, dish, show, note or pet care grows every flower one step.
+  await patchSave(page, 's.progress.garden.beds[0].growth = 4;');
+  await page.evaluate(() =>
+    (window as unknown as { __petal: { getState: () => { cafeShiftDone: () => void } } }).__petal.getState().cafeShiftDone(),
+  );
+  await expect(page.getByTestId('bed-0')).toHaveAttribute('data-stage', 'bloom');
+  await shot(page, '19-garden-bloom');
+  await page.getByTestId('bed-0').click();
+  await expect(page.getByTestId('garden-picked')).toContainText('A new flower');
+  await page.getByTestId('garden-picked-ok').click();
+  await expect(page.getByTestId('bed-0')).toHaveAttribute('data-stage', 'empty');
 });

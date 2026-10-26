@@ -560,3 +560,27 @@ Wave B adds a dress-up goal, an exploration collection and more doll-style cloth
 ### 9.4 Stickers
 
 - 5 more (31 in all): Runway Debut (1 show), Fashion Star (3 stars in a show), Style Icon (3 stars on every theme), Beachcomber (1 shell), Shell Seeker (all 10 shells).
+
+## 10. Salon, garden and seasons (Wave C)
+
+### 10.1 Glam Salon
+
+- A real activity, not a coin button. A shift is **3 clients**. Each client: **wash** (pop 5 foam spots by tapping), then **style** (match the order card on hair style, hair color and accessory), then **mirror** (confirm the look).
+- Orders are seeded per shift number, so they are unique within a shift and repeatable in tests. Menu: every hair style, 8 colors, 4 accessories (bow headband, flower crown, tiara, kitty ears).
+- A wrong look wobbles and says what is different; nothing is taken away. Pay **12** per client, **+4** tip when the first look matches, **+10** shift bonus (max 3 x 16 + 10 = 58).
+- Stickers: Glam Salon (1 shift) and Salon Star (5 shifts).
+
+### 10.2 Petal Garden
+
+- 6 beds, 6 free seeds (tulip, sunflower, daisy, rose, bluebell, starbloom). Planting costs nothing.
+- Every finished activity elsewhere (café shift, dish, show, note, pet care, salon shift) grows every planted flower one step. Growth: seed 0, sprout 1, bud 3, **bloom 5**.
+- Flowers **never wilt** and nothing expires. Picking a bloom pays **+5** coins, empties the bed, and adds that kind to the collection (first time: sticker First Bloom; all 6 kinds: sticker Garden Party).
+
+### 10.3 Seasons
+
+- Decoration only: gentle falling shapes on the title and town (snow-flake dots in winter, petals in spring, sunbeams in summer, leaves in autumn) chosen by the device month. No gameplay, prices or content change by season. Animation is transform and opacity only and stops under reduced motion.
+
+### 10.4 Town map and stickers
+
+- The map is now 1170 x 3860: "Sparkle Street" (Glam Salon and Petal Garden) sits above the airport, which moved down 660 px. Both places show a badge when there is something to do.
+- 4 more stickers (35 in all): Glam Salon, Salon Star, First Bloom, Garden Party.

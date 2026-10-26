@@ -89,6 +89,15 @@ export interface Progress {
   shows: { done: number; best: Record<string, number> };
   /** Secret shell ids found, in order. */
   shells: string[];
+  /** Wave C (game-systems §10): Glam Salon clients styled and shifts finished. */
+  salon: { clients: number; shifts: number };
+  /** Petal Garden beds: the seed planted and the growth it has gathered. */
+  garden: { beds: (GardenBed | null)[]; bloomed: string[]; picked: number };
+}
+
+export interface GardenBed {
+  seed: string;
+  growth: number;
 }
 
 export interface SaveGame {
@@ -124,6 +133,8 @@ export const MAX_COINS = 99_999;
 export const MAX_NAME = 12;
 export const START_COINS = 120;
 export const MAX_HEARTS = 10;
+/** Petal Garden flower beds (game-systems §10.2). */
+export const GARDEN_BEDS = 6;
 
 export function newProgress(): Progress {
   return {
@@ -139,6 +150,8 @@ export function newProgress(): Progress {
     visitor: null,
     shows: { done: 0, best: {} },
     shells: [],
+    salon: { clients: 0, shifts: 0 },
+    garden: { beds: Array.from({ length: GARDEN_BEDS }, () => null), bloomed: [], picked: 0 },
   };
 }
 
@@ -303,6 +316,18 @@ function sanitizeProgress(raw: unknown): Progress {
     if (isObj(shows.best)) for (const [id, n] of Object.entries(shows.best)) if (isNum(n)) p.shows.best[id] = clampInt(n, 3);
   }
   if (Array.isArray(raw.shells)) p.shells = [...new Set(raw.shells.filter(isStr))];
+  const salon = raw.salon;
+  if (isObj(salon)) p.salon = { clients: clampInt(salon.clients), shifts: clampInt(salon.shifts) };
+  const g = raw.garden;
+  if (isObj(g)) {
+    if (Array.isArray(g.beds))
+      p.garden.beds = p.garden.beds.map((_, i) => {
+        const b = (g.beds as unknown[])[i];
+        return isObj(b) && isStr(b.seed) ? { seed: b.seed, growth: clampInt(b.growth, 99) } : null;
+      });
+    if (Array.isArray(g.bloomed)) p.garden.bloomed = [...new Set(g.bloomed.filter(isStr))];
+    p.garden.picked = clampInt(g.picked);
+  }
   return p;
 }
 

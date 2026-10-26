@@ -16,6 +16,8 @@ import { letterGift, letterWaiting, nextLetter, weekIndex, type LetterDef } from
 import { adopt, care } from '../game/pets';
 import { addHeart, applyEvent, fillBoard, isReady, NOTE_PAY, type GameEvent } from '../game/requests';
 import { showReward } from '../game/show';
+import { clientPay, SALON_SHIFT_BONUS } from '../game/salon';
+import { grow, pickBloom, PICK_COINS, plant } from '../game/garden';
 import { newStickers } from '../game/stickers';
 import { earn, grant, purchase } from '../game/economy';
 import { load, newSave, validate, type Appearance, type Dish, type Outfit, type PetAction, type SaveGame } from '../game/save';
@@ -25,7 +27,22 @@ import { log } from '../platform/log';
 import { readSaves, requestPersist, scheduleWrite } from '../platform/storage';
 
 export type SceneId =
-  'title' | 'town' | 'me' | 'home' | 'cafe' | 'boutique' | 'kitchen' | 'petshop' | 'pet' | 'board' | 'album' | 'show' | 'gallery' | 'spike';
+  | 'title'
+  | 'town'
+  | 'me'
+  | 'home'
+  | 'cafe'
+  | 'boutique'
+  | 'kitchen'
+  | 'petshop'
+  | 'pet'
+  | 'board'
+  | 'album'
+  | 'show'
+  | 'salon'
+  | 'garden'
+  | 'gallery'
+  | 'spike';
 
 export interface ToastMsg {
   id: number;
@@ -69,6 +86,11 @@ interface GameStore {
   showDone: (themeId: string, stars: 1 | 2 | 3) => { coins: number; firstStars: boolean };
   /** Picks up a secret shell; returns how many are found now, or null if it was already found. */
   findShell: (id: string) => number | null;
+  /** Wave C (game-systems §10). A styled client; returns the coins paid. */
+  salonServed: (firstLook: boolean) => number;
+  salonShiftDone: () => number;
+  plantSeed: (bed: number, seed: string) => void;
+  pickFlower: (bed: number) => { coins: number; seed: string; first: boolean } | null;
   boot: (fixture?: string | null) => Promise<void>;
 }
 
@@ -79,6 +101,12 @@ function touch(save: SaveGame): SaveGame {
 }
 
 /** Counts a finished activity on the Petal Notes board. */
+/** A finished activity helps every planted flower grow (game-systems §10.2). */
+function grown(s: SaveGame): SaveGame {
+  const garden = grow(s.progress.garden);
+  return garden === s.progress.garden ? s : { ...s, progress: { ...s.progress, garden } };
+}
+
 function withEvent(s: SaveGame, e: GameEvent): SaveGame {
   const board = applyEvent(s.progress.requests.board, e);
   return { ...s, progress: { ...s.progress, requests: { ...s.progress.requests, board } } };
@@ -164,7 +192,7 @@ export const useGame = create<GameStore>((setState, getState) => ({
   },
   cafeShiftDone: () => {
     let s = earn(getState().save, SHIFT_BONUS);
-    s = { ...s, progress: { ...s.progress, cafe: { ...s.progress.cafe, shifts: s.progress.cafe.shifts + 1 } } };
+    s = grown({ ...s, progress: { ...s.progress, cafe: { ...s.progress.cafe, shifts: s.progress.cafe.shifts + 1 } } });
     setState({ save: touch(s) });
     getState().completeJourney('journey.cafe');
     return SHIFT_BONUS;
@@ -177,7 +205,7 @@ export const useGame = create<GameStore>((setState, getState) => ({
     const rec = { cooked: (prev?.cooked ?? 0) + 1, stars: Math.max(prev?.stars ?? 0, stars) };
     s = { ...s, progress: { ...s.progress, dish, recipes: { ...s.progress.recipes, [dish.recipeId]: rec } } };
     s = withEvent(s, { kind: 'cook', recipe: dish.recipeId, toppings: dish.toppings.map((t) => t.id) });
-    setState({ save: touch(s) });
+    setState({ save: touch(grown(s)) });
     getState().completeJourney('journey.cook');
     return coins;
   },
@@ -205,7 +233,7 @@ export const useGame = create<GameStore>((setState, getState) => ({
     if (!s.progress.pet) return null;
     const r = care(s.progress.pet, action);
     s = withEvent({ ...s, progress: { ...s.progress, pet: r.pet } }, { kind: 'pet', action });
-    setState({ save: touch(s) });
+    setState({ save: touch(grown(s)) });
     return r.newTrick;
   },
   refreshBoard: () => {
@@ -236,7 +264,7 @@ export const useGame = create<GameStore>((setState, getState) => ({
         requests: { ...s.progress.requests, done: s.progress.requests.done + 1, board },
       },
     };
-    setState({ save: touch(s) });
+    setState({ save: touch(grown(s)) });
     getState().refreshBoard();
     return { coins, hearts: h.hearts, gift, visit: h.visit };
   },
@@ -270,7 +298,7 @@ export const useGame = create<GameStore>((setState, getState) => ({
       ...s,
       progress: { ...s.progress, shows: { done: s.progress.shows.done + 1, best: { ...s.progress.shows.best, [themeId]: r.best } } },
     };
-    setState({ save: touch(s) });
+    setState({ save: touch(grown(s)) });
     return { coins: r.coins, firstStars: r.firstStars };
   },
   findShell: (id) => {
@@ -279,6 +307,34 @@ export const useGame = create<GameStore>((setState, getState) => ({
     const shells = [...s.progress.shells, id];
     setState({ save: touch({ ...s, progress: { ...s.progress, shells } }) });
     return shells.length;
+  },
+  salonServed: (firstLook) => {
+    let s = getState().save;
+    const coins = clientPay(firstLook);
+    s = earn(s, coins);
+    s = { ...s, progress: { ...s.progress, salon: { ...s.progress.salon, clients: s.progress.salon.clients + 1 } } };
+    setState({ save: touch(s) });
+    return coins;
+  },
+  salonShiftDone: () => {
+    let s = earn(getState().save, SALON_SHIFT_BONUS);
+    s = grown({ ...s, progress: { ...s.progress, salon: { ...s.progress.salon, shifts: s.progress.salon.shifts + 1 } } });
+    setState({ save: touch(s) });
+    return SALON_SHIFT_BONUS;
+  },
+  plantSeed: (bed, seedId) => {
+    const s = getState().save;
+    const garden = plant(s.progress.garden, bed, seedId);
+    if (garden === s.progress.garden) return;
+    setState({ save: touch({ ...s, progress: { ...s.progress, garden } }) });
+  },
+  pickFlower: (bed) => {
+    let s = getState().save;
+    const r = pickBloom(s.progress.garden, bed);
+    if (!r) return null;
+    s = earn({ ...s, progress: { ...s.progress, garden: r.garden } }, PICK_COINS);
+    setState({ save: touch(s) });
+    return { coins: PICK_COINS, seed: r.seed, first: r.first };
   },
   boot: async (fixture) => {
     if (fixture === 'fresh') {

@@ -1,13 +1,16 @@
-// The vertical town map (game-systems §5.1): hill, town, harbour, airport, top to bottom. Canvas 1170×3200.
+// The vertical town map (game-systems §5.1): hill, town, harbour, airport, top to bottom. Canvas 1170×3860.
 import type { ReactNode } from 'react';
 import type { Shade } from '../../content/palette';
 import { OUTLINE, Shaded, scallopCircle } from '../kit';
 import { ShellArt } from '../shells';
 
-export type PlaceId = 'boutique' | 'park' | 'cafe' | 'home' | 'airport' | 'cottage' | 'petshop' | 'board' | 'postbox' | 'stage';
+export type PlaceId =
+  'boutique' | 'park' | 'cafe' | 'home' | 'airport' | 'cottage' | 'petshop' | 'board' | 'postbox' | 'stage' | 'salon' | 'garden';
 
 export const MAP_W = 1170;
-export const MAP_H = 3200;
+/** Sparkle Street (Glam Salon and Petal Garden) sits between the harbour and the airport. */
+const STREET = 660;
+export const MAP_H = 3200 + STREET;
 
 /** Where each place sits, so the scene can scroll to it. */
 export const PLACE_Y: Record<PlaceId, number> = {
@@ -20,7 +23,9 @@ export const PLACE_Y: Record<PlaceId, number> = {
   home: 2160,
   postbox: 2160,
   stage: 2480,
-  airport: 2860,
+  salon: 3000,
+  garden: 3000,
+  airport: 2860 + STREET,
 };
 
 const sh = (base: string, shadow: string, highlight: string): Shade => ({ base, shadow, highlight });
@@ -172,11 +177,23 @@ export interface TownMapProps {
   /** A letter is waiting: the Post Box flag is up. */
   mail?: boolean;
   /** Secret shells still to find on the map (game-systems §9.2). */
+  /** A flower is ready to pick in the Petal Garden. */
+  bloomsReady?: boolean;
   shells?: readonly { id: string; kind: string; color: string; x: number; y: number }[];
   onShell?: (id: string) => void;
 }
 
-export function TownMap({ onTap, onCat, badges = {}, homeName = 'Harbour Loft', pet, mail = false, shells = [], onShell }: TownMapProps) {
+export function TownMap({
+  onTap,
+  onCat,
+  badges = {},
+  homeName = 'Harbour Loft',
+  pet,
+  mail = false,
+  bloomsReady = false,
+  shells = [],
+  onShell,
+}: TownMapProps) {
   return (
     <svg
       viewBox={`0 0 ${MAP_W} ${MAP_H}`}
@@ -205,12 +222,12 @@ export function TownMap({ onTap, onCat, badges = {}, homeName = 'Harbour Loft', 
         <path d={scallopCircle(930, 110, 50, 8, 7)} fill="#FFF7EC" />
       </g>
       <path
-        d="M0,420 C240,300 520,340 700,380 C880,330 1040,320 1170,370 L1170,3200 L0,3200 Z"
+        d="M0,420 C240,300 520,340 700,380 C880,330 1040,320 1170,370 L1170,3900 L0,3900 Z"
         fill="#8CCB9E"
         stroke={OUTLINE}
         strokeWidth={5}
       />
-      <path d="M0,560 C300,500 700,540 1170,500 L1170,3200 L0,3200 Z" fill="#A5DDB4" />
+      <path d="M0,560 C300,500 700,540 1170,500 L1170,3900 L0,3900 Z" fill="#A5DDB4" />
 
       {/* Windmill (scenery) */}
       <g>
@@ -560,34 +577,92 @@ export function TownMap({ onTap, onCat, badges = {}, homeName = 'Harbour Loft', 
         />
       </g>
 
-      {/* Airport on the point */}
-      <path d="M0,2740 C300,2700 800,2720 1170,2700 L1170,3200 L0,3200 Z" fill="#A5DDB4" stroke={OUTLINE} strokeWidth={5} />
-      <Place id="airport" hit={[110, 2640, 980, 530]} label="Airport" onTap={onTap}>
-        <path d="M120,3080 L1060,2980 L1080,3060 L140,3160 Z" fill="#8E86A0" stroke={OUTLINE} strokeWidth={5} strokeLinejoin="round" />
-        <path d="M200,3110 L1000,3024" stroke="#FFF7EC" strokeWidth={8} strokeDasharray="40 30" />
-        <Shaded d={rect(700, 2800, 300, 150)} shade={CREAM} depth={8} />
-        <path d="M700,2800 C760,2750 940,2750 1000,2800 Z" fill={SEA.base} stroke={OUTLINE} strokeWidth={5} />
-        {[720, 800, 880].map((x) => (
-          <Window key={x} x={x} y={2840} w={60} h={50} />
-        ))}
-        <rect x={940} y={2700} width={30} height={100} fill={GREY.base} stroke={OUTLINE} strokeWidth={4} />
-        <rect x={918} y={2672} width={74} height={40} rx={12} fill="#BDE8EC" stroke={OUTLINE} strokeWidth={4} />
-        <g className="plane">
-          <path
-            d="M240,2960 C240,2940 270,2930 300,2930 L520,2930 C560,2930 580,2944 580,2960 C580,2976 560,2990 520,2990 L300,2990 C270,2990 240,2980 240,2960 Z"
-            fill="#FFF7EC"
-            stroke={OUTLINE}
-            strokeWidth={5}
-          />
-          <path d="M380,2960 L330,3040 L380,3040 L450,2960 Z" fill="#FF7BA9" stroke={OUTLINE} strokeWidth={5} strokeLinejoin="round" />
-          <path d="M260,2934 L240,2880 L280,2880 L310,2932 Z" fill="#FF7BA9" stroke={OUTLINE} strokeWidth={5} strokeLinejoin="round" />
-          {[420, 460, 500].map((x) => (
-            <circle key={x} cx={x} cy={2952} r={9} fill="#BDE8EC" stroke={OUTLINE} strokeWidth={3} />
-          ))}
-        </g>
-        <Sign x={650} y={2700} label="Airport" color="#B39DFF" />
+      {/* Sparkle Street: a pink-and-lilac row of new places (game-systems §10) */}
+      <path d="M0,2740 C300,2715 800,2735 1170,2712 L1170,3900 L0,3900 Z" fill="#B8E6C4" stroke={OUTLINE} strokeWidth={5} />
+      <path d="M0,3190 L1170,3190 L1170,3240 L0,3240 Z" fill="#F2E3D2" stroke={OUTLINE} strokeWidth={4} />
+      <path d="M0,3215 L1170,3215" stroke="#FFFFFF" strokeWidth={8} strokeDasharray="44 36" />
+
+      {/* Glam Salon */}
+      <Place
+        id="salon"
+        hit={[90, 2820, 460, 440]}
+        label="Glam Salon"
+        onTap={onTap}
+        badge={badges.salon && <Badge x={520} y={2880} kind={badges.salon} />}
+      >
+        <Shaded d={rect(150, 2920, 340, 250)} shade={PINK} depth={10} />
+        <Shaded d="M130,2930 L320,2830 L510,2930 Z" shade={LILAC} depth={6} />
+        <Awning x={140} y={3000} w={360} a="#FFF7EC" b="#B39DFF" />
+        <rect x={180} y={3090} width={110} height={80} rx={10} fill="#BDE8EC" stroke={OUTLINE} strokeWidth={4} />
+        <path d="M200,3110 L218,3096" stroke="#FFFFFF" strokeWidth={5} strokeLinecap="round" opacity={0.85} />
+        <rect x={350} y={3076} width={96} height={94} rx={34} fill={LILAC.base} stroke={OUTLINE} strokeWidth={4} />
+        <circle cx={320} cy={2895} r={36} fill="#FFF7EC" stroke={OUTLINE} strokeWidth={4} />
+        <path d="M304,2880 L336,2912 M336,2880 L304,2912" stroke={OUTLINE} strokeWidth={5} strokeLinecap="round" />
+        <circle cx={302} cy={2918} r={8} fill="#FF7BA9" stroke={OUTLINE} strokeWidth={3} />
+        <circle cx={338} cy={2918} r={8} fill="#FF7BA9" stroke={OUTLINE} strokeWidth={3} />
+        <Flowers x={160} y={3180} n={4} />
+        <Sign x={320} y={3250} label="Glam Salon" color="#B39DFF" />
       </Place>
 
+      {/* Petal Garden: a fenced plot that shows how many flowers are ready */}
+      <Place
+        id="garden"
+        hit={[620, 2820, 500, 440]}
+        label={bloomsReady ? 'Petal Garden: a flower is ready' : 'Petal Garden'}
+        onTap={onTap}
+        badge={badges.garden && <Badge x={1090} y={2880} kind={badges.garden} />}
+      >
+        <path d="M640,2960 L1100,2960 L1100,3170 L640,3170 Z" fill="#9E6A42" stroke={OUTLINE} strokeWidth={5} strokeLinejoin="round" />
+        {[0, 1, 2].map((c) =>
+          [0, 1].map((r) => (
+            <g key={`${c}-${r}`} transform={`translate(${700 + c * 150} ${3010 + r * 90})`}>
+              <ellipse cx={0} cy={36} rx={52} ry={16} fill="#7A4F2E" stroke={OUTLINE} strokeWidth={3} />
+              <path d="M0,34 L0,10" stroke="#5FA67A" strokeWidth={6} strokeLinecap="round" />
+              <circle cx={0} cy={0} r={13} fill={['#FF7BA9', '#FFC94A', '#B39DFF'][(c + r) % 3]} stroke={OUTLINE} strokeWidth={3} />
+              <circle cx={0} cy={0} r={4} fill="#FFF7EC" />
+            </g>
+          )),
+        )}
+        {Array.from({ length: 10 }, (_, i) => (
+          <g key={i}>
+            <rect x={632 + i * 51} y={2926} width={22} height={64} rx={8} fill="#FFF7EC" stroke={OUTLINE} strokeWidth={4} />
+            <rect x={632 + i * 51} y={3144} width={22} height={64} rx={8} fill="#FFF7EC" stroke={OUTLINE} strokeWidth={4} />
+          </g>
+        ))}
+        <path d="M640,2950 L1100,2950 M640,3160 L1100,3160" stroke={OUTLINE} strokeWidth={5} strokeLinecap="round" />
+        <Tree x={1110} y={2900} s={0.5} />
+        <Sign x={880} y={3250} label="Petal Garden" color="#7ED6A7" />
+      </Place>
+
+      <g transform={`translate(0 ${STREET})`}>
+        {/* Airport on the point */}
+        <path d="M0,2740 C300,2700 800,2720 1170,2700 L1170,3200 L0,3200 Z" fill="#A5DDB4" stroke={OUTLINE} strokeWidth={5} />
+        <Place id="airport" hit={[110, 2640, 980, 530]} label="Airport" onTap={onTap}>
+          <path d="M120,3080 L1060,2980 L1080,3060 L140,3160 Z" fill="#8E86A0" stroke={OUTLINE} strokeWidth={5} strokeLinejoin="round" />
+          <path d="M200,3110 L1000,3024" stroke="#FFF7EC" strokeWidth={8} strokeDasharray="40 30" />
+          <Shaded d={rect(700, 2800, 300, 150)} shade={CREAM} depth={8} />
+          <path d="M700,2800 C760,2750 940,2750 1000,2800 Z" fill={SEA.base} stroke={OUTLINE} strokeWidth={5} />
+          {[720, 800, 880].map((x) => (
+            <Window key={x} x={x} y={2840} w={60} h={50} />
+          ))}
+          <rect x={940} y={2700} width={30} height={100} fill={GREY.base} stroke={OUTLINE} strokeWidth={4} />
+          <rect x={918} y={2672} width={74} height={40} rx={12} fill="#BDE8EC" stroke={OUTLINE} strokeWidth={4} />
+          <g className="plane">
+            <path
+              d="M240,2960 C240,2940 270,2930 300,2930 L520,2930 C560,2930 580,2944 580,2960 C580,2976 560,2990 520,2990 L300,2990 C270,2990 240,2980 240,2960 Z"
+              fill="#FFF7EC"
+              stroke={OUTLINE}
+              strokeWidth={5}
+            />
+            <path d="M380,2960 L330,3040 L380,3040 L450,2960 Z" fill="#FF7BA9" stroke={OUTLINE} strokeWidth={5} strokeLinejoin="round" />
+            <path d="M260,2934 L240,2880 L280,2880 L310,2932 Z" fill="#FF7BA9" stroke={OUTLINE} strokeWidth={5} strokeLinejoin="round" />
+            {[420, 460, 500].map((x) => (
+              <circle key={x} cx={x} cy={2952} r={9} fill="#BDE8EC" stroke={OUTLINE} strokeWidth={3} />
+            ))}
+          </g>
+          <Sign x={650} y={2700} label="Airport" color="#B39DFF" />
+        </Place>
+      </g>
       {/* Secret shells: small treasures with a big invisible hit area (game-systems §9.2) */}
       {shells.map((sh) => (
         <g

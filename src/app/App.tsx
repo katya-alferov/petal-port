@@ -10,6 +10,8 @@ import { TitleScene } from '../scenes/TitleScene';
 import { TownScene } from '../scenes/TownScene';
 import { PetShopScene } from '../scenes/PetShopScene';
 import { ShowScene } from '../scenes/ShowScene';
+import { SalonScene } from '../scenes/SalonScene';
+import { GardenScene } from '../scenes/GardenScene';
 import { PetScene } from '../scenes/PetScene';
 import { BoardScene } from '../scenes/BoardScene';
 import { AlbumScene } from '../scenes/AlbumScene';
@@ -54,6 +56,8 @@ export function App() {
         {scene === 'home' && <HomeScene />}
         {scene === 'petshop' && <PetShopScene />}
         {scene === 'show' && <ShowScene />}
+        {scene === 'salon' && <SalonScene />}
+        {scene === 'garden' && <GardenScene />}
         {scene === 'pet' && <PetScene />}
         {scene === 'board' && <BoardScene />}
         {scene === 'album' && <AlbumScene />}

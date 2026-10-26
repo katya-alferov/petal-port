@@ -10,6 +10,9 @@ import { regular } from '../content/cafe';
 import { Character, FurnitureThumb, MainDock, PetFigure, SLOT_CROP, TopBar, useFindShell } from './common';
 import { shellsIn } from '../content/show';
 import { letterWaiting, type LetterDef } from '../game/mail';
+import { stage } from '../game/garden';
+import { seasonFor } from '../game/season';
+import { SeasonDrift } from '../art/Season';
 
 const PLACES: Record<PlaceId, { name: string; line: string; go?: SceneId; soon?: string }> = {
   boutique: { name: 'Ribbon Boutique', line: 'New clothes and things for your home. Try them on first!', go: 'boutique' },
@@ -21,6 +24,8 @@ const PLACES: Record<PlaceId, { name: string; line: string; go?: SceneId; soon?:
   petshop: { name: 'Paw Parlour', line: 'Adopt a pet friend, and find cute accessories for them.', go: 'petshop' },
   board: { name: 'Petal Notes', line: 'Townsfolk pin notes here when they need a hand. Help them and make friends!', go: 'board' },
   postbox: { name: 'Post Box', line: 'Friends send a letter every week.' },
+  salon: { name: 'Glam Salon', line: 'Wash and style your clients’ hair, then show them the mirror!', go: 'salon' },
+  garden: { name: 'Petal Garden', line: 'Plant free seeds. They grow every time you finish something fun!', go: 'garden' },
   stage: { name: 'Starlight Stage', line: 'Dress up for a theme, walk the runway, and wow the judges!', go: 'show' },
 };
 
@@ -40,6 +45,7 @@ export function TownScene() {
   const [letter, setLetter] = useState<{ letter: LetterDef; gift: { item: string } | { coins: number } } | null>(null);
   const mailWaiting = letterWaiting(save.progress.mail, currentWeek());
   const findShell = useFindShell();
+  const bloomsReady = save.progress.garden.beds.some((b) => b && stage(b.growth) === 'bloom');
   const noteReady = save.progress.requests.board.some((n) => isReady(n, liveState(save)));
 
   useEffect(() => {
@@ -66,7 +72,10 @@ export function TownScene() {
             board: noteReady || save.progress.requests.made === 0 ? 'new' : undefined,
             postbox: mailWaiting ? 'new' : undefined,
             stage: save.progress.shows.done === 0 ? 'new' : undefined,
+            salon: save.progress.salon.shifts === 0 ? 'new' : undefined,
+            garden: bloomsReady ? 'new' : save.progress.garden.beds.every((b) => b === null) ? 'new' : undefined,
           }}
+          bloomsReady={bloomsReady}
           shells={shellsIn('town').filter((sh) => !save.progress.shells.includes(sh.id))}
           onShell={findShell}
           mail={mailWaiting}
@@ -81,6 +90,7 @@ export function TownScene() {
           }}
         />
       </div>
+      <SeasonDrift season={seasonFor(new Date().getMonth())} />
       <TopBar title="Petalport" />
       <div style={{ position: 'relative', zIndex: 5, padding: '0 12px', alignSelf: 'flex-start' }}>
         <div style={{ display: 'flex', gap: 8 }}>
