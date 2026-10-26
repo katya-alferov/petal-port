@@ -31,7 +31,7 @@ A colorful, modern virtual-life game where a child creates a character who feels
 
 ### Non-goals for v0.1 (explicit)
 
-- Backend, accounts, cloud save, multiplayer, chat, sharing to other players.
+- Multiplayer, chat, sharing to other players. (Optional accounts and cloud save were approved later: see `docs/accounts.md`.)
 - Ads, in-app purchases, premium currency, loot boxes, spin wheels, energy, streaks, countdown offers.
 - Analytics or any network call after the first load.
 - Free-drag furniture placement, pattern designer, pets, seasons, multiple destinations, a second job.

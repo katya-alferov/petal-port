@@ -10,7 +10,7 @@ Phase 2 spec (revision 2) is awaiting the owner's approval. **Don't write applic
 
 ## Hard rules (never break)
 
-- **No network after first load.** No backend, accounts, analytics, ads, external APIs, CDNs, or paid services. Fonts and assets are self-hosted.
+- **No network after first load, except optional cloud save** (owner-approved, `docs/accounts.md`: nickname + password only, guests make zero calls, only `src/platform/cloud.ts` touches the network). No analytics, ads, other external APIs, CDNs, or paid services. Fonts and assets are self-hosted.
 - **No monetization or manipulation:** no IAP, premium currency, loot boxes, spin wheels, random rewards, energy, streaks, countdowns, expiring offers, or "come back or lose it".
 - **No chat, sharing to others, camera, mic, or location.** Photos leave the device only via the player's "Save to my device".
 - **Original art only** for characters, clothing, homes, scenes and landmarks. No traced photos, no assets from other games, no third-party characters. Third-party audio/icons/fonts only if CC0, CC-BY (credited), OFL, MIT or ISC, and listed in `src/content/credits.ts`.
