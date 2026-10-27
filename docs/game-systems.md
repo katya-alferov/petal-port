@@ -618,3 +618,17 @@ Wave B adds a dress-up goal, an exploration collection and more doll-style cloth
 
 - A star button on the town map opens "Next up": up to 3 things the player has not tried yet, as tappable rows that open the place: pick a ready flower, save for or buy the Paris ticket, first Paris photo, plant a flower, runway, salon, burgers, cupcakes, adopt a pet, a Petal Note, secret shells, cupcake designs.
 - Only suggestions. Nothing expires, nothing is owed, no streaks or rewards for opening it.
+
+## 15. Dance Studio (Wave D)
+
+- A fifth job on the new Fun Street (the map is now 1170 x 4900; the airport moved down another 520 px). Real gameplay with **no beat to hit and no timer**: the coach dances a routine (each move lights a dot and the coach does the move), then the player repeats the moves by tapping buttons.
+- Five moves, each with its own icon and name (Wave, Hips, Cheer, Jump, Twirl). A shift is 4 routines of **3, 4, 5, 6** moves, seeded by the shift number, never the same move three times in a row.
+- A wrong move wobbles, says "Not that one!" and the coach shows the routine again. Pay **14** per routine, **+4** tip when no move was wrong, **+12** shift bonus (max 4 x 18 + 12 = 84). A finished shift grows the garden.
+- Stickers: Dance Star (1 shift), Dance Crew Captain (5 shifts). Save: optional `progress.dance {routines, shifts}`.
+
+## 16. Skate Park (Wave D)
+
+- A gentle skill game on Fun Street. A run is a fixed course of **8 obstacles** (cone, rail, ramp), seeded by the run number, at least 330 track units apart. The track scrolls slowly (190 units per second). Tap **Jump** (or the stage, or Space / Up arrow) as an obstacle reaches the skater; the jump lasts 0.8 s and can't be restarted mid-air.
+- An obstacle is **cleared** if it reaches the skater during the jump (with a little slack). A bump only wobbles the skater ("Oops! Roll on."): the run always finishes and nothing is taken away. This is the only real-time activity; it has no countdown and never ends early.
+- Pay **20** for rolling, **+3** per obstacle cleared, **+10** for clearing all 8 (max 54). A finished run grows the garden.
+- Stickers: Skate Rookie (1 run), Perfect Run (all 8 in one run). Save: optional `progress.skate {runs, best}`.

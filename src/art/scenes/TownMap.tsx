@@ -5,6 +5,8 @@ import { OUTLINE, Shaded, scallopCircle } from '../kit';
 import { ShellArt } from '../shells';
 
 export type PlaceId =
+  | 'dance'
+  | 'skate'
   | 'boutique'
   | 'park'
   | 'cafe'
@@ -22,7 +24,7 @@ export type PlaceId =
 
 export const MAP_W = 1170;
 /** Sparkle Street (Glam Salon and Petal Garden) sits between the harbour and the airport. */
-const STREET = 1180;
+const STREET = 1700;
 export const MAP_H = 3200 + STREET;
 
 /** Where each place sits, so the scene can scroll to it. */
@@ -40,6 +42,8 @@ export const PLACE_Y: Record<PlaceId, number> = {
   garden: 3000,
   burger: 3500,
   sweets: 3500,
+  dance: 4020,
+  skate: 4020,
   airport: 2860 + STREET,
 };
 
@@ -593,7 +597,7 @@ export function TownMap({
       </g>
 
       {/* Sparkle Street: a pink-and-lilac row of new places (game-systems §10) */}
-      <path d="M0,2740 C300,2715 800,2735 1170,2712 L1170,4500 L0,4500 Z" fill="#B8E6C4" stroke={OUTLINE} strokeWidth={5} />
+      <path d="M0,2740 C300,2715 800,2735 1170,2712 L1170,5100 L0,5100 Z" fill="#B8E6C4" stroke={OUTLINE} strokeWidth={5} />
       <path d="M0,3190 L1170,3190 L1170,3240 L0,3240 Z" fill="#F2E3D2" stroke={OUTLINE} strokeWidth={4} />
       <path d="M0,3215 L1170,3215" stroke="#FFFFFF" strokeWidth={8} strokeDasharray="44 36" />
 
@@ -716,6 +720,61 @@ export function TownMap({
       </Place>
       <Tree x={1140} y={3640} s={0.5} />
       <Flowers x={620} y={3660} n={3} />
+
+      {/* Fun Street: Dance Studio and Skate Park (game-systems §15, §16) */}
+      <path d="M0,4210 L1170,4210 L1170,4260 L0,4260 Z" fill="#F2E3D2" stroke={OUTLINE} strokeWidth={4} />
+      <path d="M0,4235 L1170,4235" stroke="#FFFFFF" strokeWidth={8} strokeDasharray="44 36" />
+      <Place
+        id="dance"
+        hit={[90, 3830, 480, 420]}
+        label="Dance Studio"
+        onTap={onTap}
+        badge={badges.dance && <Badge x={560} y={3890} kind={badges.dance} />}
+      >
+        <Shaded d={rect(140, 3950, 400, 250)} shade={LILAC} depth={10} />
+        <Shaded d="M120,3960 L340,3860 L560,3960 Z" shade={PINK} depth={6} />
+        <Awning x={130} y={4030} w={420} a="#FFF7EC" b="#7A5FC0" />
+        <rect x={170} y={4100} width={190} height={100} rx={12} fill="#CFE9FF" stroke={OUTLINE} strokeWidth={4} />
+        <path d="M190,4180 L240,4112 M260,4190 L300,4130" stroke="#FFFFFF" strokeWidth={9} strokeLinecap="round" opacity={0.8} />
+        <rect x={400} y={4090} width={100} height={110} rx={34} fill={PINK.base} stroke={OUTLINE} strokeWidth={4} />
+        <circle cx={340} cy={3915} r={38} fill="#E7E1F2" stroke={OUTLINE} strokeWidth={4} />
+        <path d="M326,3924 L326,3896 L356,3890 L356,3916" fill="none" stroke={OUTLINE} strokeWidth={5} strokeLinecap="round" />
+        <circle cx={321} cy={3926} r={7} fill={OUTLINE} />
+        <circle cx={351} cy={3920} r={7} fill={OUTLINE} />
+        <Sign x={340} y={4270} label="Dance Studio" color="#B39DFF" />
+      </Place>
+      <Place
+        id="skate"
+        hit={[620, 3830, 500, 420]}
+        label="Skate Park"
+        onTap={onTap}
+        badge={badges.skate && <Badge x={1090} y={3890} kind={badges.skate} />}
+      >
+        <path
+          d="M640,4190 L640,4060 C700,4180 860,4190 920,4190 Z"
+          fill="#DAD3E6"
+          stroke={OUTLINE}
+          strokeWidth={5}
+          strokeLinejoin="round"
+        />
+        <path
+          d="M920,4190 C980,4190 1040,4150 1100,4030 L1100,4190 Z"
+          fill="#DAD3E6"
+          stroke={OUTLINE}
+          strokeWidth={5}
+          strokeLinejoin="round"
+        />
+        <rect x={680} y={4150} width={420} height={40} fill="#B9B2C4" stroke={OUTLINE} strokeWidth={5} />
+        <path d="M740,4126 L900,4126" stroke={OUTLINE} strokeWidth={9} strokeLinecap="round" />
+        <path d="M760,4130 L760,4160 M880,4130 L880,4160" stroke={OUTLINE} strokeWidth={8} strokeLinecap="round" />
+        {[0, 1, 2, 3, 4, 5, 6].map((i) => (
+          <path key={i} d={`M${650 + i * 70},3960 L${650 + i * 70},4050`} stroke={OUTLINE} strokeWidth={5} strokeLinecap="round" />
+        ))}
+        <path d="M640,3960 L1100,3960 M640,4000 L1100,4000" stroke={OUTLINE} strokeWidth={5} strokeLinecap="round" />
+        <path d="M660,3985 L1080,3985" stroke="#3BB7C4" strokeWidth={26} strokeLinecap="round" opacity={0.9} />
+        <path d="M940,4160 C940,4120 960,4112 990,4112" fill="none" stroke="none" />
+        <Sign x={880} y={4270} label="Skate Park" color="#3BB7C4" />
+      </Place>
 
       <g transform={`translate(0 ${STREET})`}>
         {/* Airport on the point */}

@@ -92,6 +92,8 @@ test('no serious accessibility violations on each main scene', async ({ page }) 
     'album',
     'airport',
     'burger',
+    'dance',
+    'skate',
     'sweets',
     'paris',
     'photo',
@@ -229,7 +231,7 @@ test('town: every place opens a card; the airport opens', async ({ page }) => {
     await place.evaluate((e) => e.scrollIntoView({ block: 'center' }));
     await place.click({ force: true });
   };
-  for (const id of ['cafe', 'boutique', 'home', 'park', 'airport', 'salon', 'garden', 'burger', 'sweets']) {
+  for (const id of ['cafe', 'boutique', 'home', 'park', 'airport', 'salon', 'garden', 'burger', 'sweets', 'dance', 'skate']) {
     await tapPlace(id);
     await expect(page.getByRole('dialog'), id).toBeVisible();
     await page.keyboard.press('Escape');
@@ -558,4 +560,56 @@ test('every secret shell can be tapped for real: nothing covers it and it is awa
       await expect(page.getByTestId(id)).toHaveCount(0);
     }
   }
+});
+
+test('dance studio: a wrong move shows the routine again, a full shift pays with tips and a bonus', async ({ page }) => {
+  test.setTimeout(120_000);
+  await page.goto('./?fixture=fresh&scene=dance');
+  const coins = () =>
+    page.evaluate(
+      () =>
+        (window as unknown as { __petal: { getState: () => { save: { wallet: { coins: number } } } } }).__petal.getState().save.wallet
+          .coins,
+    );
+  const start = await coins();
+  const routine = async () => JSON.parse((await page.getByTestId('dance-line').getAttribute('data-routine'))!) as string[];
+  const waitEcho = () => expect(page.getByTestId('dance-line')).toHaveAttribute('data-phase', 'echo', { timeout: 15_000 });
+  await waitEcho();
+  // A wrong first move costs only this routine's tip.
+  const first = (await routine())[0];
+  await page.getByTestId(`move-${first === 'wave' ? 'hips' : 'wave'}`).click();
+  await expect(page.getByTestId('dance-line')).toContainText('Not that one');
+  await waitEcho();
+  for (let i = 0; i < 4; i++) {
+    for (const m of await routine()) await page.getByTestId(`move-${m}`).click();
+    await expect(page.getByTestId('dance-served')).toContainText(i === 0 ? '+14' : '+18');
+    await page.getByTestId('dance-next').click();
+    if (i < 3) await waitEcho();
+  }
+  await expect(page.getByTestId('dance-done')).toBeVisible();
+  expect((await coins()) - start).toBe(14 + 18 * 3 + 12);
+});
+
+test('skate park: a run always finishes, pays for rolling and for each obstacle cleared', async ({ page }) => {
+  test.setTimeout(90_000);
+  await page.goto('./?fixture=fresh&scene=skate');
+  await page.getByTestId('skate-start').click();
+  // Jump again and again: some obstacles are cleared, some bump, the run still ends.
+  const jumper = setInterval(
+    () =>
+      void page
+        .getByTestId('skate-jump')
+        .click({ force: true, timeout: 500 })
+        .catch(() => undefined),
+    450,
+  );
+  try {
+    await expect(page.getByTestId('skate-done')).toBeVisible({ timeout: 60_000 });
+  } finally {
+    clearInterval(jumper);
+  }
+  const text = (await page.getByTestId('skate-coins').textContent()) ?? '';
+  const coins = Number(text.replace(/\D/g, ''));
+  expect(coins).toBeGreaterThanOrEqual(20);
+  expect(coins).toBeLessThanOrEqual(20 + 8 * 3 + 10);
 });

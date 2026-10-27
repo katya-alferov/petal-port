@@ -29,6 +29,8 @@ const PLACES: Record<PlaceId, { name: string; line: string; go?: SceneId; soon?:
   salon: { name: 'Glam Salon', line: 'Wash and style your clients’ hair, then show them the mirror!', go: 'salon' },
   burger: { name: 'Bun & Bite', line: 'Stack burgers just the way each customer asks and earn coins!', go: 'burger' },
   sweets: { name: 'Sweet Spot', line: 'Decorate cupcakes for customers and collect every design!', go: 'sweets' },
+  dance: { name: 'Dance Studio', line: 'Watch the coach’s routine, then dance it back!', go: 'dance' },
+  skate: { name: 'Skate Park', line: 'Roll along the course and jump the obstacles. Bumps are fine!', go: 'skate' },
   garden: { name: 'Petal Garden', line: 'Plant free seeds. They grow every time you finish something fun!', go: 'garden' },
   stage: { name: 'Starlight Stage', line: 'Dress up for a theme, walk the runway, and wow the judges!', go: 'show' },
 };
@@ -80,6 +82,8 @@ export function TownScene() {
             salon: save.progress.salon.shifts === 0 ? 'new' : undefined,
             burger: save.progress.burger.shifts === 0 ? 'new' : undefined,
             sweets: save.progress.sweets.shifts === 0 ? 'new' : undefined,
+            dance: save.progress.dance.shifts === 0 ? 'new' : undefined,
+            skate: save.progress.skate.runs === 0 ? 'new' : undefined,
             garden: bloomsReady ? 'new' : save.progress.garden.beds.every((b) => b === null) ? 'new' : undefined,
           }}
           bloomsReady={bloomsReady}

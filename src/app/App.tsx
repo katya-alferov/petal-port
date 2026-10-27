@@ -1,3 +1,5 @@
+import { SkateScene } from '../scenes/SkateScene';
+import { DanceScene } from '../scenes/DanceScene';
 import { SweetsScene } from '../scenes/SweetsScene';
 import { BurgerScene } from '../scenes/BurgerScene';
 import { AirportScene } from '../scenes/AirportScene';
@@ -64,6 +66,8 @@ export function App() {
         {scene === 'salon' && <SalonScene />}
         {scene === 'garden' && <GardenScene />}
         {scene === 'burger' && <BurgerScene />}
+        {scene === 'dance' && <DanceScene />}
+        {scene === 'skate' && <SkateScene />}
         {scene === 'sweets' && <SweetsScene />}
         {scene === 'airport' && <AirportScene />}
         {scene === 'paris' && <ParisScene />}

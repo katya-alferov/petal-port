@@ -1,4 +1,6 @@
 // The single game store (data-model §4). Only `save` is persisted; `ui` is session state.
+import { DANCE_SHIFT_BONUS, dancePay } from '../game/dance';
+import { OBSTACLES, skatePay } from '../game/skate';
 import { addDesign, SWEET_SHIFT_BONUS, sweetPay, type Cupcake } from '../game/sweets';
 import { BURGER_SHIFT_BONUS, burgerPay } from '../game/burger';
 import { souvenir } from '../content/travel';
@@ -33,6 +35,8 @@ import { log } from '../platform/log';
 import { readSaves, requestPersist, scheduleWrite } from '../platform/storage';
 
 export type SceneId =
+  | 'dance'
+  | 'skate'
   | 'sweets'
   | 'burger'
   | 'airport'
@@ -107,6 +111,10 @@ interface GameStore {
   /** Wave D (game-systems §13): returns the coins paid and whether the design is new to the collection. */
   sweetServed: (c: Cupcake, firstLook: boolean) => { coins: number; isNew: boolean };
   sweetShiftDone: () => number;
+  /** Wave D (game-systems §15, §16). */
+  danceServed: (clean: boolean) => number;
+  danceShiftDone: () => number;
+  skateDone: (clearedCount: number) => number;
   plantSeed: (bed: number, seed: string) => void;
   /** Wave D (game-systems §11). Each returns whether it worked. */
   buyTicket: () => boolean;
@@ -410,6 +418,29 @@ export const useGame = create<GameStore>((setState, getState) => ({
     s = grown({ ...s, progress: { ...s.progress, sweets: { ...s.progress.sweets, shifts: s.progress.sweets.shifts + 1 } } });
     setState({ save: touch(s) });
     return SWEET_SHIFT_BONUS;
+  },
+  danceServed: (clean) => {
+    let s = getState().save;
+    const coins = dancePay(clean);
+    s = earn(s, coins);
+    s = { ...s, progress: { ...s.progress, dance: { ...s.progress.dance, routines: s.progress.dance.routines + 1 } } };
+    setState({ save: touch(s) });
+    return coins;
+  },
+  danceShiftDone: () => {
+    let s = earn(getState().save, DANCE_SHIFT_BONUS);
+    s = grown({ ...s, progress: { ...s.progress, dance: { ...s.progress.dance, shifts: s.progress.dance.shifts + 1 } } });
+    setState({ save: touch(s) });
+    return DANCE_SHIFT_BONUS;
+  },
+  skateDone: (clearedCount) => {
+    const n = Math.max(0, Math.min(clearedCount, OBSTACLES));
+    const coins = skatePay(n);
+    let s = earn(getState().save, coins);
+    const sk = s.progress.skate;
+    s = grown({ ...s, progress: { ...s.progress, skate: { runs: sk.runs + 1, best: Math.max(sk.best, n) } } });
+    setState({ save: touch(s) });
+    return coins;
   },
   plantSeed: (bed, seedId) => {
     const s = getState().save;

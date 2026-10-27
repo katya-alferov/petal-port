@@ -15,6 +15,8 @@ import { HAIR_COLORS } from '../content/appearance';
 import { SALON_MENU, SEEDS } from '../content/wavec';
 import { BLOOM_AT, grow, pickBloom, plant, stage } from './garden';
 import { seasonFor } from './season';
+import { dancePay, danceOrders, MOVES, ROUTINES_PER_SHIFT, stepMove } from './dance';
+import { cleared, course, OBSTACLES, reachTime, runEnd, SKATE_PAY, SLACK, skatePay, SPEED } from './skate';
 import { nextGoals } from './goals';
 import { addDesign, checkCupcake, designKey, MAX_DESIGNS, sweetOrders, sweetPay } from './sweets';
 import { SWEET_MENU } from '../content/sweets';
@@ -494,5 +496,65 @@ describe('Next up ideas (§14)', () => {
     expect(g).not.toContain('show');
     expect(g).not.toContain('salon');
     expect(g).not.toContain('plant');
+  });
+});
+
+describe('Dance Studio (§15)', () => {
+  it('a shift has 4 routines of 3, 4, 5 and 6 moves, never one move three times in a row, and is repeatable', () => {
+    const o = danceOrders(2);
+    expect(o.map((r) => r.length)).toEqual([3, 4, 5, 6]);
+    for (const r of o) {
+      r.forEach((m, i) => {
+        expect(MOVES).toContain(m);
+        if (i >= 2) expect(!(r[i - 1] === m && r[i - 2] === m)).toBe(true);
+      });
+    }
+    expect(danceOrders(2)).toEqual(o);
+    expect(danceOrders(3)).not.toEqual(o);
+    expect(o).toHaveLength(ROUTINES_PER_SHIFT);
+  });
+  it('steps must follow the routine; a wrong one names the expected move', () => {
+    const r = danceOrders(1)[0];
+    expect(stepMove(r, 0, r[0])).toEqual({ ok: true, done: false });
+    const wrong = MOVES.find((m) => m !== r[0])!;
+    expect(stepMove(r, 0, wrong)).toEqual({ ok: false, expected: r[0] });
+    expect(stepMove(r, r.length - 1, r[r.length - 1])).toEqual({ ok: true, done: true });
+  });
+  it('pays 14 and a 4 tip when clean', () => {
+    expect(dancePay(false)).toBe(14);
+    expect(dancePay(true)).toBe(18);
+  });
+});
+
+describe('Skate Park (§16)', () => {
+  it('the course has 8 obstacles, far apart, and is the same for the same run', () => {
+    const c = course(1);
+    expect(c).toHaveLength(OBSTACLES);
+    for (let i = 1; i < c.length; i++) expect(c[i].at - c[i - 1].at).toBeGreaterThanOrEqual(330);
+    expect(course(1)).toEqual(c);
+    expect(course(2)).not.toEqual(c);
+  });
+  it('an obstacle is cleared only when the jump covers the moment it reaches the skater', () => {
+    const o = course(1)[0];
+    const reach = reachTime(o);
+    expect(cleared(o, reach - 0.3)).toBe(true);
+    expect(cleared(o, reach - 1.2)).toBe(false);
+    expect(cleared(o, reach + 0.3)).toBe(false);
+    expect(cleared(o, null)).toBe(false);
+    expect(cleared(o, reach - 0.8 - SLACK / SPEED / 2)).toBe(true);
+  });
+  it('pays 20 for rolling, 3 per obstacle and 10 for a perfect run', () => {
+    expect(skatePay(0)).toBe(SKATE_PAY);
+    expect(skatePay(5)).toBe(35);
+    expect(skatePay(8)).toBe(20 + 24 + 10);
+    expect(runEnd(course(1))).toBeGreaterThan(reachTime(course(1)[7]));
+  });
+  it('old saves get empty dance and skate records', () => {
+    const raw = JSON.parse(JSON.stringify(newSave(SAVE_CONTEXT, 1)));
+    delete raw.progress.dance;
+    delete raw.progress.skate;
+    const p = sanitize(raw, SAVE_CONTEXT).progress;
+    expect(p.dance).toEqual({ routines: 0, shifts: 0 });
+    expect(p.skate).toEqual({ runs: 0, best: 0 });
   });
 });

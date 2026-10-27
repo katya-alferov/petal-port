@@ -27,6 +27,9 @@ export type StickerCond =
   | { kind: 'photos'; n: number }
   | { kind: 'burgerShifts'; n: number }
   | { kind: 'sweetShifts'; n: number }
+  | { kind: 'danceShifts'; n: number }
+  | { kind: 'skateRuns'; n: number }
+  | { kind: 'skatePerfect' }
   | { kind: 'designs'; n: number }
   | { kind: 'souvenirs'; n: number };
 
@@ -79,6 +82,12 @@ export function meets(save: SaveGame, c: StickerCond, facts: StickerFacts): bool
       return p.salon.shifts >= c.n;
     case 'blooms':
       return p.garden.bloomed.length >= c.n;
+    case 'danceShifts':
+      return p.dance.shifts >= c.n;
+    case 'skateRuns':
+      return p.skate.runs >= c.n;
+    case 'skatePerfect':
+      return p.skate.best >= 8;
     case 'sweetShifts':
       return p.sweets.shifts >= c.n;
     case 'designs':

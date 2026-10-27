@@ -147,6 +147,21 @@ const MOTIF: Record<string, (ink: string) => ReactElement> = {
       <circle cx={50} cy={43} r={3} fill={W} />
     </g>
   ),
+  music: (c) => (
+    <g {...sw}>
+      <path d="M40,64 L40,24 L72,18 L72,58" fill="none" strokeWidth={5} />
+      <ellipse cx={34} cy={66} rx={10} ry={8} fill={c} />
+      <ellipse cx={66} cy={60} rx={10} ry={8} fill={c} />
+      <path d="M40,32 L72,26" strokeWidth={6} />
+    </g>
+  ),
+  skate: (c) => (
+    <g {...sw}>
+      <path d="M18,52 C18,44 30,42 50,42 C70,42 82,44 82,52 C82,60 70,62 50,62 C30,62 18,60 18,52 Z" fill={c} />
+      <circle cx={34} cy={70} r={8} fill="#FFF7EC" />
+      <circle cx={66} cy={70} r={8} fill="#FFF7EC" />
+    </g>
+  ),
   cupcake: (c) => (
     <g {...sw}>
       <path d="M30,56 L70,56 L64,84 Q50,88 36,84 Z" fill="#FFB3D0" />

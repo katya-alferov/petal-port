@@ -119,7 +119,9 @@ export type StickerMotif =
   | 'scissors'
   | 'flower'
   | 'burger'
-  | 'cupcake';
+  | 'cupcake'
+  | 'music'
+  | 'skate';
 
 export interface StickerDef {
   id: string;
@@ -440,5 +442,37 @@ export const STICKERS: StickerDef[] = [
     motif: 'cupcake',
     color: '#C8B3FF',
     cond: { kind: 'designs', n: 10 },
+  },
+  {
+    id: 'sticker.dance',
+    name: 'Dance Star',
+    hint: 'Finish a shift at the Dance Studio',
+    motif: 'music',
+    color: '#B692F6',
+    cond: { kind: 'danceShifts', n: 1 },
+  },
+  {
+    id: 'sticker.dance-pro',
+    name: 'Dance Crew Captain',
+    hint: 'Finish 5 Dance Studio shifts',
+    motif: 'music',
+    color: '#FF7BA9',
+    cond: { kind: 'danceShifts', n: 5 },
+  },
+  {
+    id: 'sticker.skate',
+    name: 'Skate Rookie',
+    hint: 'Finish a Skate Park run',
+    motif: 'skate',
+    color: '#3BB7C4',
+    cond: { kind: 'skateRuns', n: 1 },
+  },
+  {
+    id: 'sticker.skate-perfect',
+    name: 'Perfect Run',
+    hint: 'Clear all 8 obstacles in one run',
+    motif: 'skate',
+    color: '#FFC94A',
+    cond: { kind: 'skatePerfect' },
   },
 ];
