@@ -113,7 +113,7 @@ function NailsShift({ onAgain }: { onAgain: () => void }) {
         <div
           key={idx}
           className="customer-in"
-          style={{ position: 'absolute', left: '0%', bottom: '18%', height: 'min(62%, 290px)', aspectRatio: '320 / 470' }}
+          style={{ position: 'absolute', left: '0%', bottom: '18%', height: 'min(50%, 270px)', aspectRatio: '320 / 470' }}
         >
           <Character
             appearance={client.appearance}

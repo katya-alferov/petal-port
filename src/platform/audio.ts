@@ -43,6 +43,12 @@ function tone(freq: number, start: number, dur: number, type: OscillatorType, ga
   o.stop(start + dur + 0.02);
 }
 
+/** One piano note for the Bandstand. */
+export function playNote(freq: number) {
+  if (!enabled || !ctx || ctx.state !== 'running') return;
+  tone(freq, ctx.currentTime, 0.5, 'triangle', 0.22);
+}
+
 export type Sfx = 'pop' | 'chime' | 'swap' | 'soft';
 
 /** Every tap gets a soft pop with ±2 semitone variation (visual-design §11). */

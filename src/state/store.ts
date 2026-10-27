@@ -1,6 +1,8 @@
 // The single game store (data-model §4). Only `save` is persisted; `ui` is session state.
 import { type BedroomPart, withPart } from '../game/bedroom';
 import { DANCE_SHIFT_BONUS, dancePay } from '../game/dance';
+import { pairsPay, BOARDS } from '../game/pairs';
+import { SONG_PAY, SONGS } from '../game/piano';
 import { NAILS_SHIFT_BONUS, nailsPay } from '../game/nails';
 import { POSY_SHIFT_BONUS, posyPay } from '../game/posies';
 import { OBSTACLES, skatePay } from '../game/skate';
@@ -38,6 +40,7 @@ import { log } from '../platform/log';
 import { readSaves, requestPersist, scheduleWrite } from '../platform/storage';
 
 export type SceneId =
+  | 'park'
   | 'nails'
   | 'posies'
   | 'bedroom'
@@ -123,6 +126,9 @@ interface GameStore {
   danceShiftDone: () => number;
   skateDone: (clearedCount: number) => number;
   /** Wave E (game-systems §18, §19). */
+  /** Wave E (game-systems §21, §22): coins paid; a song pays once. */
+  pairsDone: (level: number, misses: number) => number;
+  songDone: (id: string) => number;
   nailsServed: (clean: boolean) => number;
   nailsShiftDone: () => number;
   posyServed: (clean: boolean) => number;
@@ -457,6 +463,23 @@ export const useGame = create<GameStore>((setState, getState) => ({
     s = grown({ ...s, progress: { ...s.progress, skate: { runs: sk.runs + 1, best: Math.max(sk.best, n) } } });
     setState({ save: touch(s) });
     return coins;
+  },
+  pairsDone: (level, misses) => {
+    const lv = Math.max(0, Math.min(level, BOARDS.length - 1));
+    const coins = pairsPay(lv, Math.max(0, misses));
+    let s = earn(getState().save, coins);
+    const pk = s.progress.park;
+    s = grown({ ...s, progress: { ...s.progress, park: { ...pk, games: pk.games + 1, hard: pk.hard || lv === BOARDS.length - 1 } } });
+    setState({ save: touch(s) });
+    return coins;
+  },
+  songDone: (id) => {
+    const pk = getState().save.progress.park;
+    if (!SONGS.some((x) => x.id === id) || pk.songs.includes(id)) return 0;
+    let s = earn(getState().save, SONG_PAY);
+    s = { ...s, progress: { ...s.progress, park: { ...pk, songs: [...pk.songs, id] } } };
+    setState({ save: touch(s) });
+    return SONG_PAY;
   },
   nailsServed: (clean) => {
     let s = getState().save;

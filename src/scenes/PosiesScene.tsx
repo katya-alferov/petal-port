@@ -129,7 +129,7 @@ function PosiesShift({ onAgain }: { onAgain: () => void }) {
           </ul>
         </div>
         <div className="counter counter-posies" />
-        <div className="posy-bouquet" key={wobble} data-wobble={wobble > 0 && !served} data-testid="posy-bouquet">
+        <div className="posy-bouquet" key={`w${wobble}`} data-wobble={wobble > 0 && !served} data-testid="posy-bouquet">
           <BouquetArt flowers={flowers} wrap={wrap ? WRAP_COLORS[wrap] : null} />
         </div>
       </div>

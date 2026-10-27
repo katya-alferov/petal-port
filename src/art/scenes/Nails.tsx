@@ -88,7 +88,7 @@ export function HandArt({
             onKeyDown={(e) => (e.key === 'Enter' || e.key === ' ') && (e.preventDefault(), onTap(i))}
           >
             {nail}
-            <rect x={f.cx - 30} y={f.top - 4} width={60} height={72} fill="transparent" transform={tf(i)} />
+            <rect x={f.cx - 28} y={f.top - 4} width={56} height={76} fill="transparent" transform={tf(i)} />
           </g>
         ) : (
           <g key={i}>{nail}</g>

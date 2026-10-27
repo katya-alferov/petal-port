@@ -101,6 +101,8 @@ export interface Progress {
   /** Wave D (game-systems §15, §16): Dance Studio routines and shifts, Skate Park runs and best cleared count. */
   dance: { routines: number; shifts: number };
   skate: { runs: number; best: number };
+  /** Wave E (game-systems §21, §22): Picnic Pairs games, hardest board cleared, songs played to the end. */
+  park: { games: number; hard: boolean; songs: string[] };
   /** Wave E (game-systems §18, §19): Glow Nails clients and shifts, Petal Posies bouquets and shifts. */
   nails: { clients: number; shifts: number };
   posies: { bouquets: number; shifts: number };
@@ -174,6 +176,7 @@ export function newProgress(): Progress {
     sweets: { served: 0, shifts: 0, made: [] },
     dance: { routines: 0, shifts: 0 },
     skate: { runs: 0, best: 0 },
+    park: { games: 0, hard: false, songs: [] },
     nails: { clients: 0, shifts: 0 },
     posies: { bouquets: 0, shifts: 0 },
     garden: { beds: Array.from({ length: GARDEN_BEDS }, () => null), bloomed: [], picked: 0 },
@@ -359,6 +362,13 @@ function sanitizeProgress(raw: unknown): Progress {
   if (isObj(nl)) p.nails = { clients: clampInt(nl.clients), shifts: clampInt(nl.shifts) };
   const ps = raw.posies;
   if (isObj(ps)) p.posies = { bouquets: clampInt(ps.bouquets), shifts: clampInt(ps.shifts) };
+  const pk = raw.park;
+  if (isObj(pk))
+    p.park = {
+      games: clampInt(pk.games),
+      hard: pk.hard === true,
+      songs: Array.isArray(pk.songs) ? [...new Set(pk.songs.filter(isStr))].slice(0, 20) : [],
+    };
   const sk = raw.skate;
   if (isObj(sk)) p.skate = { runs: clampInt(sk.runs), best: clampInt(sk.best, 8) };
   const sw = raw.sweets;

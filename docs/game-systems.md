@@ -657,3 +657,18 @@ Wave B adds a dress-up goal, an exploration collection and more doll-style cloth
 
 - The kitchen now has **five** recipes on the same step engine (add, mix, pour, cook/flip, fold, decorate), unlocked in order: Fluffy Pancakes → Crêpes → **Cheesy Omelette** (eggs, milk, cheese; folds like a crêpe; toppings tomato, herbs, mushroom, grated cheese) and **Waffles** (also unlocked by crêpes: flour, egg, milk, butter; grid top; golden window 3.0 to 6.0 s); **French Toast** (bread, egg, milk) unlocks after the omelette.
 - Same rules as before: 1 star always, 2 stars with no wrong ingredient, 3 stars with a golden flip; first cook +20 coins, first 3 stars +20. New items: cheese, bread, tomato, herbs, mushroom, grated cheese. Stickers: Egg-cellent, Waffle Time, Brunch Star.
+
+## 21. Picnic Pairs (Wave E)
+
+- Petal Park is no longer "coming soon": tapping it opens a hub with two activities. **Picnic Pairs** is a memory game with three board sizes (3, 4 or 6 pairs). Flip two cards: a match stays face up, a mismatch turns back over after a moment (a tap on another card turns it over sooner). **No timer, no move limit, nothing taken away.**
+- Pay per finished board **10 / 14 / 20** coins, **+4** "sharp eyes" bonus when the misses were no more than the number of pairs. Boards are seeded by the game number. A finished game grows the garden.
+- Stickers: Picnic Pro (1 game), Sharp Eyes (the biggest board). Save: optional `progress.park {games, hard, songs}`.
+
+## 22. Bandstand piano (Wave E)
+
+- The second Petal Park activity: eight rainbow keys (C major scale, a soft triangle-wave note each). **Free play** is always available. A **song book** (Twinkle Star, Happy Tune, Little Lamb) glows the next key; a wrong key still plays its note, says "Try the glowing key", and the song waits. No timer.
+- Each song pays **15** coins once, the first time it is played to the end (replays are free fun, no coins). Stickers: Little Pianist (1 song), Maestro (all 3). Save: `progress.park.songs` holds the song ids played to the end.
+
+## 23. Versions and going back
+
+- Every change is a git commit on `main` and is deployed by CI to the live site. Any older version can be restored from the commit list on GitHub ("Browse files" on a commit, or `git revert <commit>` to undo one change without losing the rest). Named restore points: see the commit list; the last commit before each wave is a safe place to return to.

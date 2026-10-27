@@ -12,6 +12,7 @@ import { DebugOverlay } from '../scenes/DebugOverlay';
 import { GalleryScene } from '../scenes/GalleryScene';
 import { HomeScene } from '../scenes/HomeScene';
 import { BedroomScene } from '../scenes/BedroomScene';
+import { ParkScene } from '../scenes/ParkScene';
 import { NailsScene } from '../scenes/NailsScene';
 import { PosiesScene } from '../scenes/PosiesScene';
 import { KitchenScene } from '../scenes/KitchenScene';
@@ -64,6 +65,7 @@ export function App() {
         {scene === 'kitchen' && <KitchenScene />}
         {scene === 'bedroom' && <BedroomScene />}
         {scene === 'nails' && <NailsScene />}
+        {scene === 'park' && <ParkScene />}
         {scene === 'posies' && <PosiesScene />}
         {scene === 'me' && <MeScene />}
         {scene === 'home' && <HomeScene />}

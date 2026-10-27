@@ -116,7 +116,7 @@ function BurgerShift({ onAgain }: { onAgain: () => void }) {
           </div>
         </div>
         <div className="counter counter-burger" />
-        <div className="burger-plate" key={wobble} data-wobble={wobble > 0 && !served} data-testid="burger-plate">
+        <div className="burger-plate" key={`w${wobble}`} data-wobble={wobble > 0 && !served} data-testid="burger-plate">
           <BurgerStack parts={stack} />
         </div>
       </div>

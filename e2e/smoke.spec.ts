@@ -97,6 +97,7 @@ test('no serious accessibility violations on each main scene', async ({ page }) 
     'bedroom',
     'nails',
     'posies',
+    'park',
     'sweets',
     'paris',
     'photo',
@@ -697,4 +698,40 @@ test('petal posies: checking names what is missing, then a full shift pays with 
   }
   await expect(page.getByTestId('posies-done')).toBeVisible();
   expect((await coinsOf(page)) - start).toBe(14 + 18 * 3 + 12);
+});
+
+test('petal park: find every pair for coins, and play a song on the bandstand piano once for coins', async ({ page }) => {
+  test.setTimeout(90_000);
+  await page.goto('./?fixture=fresh&scene=park');
+  const start = await coinsOf(page);
+  await page.getByTestId('park-pairs').click();
+  await page.getByTestId('pairs-level-0').click();
+  const symbols = await page
+    .getByTestId('pairs-board')
+    .locator('[data-symbol]')
+    .evaluateAll((els) => els.map((e) => e.getAttribute('data-symbol')!));
+  // Open one wrong pair first: it turns back over and nothing is taken away.
+  const other = symbols.findIndex((s) => s !== symbols[0]);
+  await page.getByTestId('card-0').click();
+  await page.getByTestId(`card-${other}`).click();
+  await expect(page.getByTestId('pairs-status')).toContainText('0 of 3');
+  await page.waitForTimeout(1100);
+  for (const sym of new Set(symbols)) {
+    const idx = symbols.map((s, i) => (s === sym ? i : -1)).filter((i) => i >= 0);
+    await page.getByTestId(`card-${idx[0]}`).click();
+    await page.getByTestId(`card-${idx[1]}`).click();
+    await page.waitForTimeout(600);
+  }
+  await expect(page.getByTestId('pairs-done')).toBeVisible();
+  expect((await coinsOf(page)) - start).toBe(14);
+  await page.getByTestId('pairs-other').click();
+  await page.keyboard.press('Escape');
+  await page.getByTestId('park-piano').click();
+  await page.getByTestId('song-song.lamb').click();
+  const notes = [2, 1, 0, 1, 2, 2, 2, 1, 1, 1, 2, 4, 4];
+  await page.getByTestId('key-7').click(); // a wrong key only makes the right one glow
+  await expect(page.getByTestId('piano-line')).toContainText('glowing');
+  for (const k of notes) await page.getByTestId(`key-${k}`).click();
+  await expect(page.getByTestId('song-done')).toContainText('+15');
+  expect((await coinsOf(page)) - start).toBe(14 + 15);
 });

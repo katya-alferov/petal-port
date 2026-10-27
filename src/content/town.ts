@@ -124,6 +124,7 @@ export type StickerMotif =
   | 'music'
   | 'skate'
   | 'nails'
+  | 'cards'
   | 'posy';
 
 export interface StickerDef {
@@ -256,6 +257,38 @@ export const STICKERS: StickerDef[] = [
     motif: 'posy',
     color: '#FFC94A',
     cond: { kind: 'posyShifts', n: 5 },
+  },
+  {
+    id: 'sticker.pairs',
+    name: 'Picnic Pro',
+    hint: 'Finish a Picnic Pairs game',
+    motif: 'cards',
+    color: '#7ED6A7',
+    cond: { kind: 'pairsGames', n: 1 },
+  },
+  {
+    id: 'sticker.pairs-hard',
+    name: 'Sharp Eyes',
+    hint: 'Finish the biggest Picnic Pairs board',
+    motif: 'cards',
+    color: '#FFC94A',
+    cond: { kind: 'pairsHard' },
+  },
+  {
+    id: 'sticker.piano',
+    name: 'Little Pianist',
+    hint: 'Play a whole song on the bandstand piano',
+    motif: 'music',
+    color: '#8EC9FF',
+    cond: { kind: 'songs', n: 1 },
+  },
+  {
+    id: 'sticker.maestro',
+    name: 'Maestro',
+    hint: 'Play all 3 songs',
+    motif: 'music',
+    color: '#FF7BA9',
+    cond: { kind: 'songs', n: 3 },
   },
   {
     id: 'sticker.shopper',

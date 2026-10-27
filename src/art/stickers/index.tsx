@@ -163,6 +163,13 @@ const MOTIF: Record<string, (ink: string) => ReactElement> = {
       <path d="M40,32 L72,26" strokeWidth={6} />
     </g>
   ),
+  cards: (c) => (
+    <g {...sw}>
+      <rect x={18} y={28} width={36} height={48} rx={7} fill={c} transform="rotate(-10 36 52)" />
+      <rect x={46} y={24} width={36} height={48} rx={7} fill="#FFF7EC" transform="rotate(8 64 48)" />
+      <path d="M64,44 l4,8 l-4,8 l-4,-8 Z" fill={c} strokeWidth={3} />
+    </g>
+  ),
   nails: (c) => (
     <g {...sw}>
       <rect x={34} y={22} width={32} height={52} rx={16} fill="#FFEDE0" />

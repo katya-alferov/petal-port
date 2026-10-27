@@ -10,6 +10,8 @@ import { GARDEN_BEDS, load, newSave, sanitize, type SaveGame } from './save';
 import { newStickers } from './stickers';
 import { nailOrders, wrongNails, emptyWork, NAILS, CLIENTS_PER_SHIFT as NAIL_CLIENTS } from './nails';
 import { checkPosy, countOf, posyOrders, MAX_FLOWERS } from './posies';
+import { BOARDS, deal, isMatch, pairsPay, sharp } from './pairs';
+import { press, SONGS } from './piano';
 import { changedParts, DEFAULT_BEDROOM, withPart } from './bedroom';
 import { BEDDINGS, WALLS } from '../content/bedroom';
 import { FIRST_STARS_BONUS, fits, fitting, judgesFor, SHOW_PAY, showReward, showStars, themeFor } from './show';
@@ -624,5 +626,34 @@ describe('Petal Posies (§19)', () => {
     expect(r.wrapOk).toBe(false);
     expect(r.gaps).toEqual([{ flower: flowers[0], need: 1 }]);
     expect(countOf(flowers)[flowers[0]]).toBeGreaterThan(0);
+  });
+});
+
+describe('Petal Park (§21, §22)', () => {
+  it('every board holds each symbol exactly twice and is repeatable', () => {
+    BOARDS.forEach((b, level) => {
+      const cards = deal(level, 3);
+      expect(cards).toHaveLength(b.pairs * 2);
+      for (const c of new Set(cards)) expect(cards.filter((x) => x === c)).toHaveLength(2);
+      expect(deal(level, 3)).toEqual(cards);
+    });
+  });
+  it('matches need two different cards of the same kind', () => {
+    const cards = deal(0, 1);
+    const i = 0;
+    const j = cards.findIndex((c, k) => k !== i && c === cards[i]);
+    expect(isMatch(cards, i, j)).toBe(true);
+    expect(isMatch(cards, i, i)).toBe(false);
+  });
+  it('pays by board and adds a bonus for few misses', () => {
+    expect(pairsPay(0, 0)).toBe(14);
+    expect(sharp(0, 4)).toBe(false);
+    expect(pairsPay(2, 99)).toBe(20);
+  });
+  it('a song waits on a wrong key and finishes on its last note', () => {
+    const song = SONGS[0];
+    expect(press(song, 0, 5)).toEqual({ ok: false, expected: song.notes[0] });
+    expect(press(song, 1, song.notes[1])).toEqual({ ok: true, done: false });
+    expect(press(song, song.notes.length - 1, song.notes[song.notes.length - 1])).toEqual({ ok: true, done: true });
   });
 });
