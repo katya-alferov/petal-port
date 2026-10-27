@@ -5,6 +5,9 @@ import { OUTLINE, Shaded, scallopCircle } from '../kit';
 import { ShellArt } from '../shells';
 
 export type PlaceId =
+  | 'studio'
+  | 'puzzle'
+  | 'fishing'
   | 'nails'
   | 'posies'
   | 'dance'
@@ -26,7 +29,7 @@ export type PlaceId =
 
 export const MAP_W = 1170;
 /** Sparkle Street (Glam Salon and Petal Garden) sits between the harbour and the airport. */
-const STREET = 2220;
+const STREET = 3260;
 export const MAP_H = 3200 + STREET;
 
 /** Where each place sits, so the scene can scroll to it. */
@@ -47,6 +50,9 @@ export const PLACE_Y: Record<PlaceId, number> = {
   dance: 4020,
   skate: 4020,
   nails: 4540,
+  studio: 5060,
+  puzzle: 5060,
+  fishing: 5580,
   posies: 4540,
   airport: 2860 + STREET,
 };
@@ -419,7 +425,13 @@ export function TownMap({
       </Place>
 
       {/* Petal Park (scenery: pond and ducks) */}
-      <Place id="park" hit={[50, 1200, 500, 400]} label="Petal Park" onTap={onTap}>
+      <Place
+        id="park"
+        hit={[50, 1200, 500, 520]}
+        label="Petal Park"
+        onTap={onTap}
+        badge={badges.park && <Badge x={500} y={1230} kind={badges.park} />}
+      >
         <ellipse cx={260} cy={1400} rx={200} ry={90} fill="#5CC6D0" stroke={OUTLINE} strokeWidth={5} />
         <ellipse cx={220} cy={1385} rx={70} ry={16} fill="#FFFFFF" opacity={0.4} />
         {[
@@ -437,6 +449,7 @@ export function TownMap({
         <path d="M380,1520 L480,1480 L540,1540 L440,1580 Z" fill="#FF8A65" stroke={OUTLINE} strokeWidth={4} />
         <path d="M400,1528 L500,1490 M420,1550 L520,1510" stroke="#FFF7EC" strokeWidth={8} />
         <Flowers x={90} y={1530} n={6} />
+        <Sign x={290} y={1650} label="Petal Park" color="#7ED6A7" />
       </Place>
 
       {/* The harbour */}
@@ -603,7 +616,7 @@ export function TownMap({
       </g>
 
       {/* Sparkle Street: a pink-and-lilac row of new places (game-systems §10) */}
-      <path d="M0,2740 C300,2715 800,2735 1170,2712 L1170,5700 L0,5700 Z" fill="#B8E6C4" stroke={OUTLINE} strokeWidth={5} />
+      <path d="M0,2740 C300,2715 800,2735 1170,2712 L1170,6800 L0,6800 Z" fill="#B8E6C4" stroke={OUTLINE} strokeWidth={5} />
       <path d="M0,3190 L1170,3190 L1170,3240 L0,3240 Z" fill="#F2E3D2" stroke={OUTLINE} strokeWidth={4} />
       <path d="M0,3215 L1170,3215" stroke="#FFFFFF" strokeWidth={8} strokeDasharray="44 36" />
 
@@ -857,6 +870,114 @@ export function TownMap({
           ))}
           <circle cx={870} cy={3915} r={8} fill="#FFC94A" stroke={OUTLINE} strokeWidth={3} />
           <Sign x={870} y={4270} label="Petal Posies" color="#5FA67A" />
+        </g>
+      </Place>
+
+      {/* Hobby Street: Art Studio and Puzzle Shop (game-systems §24, §25), then the Fishing Dock (§26) */}
+      <g transform="translate(0 1040)">
+        <path d="M0,4210 L1170,4210 L1170,4260 L0,4260 Z" fill="#F2E3D2" stroke={OUTLINE} strokeWidth={4} />
+        <path d="M0,4235 L1170,4235" stroke="#FFFFFF" strokeWidth={8} strokeDasharray="44 36" />
+      </g>
+      <Place
+        id="studio"
+        hit={[90, 4870, 480, 420]}
+        label="Art Studio"
+        onTap={onTap}
+        badge={badges.studio && <Badge x={560} y={4930} kind={badges.studio} />}
+      >
+        <g transform="translate(0 1040)">
+          <Shaded d={rect(140, 3950, 400, 250)} shade={SUN} depth={10} />
+          <Shaded d="M120,3960 L340,3860 L560,3960 Z" shade={CORAL} depth={6} />
+          <Awning x={130} y={4030} w={420} a="#FFF7EC" b="#FF8A65" />
+          <rect x={170} y={4100} width={190} height={100} rx={12} fill="#CFE9FF" stroke={OUTLINE} strokeWidth={4} />
+          <rect x={200} y={4112} width={64} height={76} rx={6} fill="#FFFFFF" stroke={OUTLINE} strokeWidth={3} />
+          <circle cx={222} cy={4140} r={10} fill="#FF7BA9" />
+          <circle cx={246} cy={4160} r={10} fill="#5BB8F0" />
+          <path d="M290,4190 L310,4120 L330,4190" fill="none" stroke={OUTLINE} strokeWidth={5} strokeLinecap="round" />
+          <rect x={400} y={4090} width={100} height={110} rx={34} fill={PINK.base} stroke={OUTLINE} strokeWidth={4} />
+          <circle cx={340} cy={3915} r={38} fill="#FFFFFF" stroke={OUTLINE} strokeWidth={4} />
+          {[
+            [322, 3905, '#FF7BA9'],
+            [346, 3896, '#5BB8F0'],
+            [358, 3920, '#7ED6A7'],
+            [330, 3928, '#FFC94A'],
+          ].map(([x, y, c]) => (
+            <circle key={String(x)} cx={Number(x)} cy={Number(y)} r={8} fill={String(c)} stroke={OUTLINE} strokeWidth={2.5} />
+          ))}
+          <Sign x={340} y={4270} label="Art Studio" color="#FF8A65" />
+        </g>
+      </Place>
+      <Place
+        id="puzzle"
+        hit={[620, 4870, 500, 420]}
+        label="Puzzle Shop"
+        onTap={onTap}
+        badge={badges.puzzle && <Badge x={1090} y={4930} kind={badges.puzzle} />}
+      >
+        <g transform="translate(0 1040)">
+          <Shaded d={rect(670, 3950, 400, 250)} shade={SEA} depth={10} />
+          <Shaded d="M650,3960 L870,3860 L1090,3960 Z" shade={LILAC} depth={6} />
+          <Awning x={660} y={4030} w={420} a="#FFF7EC" b="#3BB7C4" />
+          <rect x={700} y={4100} width={190} height={100} rx={12} fill="#CFE9FF" stroke={OUTLINE} strokeWidth={4} />
+          {[
+            [716, 4116, '#FF7BA9'],
+            [770, 4116, '#FFC94A'],
+            [824, 4116, '#B692F6'],
+            [716, 4156, '#7ED6A7'],
+            [770, 4156, '#FF8A65'],
+          ].map(([x, y, c]) => (
+            <rect
+              key={`${x}${y}`}
+              x={Number(x)}
+              y={Number(y)}
+              width={44}
+              height={34}
+              rx={6}
+              fill={String(c)}
+              stroke={OUTLINE}
+              strokeWidth={3}
+            />
+          ))}
+          <rect x={940} y={4090} width={100} height={110} rx={34} fill={PINK.base} stroke={OUTLINE} strokeWidth={4} />
+          <circle cx={870} cy={3915} r={38} fill="#FFFFFF" stroke={OUTLINE} strokeWidth={4} />
+          <path
+            d="M846,3930 L846,3906 L862,3906 C858,3896 876,3896 872,3906 L894,3906 L894,3930 Z"
+            fill="#FFC94A"
+            stroke={OUTLINE}
+            strokeWidth={4}
+            strokeLinejoin="round"
+          />
+          <Sign x={870} y={4270} label="Puzzle Shop" color="#3BB7C4" />
+        </g>
+      </Place>
+      <Place
+        id="fishing"
+        hit={[90, 5390, 990, 420]}
+        label="Fishing Dock"
+        onTap={onTap}
+        badge={badges.fishing && <Badge x={1000} y={5460} kind={badges.fishing} />}
+      >
+        <g transform="translate(0 1560)">
+          <path
+            d="M70,4040 C70,3880 330,3850 585,3850 C840,3850 1100,3880 1100,4040 C1100,4170 840,4210 585,4210 C330,4210 70,4170 70,4040 Z"
+            fill="#3BB7C4"
+            stroke={OUTLINE}
+            strokeWidth={5}
+          />
+          <path d="M160,3980 C260,3960 360,3990 460,3972" stroke="#BDEBF0" strokeWidth={8} strokeLinecap="round" fill="none" />
+          <path d="M700,4090 C800,4070 900,4100 1000,4080" stroke="#BDEBF0" strokeWidth={8} strokeLinecap="round" fill="none" />
+          <path d="M120,4120 L560,4120 L560,4170 L120,4170 Z" fill="#C98F5E" stroke={OUTLINE} strokeWidth={5} />
+          <path d="M200,4120 L200,4170 M290,4120 L290,4170 M380,4120 L380,4170 M470,4120 L470,4170" stroke="#9E6A42" strokeWidth={5} />
+          <rect x={130} y={4170} width={16} height={50} fill="#9E6A42" stroke={OUTLINE} strokeWidth={4} />
+          <rect x={534} y={4170} width={16} height={50} fill="#9E6A42" stroke={OUTLINE} strokeWidth={4} />
+          <path d="M240,4120 L360,3990" stroke="#9E6A42" strokeWidth={9} strokeLinecap="round" />
+          <path d="M360,3990 L430,4070" stroke={OUTLINE} strokeWidth={3} fill="none" />
+          <circle cx={430} cy={4068} r={11} fill="#FF7BA9" stroke={OUTLINE} strokeWidth={4} />
+          <path d="M760,3990 C780,3950 830,3950 850,3990 C830,4030 780,4030 760,3990 Z" fill="#FFA94D" stroke={OUTLINE} strokeWidth={4} />
+          <path d="M848,3990 L880,3965 L880,4015 Z" fill="#FF8A3D" stroke={OUTLINE} strokeWidth={4} strokeLinejoin="round" />
+          <circle cx={782} cy={3984} r={5} fill={OUTLINE} />
+          <path d="M830,4120 L1010,4120 L990,4170 L850,4170 Z" fill="#FF8A65" stroke={OUTLINE} strokeWidth={5} strokeLinejoin="round" />
+          <Sign x={585} y={4270} label="Fishing Dock" color="#5BB8F0" />
         </g>
       </Place>
 

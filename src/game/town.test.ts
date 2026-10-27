@@ -12,6 +12,9 @@ import { nailOrders, wrongNails, emptyWork, NAILS, CLIENTS_PER_SHIFT as NAIL_CLI
 import { checkPosy, countOf, posyOrders, MAX_FLOWERS } from './posies';
 import { BOARDS, deal, isMatch, pairsPay, sharp } from './pairs';
 import { press, SONGS } from './piano';
+import { addWork, blank, finished, hangCoins, MAX_WORKS, PICTURES } from './studio';
+import { shuffle, solved, swap, SIZES } from './puzzle';
+import { biteDelay, FISH_IDS, nextFish } from './fishing';
 import { changedParts, DEFAULT_BEDROOM, withPart } from './bedroom';
 import { BEDDINGS, WALLS } from '../content/bedroom';
 import { FIRST_STARS_BONUS, fits, fitting, judgesFor, SHOW_PAY, showReward, showStars, themeFor } from './show';
@@ -655,5 +658,59 @@ describe('Petal Park (§21, §22)', () => {
     expect(press(song, 0, 5)).toEqual({ ok: false, expected: song.notes[0] });
     expect(press(song, 1, song.notes[1])).toEqual({ ok: true, done: false });
     expect(press(song, song.notes.length - 1, song.notes[song.notes.length - 1])).toEqual({ ok: true, done: true });
+  });
+});
+
+describe('Art Studio, Puzzle Shop and Fishing Dock (§24 to §26)', () => {
+  it('a picture is finished only when every part has a color, and pays once', () => {
+    const c = blank('butterfly');
+    expect(c).toHaveLength(PICTURES[0].parts);
+    expect(finished(c)).toBe(false);
+    expect(finished(c.map(() => 'rose'))).toBe(true);
+    expect(hangCoins([], 'house')).toBe(15);
+    expect(hangCoins(['house'], 'house')).toBe(0);
+  });
+  it('the gallery keeps the newest works', () => {
+    let w: { pic: string; colors: string[] }[] = [];
+    for (let i = 0; i < MAX_WORKS + 3; i++) w = addWork(w, { pic: 'house', colors: [String(i)] });
+    expect(w).toHaveLength(MAX_WORKS);
+    expect(w[w.length - 1].colors[0]).toBe(String(MAX_WORKS + 2));
+  });
+  it('puzzles start shuffled, swap, and solve', () => {
+    SIZES.forEach((s, size) => {
+      const o = shuffle(size, 1);
+      expect(o).toHaveLength(s.cols * s.rows);
+      expect(solved(o)).toBe(false);
+      expect([...o].sort((a, b) => a - b)).toEqual(o.map((_, i) => i));
+    });
+    expect(solved(swap([1, 0, 2, 3], 0, 1))).toBe(true);
+  });
+  it('fishing gives a new fish until the aquarium is full, and bites come within the window', () => {
+    const have: string[] = [];
+    for (let i = 0; i < FISH_IDS.length; i++) {
+      const f = nextFish(have, i);
+      expect(have).not.toContain(f);
+      have.push(f);
+    }
+    expect(have).toHaveLength(FISH_IDS.length);
+    expect(FISH_IDS).toContain(nextFish(have, 99));
+    for (let c = 0; c < 20; c++) {
+      expect(biteDelay(c)).toBeGreaterThanOrEqual(1200);
+      expect(biteDelay(c)).toBeLessThan(2800);
+    }
+  });
+  it('sanitize drops unknown fish and junk works', () => {
+    const s = fresh();
+    const bad = {
+      ...s,
+      progress: {
+        ...s.progress,
+        fishing: { catches: 3, fish: ['minnow', 'dragon'] },
+        studio: { made: ['house'], works: [{ pic: 'house' }, 5] },
+      },
+    } as unknown as SaveGame;
+    const out = sanitize(bad, SAVE_CONTEXT);
+    expect(out.progress.fishing.fish).toEqual(['minnow']);
+    expect(out.progress.studio.works).toEqual([]);
   });
 });

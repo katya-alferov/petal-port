@@ -163,6 +163,24 @@ const MOTIF: Record<string, (ink: string) => ReactElement> = {
       <path d="M40,32 L72,26" strokeWidth={6} />
     </g>
   ),
+  brush: (c) => (
+    <g {...sw}>
+      <path d="M62,18 L78,34 L48,64 L34,60 L36,46 Z" fill={c} />
+      <path d="M34,60 C28,62 22,70 20,78 C30,78 40,74 42,66" fill="#FFF7EC" />
+    </g>
+  ),
+  puzzle: (c) => (
+    <g {...sw}>
+      <path d="M24,28 L46,28 C44,18 56,18 54,28 L76,28 L76,48 C86,46 86,60 76,58 L76,76 L24,76 Z" fill={c} />
+    </g>
+  ),
+  fish: (c) => (
+    <g {...sw}>
+      <path d="M18,50 C30,26 62,26 74,50 C62,74 30,74 18,50 Z" fill={c} />
+      <path d="M72,50 L88,34 L88,66 Z" fill={c} />
+      <circle cx={34} cy={46} r={4} fill={OUTLINE} />
+    </g>
+  ),
   cards: (c) => (
     <g {...sw}>
       <rect x={18} y={28} width={36} height={48} rx={7} fill={c} transform="rotate(-10 36 52)" />

@@ -1,5 +1,6 @@
 // Sticker album (game-systems §8.5): every sticker is earned by something the player did.
 // Conditions only look at counters that never go down, so a sticker can never be lost.
+import { PUZZLES } from './puzzle';
 import { changedParts } from './bedroom';
 import { careCount, tricksKnown } from './pets';
 import type { SaveGame } from './save';
@@ -34,6 +35,10 @@ export type StickerCond =
   | { kind: 'skatePerfect' }
   | { kind: 'nailShifts'; n: number }
   | { kind: 'pairsGames'; n: number }
+  | { kind: 'pictures'; n: number }
+  | { kind: 'puzzles'; n: number }
+  | { kind: 'puzzleMaster' }
+  | { kind: 'fishCaught'; n: number }
   | { kind: 'pairsHard' }
   | { kind: 'songs'; n: number }
   | { kind: 'posyShifts'; n: number }
@@ -95,6 +100,14 @@ export function meets(save: SaveGame, c: StickerCond, facts: StickerFacts): bool
       return p.dance.shifts >= c.n;
     case 'skateRuns':
       return p.skate.runs >= c.n;
+    case 'pictures':
+      return p.studio.made.length >= c.n;
+    case 'puzzles':
+      return p.puzzle.games >= c.n;
+    case 'puzzleMaster':
+      return PUZZLES.every((x) => p.puzzle.done.includes(`${x}-2`));
+    case 'fishCaught':
+      return p.fishing.fish.length >= c.n;
     case 'pairsGames':
       return p.park.games >= c.n;
     case 'pairsHard':

@@ -672,3 +672,22 @@ Wave B adds a dress-up goal, an exploration collection and more doll-style cloth
 ## 23. Versions and going back
 
 - Every change is a git commit on `main` and is deployed by CI to the live site. Any older version can be restored from the commit list on GitHub ("Browse files" on a commit, or `git revert <commit>` to undo one change without losing the rest). Named restore points: see the commit list; the last commit before each wave is a safe place to return to.
+
+## 24. Art Studio (Wave F)
+
+- A place on the new Hobby Street (the map is now 1170 x 6460; the airport moved down again). A coloring book with three pictures (butterfly 8 parts, cupcake 6, little house 8). Pick one of 9 paints, tap a part to paint it; **any color is right**, and Clear starts over. **Hang it up!** is enabled when every part has a color (tapping it early explains) and adds the picture to **My gallery** (newest 12 kept).
+- Pay **15** coins the first time each picture is hung, nothing after (repeat paintings are free creative play). Finishing grows the garden. Stickers: Little Artist (1 picture), Gallery Star (all 3). Save: optional `progress.studio {made[], works[{pic, colors[]}]}`.
+
+## 25. Puzzle Shop (Wave F)
+
+- Next to the Art Studio. Three small pictures (Sunny Meadow, Harbour, Castle) in three sizes (4, 6 or 9 pieces). The pieces start shuffled (never already solved); **tap two pieces to swap them**. Pieces in the right place get a green rim, and the status line counts them. No timer, nothing taken away.
+- Pay **10 / 14 / 20** per solved puzzle (every time, like a job). Stickers: Puzzle Fan (1 puzzle), Puzzle Master (the 9-piece puzzle of every picture). Save: optional `progress.puzzle {games, done[]}` (`done` holds `picture-size` keys).
+
+## 26. Fishing Dock (Wave F)
+
+- A big pier on the row below. **Cast**, wait 1.2 to 2.8 s for the splash (seeded by the cast number), then **Reel in!** within a generous 2.2 s window. A tap too early says "Too early!" and lets you cast again; a missed splash says "It swam away" and you cast again. Nothing is lost either way.
+- Every catch pays **6**, a fish you don't have yet **+10**. The fish is **always a new one while any is missing** (10 kinds), then any, so there is no luck to chase. **My fish** shows the aquarium with grey "?" for the missing ones. Stickers: Little Angler (1 fish), Aquarium Keeper (5), Ocean Friend (all 10). Save: optional `progress.fishing {catches, fish[]}`.
+
+## 27. Home and Bedroom screen rules (Wave F)
+
+- Decorating the living room hides the player's character until Done; the Bedroom is a button in the home button row (no door art, so nothing in the room is covered). In the Bedroom the design options (tabs and choices) appear only after pressing **Design**, and **Done** hides them again.

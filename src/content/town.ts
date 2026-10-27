@@ -125,6 +125,9 @@ export type StickerMotif =
   | 'skate'
   | 'nails'
   | 'cards'
+  | 'brush'
+  | 'puzzle'
+  | 'fish'
   | 'posy';
 
 export interface StickerDef {
@@ -289,6 +292,62 @@ export const STICKERS: StickerDef[] = [
     motif: 'music',
     color: '#FF7BA9',
     cond: { kind: 'songs', n: 3 },
+  },
+  {
+    id: 'sticker.artist',
+    name: 'Little Artist',
+    hint: 'Hang a picture in the Art Studio gallery',
+    motif: 'brush',
+    color: '#FF9EC4',
+    cond: { kind: 'pictures', n: 1 },
+  },
+  {
+    id: 'sticker.gallery',
+    name: 'Gallery Star',
+    hint: 'Hang all 3 pictures',
+    motif: 'brush',
+    color: '#B692F6',
+    cond: { kind: 'pictures', n: 3 },
+  },
+  {
+    id: 'sticker.puzzle',
+    name: 'Puzzle Fan',
+    hint: 'Finish a puzzle',
+    motif: 'puzzle',
+    color: '#5BB8F0',
+    cond: { kind: 'puzzles', n: 1 },
+  },
+  {
+    id: 'sticker.puzzle-master',
+    name: 'Puzzle Master',
+    hint: 'Finish the biggest puzzle of every picture',
+    motif: 'puzzle',
+    color: '#FFC94A',
+    cond: { kind: 'puzzleMaster' },
+  },
+  {
+    id: 'sticker.angler',
+    name: 'Little Angler',
+    hint: 'Catch a fish at the Fishing Dock',
+    motif: 'fish',
+    color: '#5BB8F0',
+    cond: { kind: 'fishCaught', n: 1 },
+  },
+  {
+    id: 'sticker.aquarium',
+    name: 'Aquarium Keeper',
+    hint: 'Catch 5 different fish',
+    motif: 'fish',
+    color: '#7ED6A7',
+    cond: { kind: 'fishCaught', n: 5 },
+  },
+  {
+    id: 'sticker.aquarium-full',
+    name: 'Ocean Friend',
+    hint: 'Catch all 10 fish',
+    motif: 'fish',
+    color: '#FF7BA9',
+    cond: { kind: 'fishCaught', n: 10 },
   },
   {
     id: 'sticker.shopper',

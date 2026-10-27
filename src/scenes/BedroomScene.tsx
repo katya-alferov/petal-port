@@ -5,7 +5,7 @@ import { BEDDINGS, bedding, cabinet, LAMPS, PICTURES, RUGS, WALLS, WARDROBES, wa
 import { DEFAULT_BEDROOM, type BedroomPart } from '../game/bedroom';
 import { play } from '../platform/audio';
 import { useGame } from '../state/store';
-import { Tabs } from '../ui/kit';
+import { Button, Tabs } from '../ui/kit';
 import { ActivityBar } from './common';
 
 const TABS: { id: BedroomPart; label: string }[] = [
@@ -31,6 +31,8 @@ export function BedroomScene() {
   const look = { ...DEFAULT_BEDROOM, ...saved };
   const [tab, setTab] = useState<BedroomPart>('walls');
   const [lampOn, setLampOn] = useState(true);
+  const [designing, setDesigning] = useState(false);
+  const showToast = useGame((s) => s.showToast);
   const w = wallColor(look.walls);
   const b = bedding(look.bedding);
   const cab = cabinet(look.wardrobe);
@@ -42,8 +44,18 @@ export function BedroomScene() {
       return;
     }
     const to = SPOT_TAB[spot];
-    if (to) setTab(to);
     play('pop');
+    if (designing) {
+      if (to) setTab(to);
+      return;
+    }
+    const line: Record<string, string> = {
+      picture: 'What a lovely picture!',
+      window: 'Nice view from here!',
+      bed: 'So soft and cozy!',
+      wardrobe: 'Your clothes live here.',
+    };
+    showToast(line[spot] ?? 'Cozy!', 'sparkle');
   };
   const pick = (part: BedroomPart, id: string) => {
     play('swap');
@@ -73,64 +85,79 @@ export function BedroomScene() {
         />
       </div>
       <div className="tray" style={{ flex: '0 0 auto' }}>
-        <Tabs tabs={TABS} value={tab} onChange={setTab} label="Bedroom parts" />
-        <div className="chip-row wrap" role="group" aria-label={TABS.find((t) => t.id === tab)?.label} style={{ marginTop: 8 }}>
-          {tab === 'walls' &&
-            WALLS.map((c) => (
-              <button
-                key={c.id}
-                type="button"
-                className="chip"
-                aria-pressed={look.walls === c.id}
-                data-testid={`bedroom-walls-${c.id}`}
-                onClick={() => pick('walls', c.id)}
-              >
-                <span className="swatch-dot" style={{ background: c.wall }} aria-hidden="true" />
-                {c.name}
-              </button>
-            ))}
-          {tab === 'bedding' &&
-            BEDDINGS.map((c) => (
-              <button
-                key={c.id}
-                type="button"
-                className="chip"
-                aria-pressed={look.bedding === c.id}
-                data-testid={`bedroom-bedding-${c.id}`}
-                onClick={() => pick('bedding', c.id)}
-              >
-                <span className="swatch-dot" style={{ background: c.main }} aria-hidden="true" />
-                {c.name}
-              </button>
-            ))}
-          {tab === 'wardrobe' &&
-            WARDROBES.map((c) => (
-              <button
-                key={c.id}
-                type="button"
-                className="chip"
-                aria-pressed={look.wardrobe === c.id}
-                data-testid={`bedroom-wardrobe-${c.id}`}
-                onClick={() => pick('wardrobe', c.id)}
-              >
-                <span className="swatch-dot" style={{ background: c.body }} aria-hidden="true" />
-                {c.name}
-              </button>
-            ))}
-          {(tab === 'lamp' || tab === 'picture' || tab === 'rug') &&
-            choices.map((c) => (
-              <button
-                key={c.id}
-                type="button"
-                className="chip"
-                aria-pressed={look[tab] === c.id}
-                data-testid={`bedroom-${tab}-${c.id}`}
-                onClick={() => pick(tab, c.id)}
-              >
-                {c.name}
-              </button>
-            ))}
-        </div>
+        {!designing ? (
+          <div style={{ display: 'flex', justifyContent: 'center' }}>
+            <Button tone="primary" icon="palette" onClick={() => (play('chime'), setDesigning(true))} testId="bedroom-design">
+              Design
+            </Button>
+          </div>
+        ) : (
+          <>
+            <Tabs tabs={TABS} value={tab} onChange={setTab} label="Bedroom parts" />
+            <div className="chip-row wrap" role="group" aria-label={TABS.find((t) => t.id === tab)?.label} style={{ marginTop: 8 }}>
+              {tab === 'walls' &&
+                WALLS.map((c) => (
+                  <button
+                    key={c.id}
+                    type="button"
+                    className="chip"
+                    aria-pressed={look.walls === c.id}
+                    data-testid={`bedroom-walls-${c.id}`}
+                    onClick={() => pick('walls', c.id)}
+                  >
+                    <span className="swatch-dot" style={{ background: c.wall }} aria-hidden="true" />
+                    {c.name}
+                  </button>
+                ))}
+              {tab === 'bedding' &&
+                BEDDINGS.map((c) => (
+                  <button
+                    key={c.id}
+                    type="button"
+                    className="chip"
+                    aria-pressed={look.bedding === c.id}
+                    data-testid={`bedroom-bedding-${c.id}`}
+                    onClick={() => pick('bedding', c.id)}
+                  >
+                    <span className="swatch-dot" style={{ background: c.main }} aria-hidden="true" />
+                    {c.name}
+                  </button>
+                ))}
+              {tab === 'wardrobe' &&
+                WARDROBES.map((c) => (
+                  <button
+                    key={c.id}
+                    type="button"
+                    className="chip"
+                    aria-pressed={look.wardrobe === c.id}
+                    data-testid={`bedroom-wardrobe-${c.id}`}
+                    onClick={() => pick('wardrobe', c.id)}
+                  >
+                    <span className="swatch-dot" style={{ background: c.body }} aria-hidden="true" />
+                    {c.name}
+                  </button>
+                ))}
+              {(tab === 'lamp' || tab === 'picture' || tab === 'rug') &&
+                choices.map((c) => (
+                  <button
+                    key={c.id}
+                    type="button"
+                    className="chip"
+                    aria-pressed={look[tab] === c.id}
+                    data-testid={`bedroom-${tab}-${c.id}`}
+                    onClick={() => pick(tab, c.id)}
+                  >
+                    {c.name}
+                  </button>
+                ))}
+            </div>
+            <div style={{ display: 'flex', justifyContent: 'center', marginTop: 8 }}>
+              <Button tone="confirm" onClick={() => (play('chime'), setDesigning(false))} testId="bedroom-done">
+                Done
+              </Button>
+            </div>
+          </>
+        )}
       </div>
     </section>
   );

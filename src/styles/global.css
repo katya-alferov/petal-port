@@ -2305,3 +2305,115 @@ g[role='button']:focus-visible {
 .piano-key[data-pressed='true'] {
   transform: translateY(4px);
 }
+
+/* Home button row: three buttons must fit a 375 px phone. */
+.home-actions .btn {
+  min-width: 0;
+  padding: 0 16px;
+  font-size: 1.1rem;
+  gap: 6px;
+}
+.home-actions .btn-primary {
+  font-size: 1.15rem;
+}
+
+/* Art Studio, Puzzle Shop and Fishing Dock (game-systems §24 to §26) */
+.studio-canvas {
+  width: min(100%, 340px);
+  aspect-ratio: 1;
+  background: #fff;
+  border: 4px solid var(--outline, #5b4a6e);
+  border-radius: 18px;
+  box-shadow: 0 5px 0 var(--outline, #5b4a6e);
+  overflow: hidden;
+}
+.paint-row {
+  display: flex;
+  gap: 6px;
+  justify-content: center;
+  flex-wrap: wrap;
+}
+.paint {
+  width: 44px;
+  height: 44px;
+  border: 4px solid var(--outline, #5b4a6e);
+  border-radius: 50%;
+  box-shadow: 0 3px 0 var(--outline, #5b4a6e);
+}
+.paint[aria-pressed='true'] {
+  outline: 5px solid #fff;
+  box-shadow: 0 0 0 9px #ffc94a;
+  transform: translateY(-3px);
+}
+.gallery-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 8px;
+}
+.gallery-frame {
+  aspect-ratio: 1;
+  border: 3px solid var(--outline, #5b4a6e);
+  border-radius: 10px;
+  overflow: hidden;
+  background: #fff;
+}
+.puzzle-grid {
+  display: grid;
+  gap: 4px;
+  width: min(100%, 340px);
+  max-height: 100%;
+}
+.puzzle-piece {
+  padding: 0;
+  overflow: hidden;
+  border: 3px solid var(--outline, #5b4a6e);
+  border-radius: 8px;
+  background: #fff;
+  min-height: 56px;
+}
+.puzzle-piece[data-right='true'] {
+  border-color: #3dae6b;
+}
+.puzzle-piece[data-selected='true'] {
+  outline: 5px solid #ffc94a;
+  transform: scale(0.94);
+}
+.fish-card {
+  position: absolute;
+  right: 6%;
+  top: 8%;
+  display: grid;
+  justify-items: center;
+  gap: 2px;
+  padding: 8px 14px;
+  z-index: 4;
+}
+.fish-big {
+  width: 130px;
+  height: 86px;
+}
+.fish-big svg,
+.tank-cell svg {
+  width: 100%;
+  height: 100%;
+}
+.tank-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 8px;
+}
+.tank-cell {
+  display: grid;
+  justify-items: center;
+  gap: 2px;
+  padding: 6px 4px;
+  background: #e8f8ff;
+  border: 3px solid var(--outline, #5b4a6e);
+  border-radius: 12px;
+  font-weight: 800;
+  font-size: 0.8rem;
+  text-align: center;
+}
+.tank-cell svg {
+  height: 48px;
+}

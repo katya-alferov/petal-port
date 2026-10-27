@@ -80,50 +80,26 @@ export function HomeScene() {
             view={save.home.view}
             onTable={dish && <DishArt recipe={dish.recipeId} cook={dish.doneness} toppings={dish.toppings} />}
           >
-            <g
-              role="button"
-              tabIndex={0}
-              aria-label="Say hi"
-              data-testid="home-character"
-              style={{ cursor: 'pointer', opacity: editing ? 0.35 : 1 }}
-              pointerEvents={editing ? 'none' : undefined}
-              onClick={() => {
-                play('pop');
-                setPose('wave');
-                window.setTimeout(() => setPose('idle'), 1400);
-              }}
-            >
-              <Character
-                appearance={save.player.appearance}
-                outfit={save.player.outfit}
-                pose={pose}
-                frame={{ x: charX - CHAR_H / 4, y: FLOOR_Y + 470 - CHAR_H * 0.975, width: CHAR_H / 2, height: CHAR_H }}
-              />
-            </g>
             {!editing && (
               <g
                 role="button"
                 tabIndex={0}
-                aria-label="Bedroom"
-                data-testid="home-bedroom"
-                style={{ cursor: 'pointer' }}
-                onClick={() => (play('pop'), setScene('bedroom'))}
-                onKeyDown={(e) => (e.key === 'Enter' || e.key === ' ') && setScene('bedroom')}
+                aria-label="Say hi"
+                data-testid="home-character"
+                style={{ cursor: 'pointer', opacity: editing ? 0.35 : 1 }}
+                pointerEvents={editing ? 'none' : undefined}
+                onClick={() => {
+                  play('pop');
+                  setPose('wave');
+                  window.setTimeout(() => setPose('idle'), 1400);
+                }}
               >
-                <rect x={10} y={FLOOR_Y - 480} width={250} height={480} fill="transparent" />
-                <path
-                  d="M30,1680 L30,1250 C30,1190 240,1190 240,1250 L240,1680 Z"
-                  fill="#C98F5E"
-                  stroke="#5B4A6E"
-                  strokeWidth={8}
-                  strokeLinejoin="round"
+                <Character
+                  appearance={save.player.appearance}
+                  outfit={save.player.outfit}
+                  pose={pose}
+                  frame={{ x: charX - CHAR_H / 4, y: FLOOR_Y + 470 - CHAR_H * 0.975, width: CHAR_H / 2, height: CHAR_H }}
                 />
-                <path d="M54,1680 L54,1262 C54,1226 216,1226 216,1262 L216,1680 Z" fill="#E3B183" stroke="#5B4A6E" strokeWidth={5} />
-                <circle cx={196} cy={1480} r={14} fill="#FFC94A" stroke="#5B4A6E" strokeWidth={5} />
-                <rect x={36} y={1130} width={198} height={62} rx={31} fill="#FFF7EC" stroke="#5B4A6E" strokeWidth={6} />
-                <text x={135} y={1175} textAnchor="middle" fontFamily="Fredoka, sans-serif" fontWeight={600} fontSize={42} fill="#3A2E4F">
-                  Bedroom
-                </text>
               </g>
             )}
             {visitor && !editing && (
@@ -176,20 +152,23 @@ export function HomeScene() {
         )}
         <ShellSpots scene="home" />
       </div>
-      <div style={{ position: 'relative', zIndex: 5, padding: '8px 12px 10px', display: 'flex', gap: 8, justifyContent: 'center' }}>
+      <div
+        style={{ position: 'relative', zIndex: 5, padding: '8px 12px 10px', display: 'flex', gap: 8, justifyContent: 'center' }}
+        className="home-actions"
+      >
         {editing && (
           <Button onClick={() => (play('pop'), setColors(true))} testId="home-colors" icon="palette">
             Colors
           </Button>
         )}
-        <Button
-          onClick={() => (play('pop'), setEditing((v) => !v))}
-          testId="home-decorate"
-          icon={editing ? undefined : 'palette'}
-          tone={editing ? 'confirm' : undefined}
-        >
+        <Button onClick={() => (play('pop'), setEditing((v) => !v))} testId="home-decorate" tone={editing ? 'confirm' : undefined}>
           {editing ? 'Done' : 'Decorate'}
         </Button>
+        {!editing && (
+          <Button onClick={() => (play('pop'), setScene('bedroom'))} testId="home-bedroom">
+            Bedroom
+          </Button>
+        )}
         {!editing && (
           <Button tone="primary" onClick={() => (play('chime'), setScene('kitchen'))} testId="home-cook" icon="pan">
             Cook

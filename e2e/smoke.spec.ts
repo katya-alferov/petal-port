@@ -61,6 +61,7 @@ test('outfit, skin and room theme survive a reload', async ({ page }) => {
   await page.getByTestId('home-colors').click();
   await expect(page.getByTestId('theme-theme.night-market')).toHaveAttribute('aria-pressed', 'true');
   await page.getByTestId('sheet-close').click();
+  await page.getByTestId('home-decorate').click(); // Done: the player comes back
   await expect(page.locator('[data-slot="dress"][data-item="dress.picnic"]').first()).toBeAttached();
   await shot(page, '05-home-night-after-reload');
 });
@@ -98,6 +99,9 @@ test('no serious accessibility violations on each main scene', async ({ page }) 
     'nails',
     'posies',
     'park',
+    'studio',
+    'puzzle',
+    'fishing',
     'sweets',
     'paris',
     'photo',
@@ -622,6 +626,8 @@ test('bedroom: choices change the room and are remembered', async ({ page }) => 
   await page.goto('./?fixture=fresh&scene=home');
   await page.getByTestId('home-bedroom').click();
   await expect(page.getByTestId('bedroom-art')).toBeVisible();
+  await expect(page.getByTestId('bedroom-walls-mint')).toHaveCount(0); // options stay hidden until Design
+  await page.getByTestId('bedroom-design').click();
   await page.getByTestId('bedroom-walls-mint').click();
   await expect(page.getByTestId('bedroom-walls-mint')).toHaveAttribute('aria-pressed', 'true');
   await page.getByRole('tab', { name: 'Lamp' }).click();
@@ -734,4 +740,57 @@ test('petal park: find every pair for coins, and play a song on the bandstand pi
   for (const k of notes) await page.getByTestId(`key-${k}`).click();
   await expect(page.getByTestId('song-done')).toContainText('+15');
   expect((await coinsOf(page)) - start).toBe(14 + 15);
+});
+
+test('art studio: paint every part, hang the picture for first-time coins, and see it in the gallery', async ({ page }) => {
+  await page.goto('./?fixture=fresh&scene=studio');
+  const start = await coinsOf(page);
+  await page.getByTestId('pic-cupcake').click();
+  await page.getByTestId('studio-hang').click({ force: true }); // not finished: explains, does nothing
+  await expect(page.getByTestId('studio-done')).toHaveCount(0);
+  const paints = ['rose', 'sky', 'sun', 'mint', 'lilac', 'orange'];
+  for (let i = 0; i < 6; i++) {
+    await page.getByTestId(`paint-${paints[i]}`).click();
+    await page.getByTestId(`part-${i}`).click({ force: true });
+  }
+  await page.getByTestId('studio-hang').click();
+  await expect(page.getByTestId('studio-done')).toContainText('+15');
+  expect((await coinsOf(page)) - start).toBe(15);
+  await page.getByTestId('studio-again').click();
+  await page.getByTestId('studio-gallery').click();
+  await expect(page.getByTestId('gallery-works').locator('.gallery-frame')).toHaveCount(1);
+});
+
+test('puzzle shop: swap pieces until the picture is whole, then it pays', async ({ page }) => {
+  await page.goto('./?fixture=fresh&scene=puzzle');
+  const start = await coinsOf(page);
+  await page.getByTestId('puzzle-meadow').click();
+  await page.getByTestId('puzzle-size-0').click();
+  const order = async () => JSON.parse((await page.getByTestId('puzzle-board').getAttribute('data-order'))!) as number[];
+  let o = await order();
+  for (let i = 0; i < o.length; i++) {
+    o = await order();
+    if (o[i] === i) continue;
+    const from = o.indexOf(i);
+    await page.getByTestId(`slot-${from}`).click();
+    await page.getByTestId(`slot-${i}`).click();
+  }
+  await expect(page.getByTestId('puzzle-done')).toContainText('+10');
+  expect((await coinsOf(page)) - start).toBe(10);
+});
+
+test('fishing dock: an early reel only explains, a reel at the splash catches a new fish', async ({ page }) => {
+  test.setTimeout(60_000);
+  await page.goto('./?fixture=fresh&scene=fishing');
+  const start = await coinsOf(page);
+  await page.getByTestId('fish-cast').click();
+  await page.getByTestId('fish-reel').click();
+  await expect(page.getByTestId('fish-note')).toContainText('Too early');
+  await page.getByTestId('fish-cast').click();
+  await expect(page.getByTestId('fish-stage')).toHaveAttribute('data-phase', 'bite', { timeout: 8000 });
+  await page.getByTestId('fish-reel').click();
+  await expect(page.getByTestId('fish-card')).toBeVisible();
+  expect((await coinsOf(page)) - start).toBe(16);
+  await page.getByTestId('fish-tank').click();
+  await expect(page.getByTestId('tank').locator('[data-have="true"]')).toHaveCount(1);
 });

@@ -1,4 +1,6 @@
 // SaveGame model + validate / sanitize / migrate (data-model §3, §5.4). Pure: no DOM, storage or clock.
+import { FISH_IDS } from './fishing';
+import { MAX_WORKS, type Work } from './studio';
 import { BEDROOM_PARTS, type BedroomLook } from './bedroom';
 import { MAX_DESIGNS } from './sweets';
 import { MAX_PHOTOS, newTravel, type PhotoRecipe, type Travel } from './travel';
@@ -103,6 +105,10 @@ export interface Progress {
   skate: { runs: number; best: number };
   /** Wave E (game-systems §21, §22): Picnic Pairs games, hardest board cleared, songs played to the end. */
   park: { games: number; hard: boolean; songs: string[] };
+  /** Wave F (game-systems §24 to §26): Art Studio, Puzzle Shop and Fishing Dock. */
+  studio: { made: string[]; works: Work[] };
+  puzzle: { games: number; done: string[] };
+  fishing: { catches: number; fish: string[] };
   /** Wave E (game-systems §18, §19): Glow Nails clients and shifts, Petal Posies bouquets and shifts. */
   nails: { clients: number; shifts: number };
   posies: { bouquets: number; shifts: number };
@@ -177,6 +183,9 @@ export function newProgress(): Progress {
     dance: { routines: 0, shifts: 0 },
     skate: { runs: 0, best: 0 },
     park: { games: 0, hard: false, songs: [] },
+    studio: { made: [], works: [] },
+    puzzle: { games: 0, done: [] },
+    fishing: { catches: 0, fish: [] },
     nails: { clients: 0, shifts: 0 },
     posies: { bouquets: 0, shifts: 0 },
     garden: { beds: Array.from({ length: GARDEN_BEDS }, () => null), bloomed: [], picked: 0 },
@@ -362,6 +371,32 @@ function sanitizeProgress(raw: unknown): Progress {
   if (isObj(nl)) p.nails = { clients: clampInt(nl.clients), shifts: clampInt(nl.shifts) };
   const ps = raw.posies;
   if (isObj(ps)) p.posies = { bouquets: clampInt(ps.bouquets), shifts: clampInt(ps.shifts) };
+  const st = raw.studio;
+  if (isObj(st))
+    p.studio = {
+      made: Array.isArray(st.made) ? [...new Set(st.made.filter(isStr))].slice(0, 20) : [],
+      works: Array.isArray(st.works)
+        ? st.works
+            .filter((w): w is Work => isObj(w) && isStr(w.pic) && Array.isArray(w.colors))
+            .map((w) => ({
+              pic: w.pic.slice(0, 24),
+              colors: w.colors
+                .filter(isStr)
+                .map((c) => c.slice(0, 16))
+                .slice(0, 16),
+            }))
+            .slice(-MAX_WORKS)
+        : [],
+    };
+  const pz = raw.puzzle;
+  if (isObj(pz))
+    p.puzzle = { games: clampInt(pz.games), done: Array.isArray(pz.done) ? [...new Set(pz.done.filter(isStr))].slice(0, 40) : [] };
+  const fs = raw.fishing;
+  if (isObj(fs))
+    p.fishing = {
+      catches: clampInt(fs.catches),
+      fish: Array.isArray(fs.fish) ? [...new Set(fs.fish.filter(isStr))].filter((f) => (FISH_IDS as readonly string[]).includes(f)) : [],
+    };
   const pk = raw.park;
   if (isObj(pk))
     p.park = {

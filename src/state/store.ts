@@ -1,6 +1,9 @@
 // The single game store (data-model §4). Only `save` is persisted; `ui` is session state.
 import { type BedroomPart, withPart } from '../game/bedroom';
 import { DANCE_SHIFT_BONUS, dancePay } from '../game/dance';
+import { addWork, hangCoins } from '../game/studio';
+import { puzzlePay } from '../game/puzzle';
+import { catchPay, nextFish } from '../game/fishing';
 import { pairsPay, BOARDS } from '../game/pairs';
 import { SONG_PAY, SONGS } from '../game/piano';
 import { NAILS_SHIFT_BONUS, nailsPay } from '../game/nails';
@@ -40,6 +43,9 @@ import { log } from '../platform/log';
 import { readSaves, requestPersist, scheduleWrite } from '../platform/storage';
 
 export type SceneId =
+  | 'studio'
+  | 'puzzle'
+  | 'fishing'
   | 'park'
   | 'nails'
   | 'posies'
@@ -128,6 +134,10 @@ interface GameStore {
   /** Wave E (game-systems §18, §19). */
   /** Wave E (game-systems §21, §22): coins paid; a song pays once. */
   pairsDone: (level: number, misses: number) => number;
+  /** Wave F (game-systems §24 to §26). */
+  hangPicture: (pic: string, colors: string[]) => number;
+  puzzleDone: (pic: string, size: number) => number;
+  catchFish: () => { fish: string; coins: number; isNew: boolean };
   songDone: (id: string) => number;
   nailsServed: (clean: boolean) => number;
   nailsShiftDone: () => number;
@@ -463,6 +473,44 @@ export const useGame = create<GameStore>((setState, getState) => ({
     s = grown({ ...s, progress: { ...s.progress, skate: { runs: sk.runs + 1, best: Math.max(sk.best, n) } } });
     setState({ save: touch(s) });
     return coins;
+  },
+  hangPicture: (pic, colors) => {
+    let s = getState().save;
+    const st = s.progress.studio;
+    const coins = hangCoins(st.made, pic);
+    s = earn(s, coins);
+    s = grown({
+      ...s,
+      progress: {
+        ...s.progress,
+        studio: { made: st.made.includes(pic) ? st.made : [...st.made, pic], works: addWork(st.works, { pic, colors }) },
+      },
+    });
+    setState({ save: touch(s) });
+    return coins;
+  },
+  puzzleDone: (pic, size) => {
+    const coins = puzzlePay(size);
+    let s = earn(getState().save, coins);
+    const pz = s.progress.puzzle;
+    const key = `${pic}-${size}`;
+    s = grown({
+      ...s,
+      progress: { ...s.progress, puzzle: { games: pz.games + 1, done: pz.done.includes(key) ? pz.done : [...pz.done, key] } },
+    });
+    setState({ save: touch(s) });
+    return coins;
+  },
+  catchFish: () => {
+    let s = getState().save;
+    const fs = s.progress.fishing;
+    const fish = nextFish(fs.fish, fs.catches);
+    const isNew = !fs.fish.includes(fish);
+    const coins = catchPay(isNew);
+    s = earn(s, coins);
+    s = grown({ ...s, progress: { ...s.progress, fishing: { catches: fs.catches + 1, fish: isNew ? [...fs.fish, fish] : fs.fish } } });
+    setState({ save: touch(s) });
+    return { fish, coins, isNew };
   },
   pairsDone: (level, misses) => {
     const lv = Math.max(0, Math.min(level, BOARDS.length - 1));
