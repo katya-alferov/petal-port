@@ -627,13 +627,15 @@ test('bedroom: choices change the room and are remembered', async ({ page }) => 
   await page.getByTestId('bedroom-lamp-star').click();
   await page.getByTestId('bed-picture').click({ force: true });
   await page.getByTestId('bedroom-picture-cat').click();
-  await page.getByRole('tab', { name: 'Bedding' }).click();
+  await page.getByRole('tab', { name: 'Bed' }).click();
   await page.getByTestId('bedroom-bedding-teal').click();
   await page.getByTestId('bed-lamp').click({ force: true });
   await page.getByRole('tab', { name: 'Rug' }).click();
   await page.getByTestId('bedroom-rug-heart').click();
+  await page.getByRole('tab', { name: 'Closet' }).click();
+  await page.getByTestId('bedroom-wardrobe-sky').click();
   const look = await page.evaluate(() => (window as any).__petal.getState().save.home.bedroom);
-  expect(look).toEqual({ walls: 'mint', lamp: 'star', picture: 'cat', bedding: 'teal', rug: 'heart' });
+  expect(look).toEqual({ walls: 'mint', lamp: 'star', picture: 'cat', bedding: 'teal', rug: 'heart', wardrobe: 'sky' });
   const stickers = await page.evaluate(() => JSON.stringify((window as any).__petal.getState().save.progress.stickers));
   expect(stickers).toContain('sticker.bedroom');
 });

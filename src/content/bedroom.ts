@@ -54,5 +54,22 @@ export const RUGS: Choice[] = [
   { id: 'heart', name: 'Heart rug' },
 ];
 
+export interface Cabinet {
+  id: string;
+  name: string;
+  body: string;
+  door: string;
+}
+export const WARDROBES: Cabinet[] = [
+  { id: 'white', name: 'White', body: '#E8DFF0', door: '#FFFFFF' },
+  { id: 'wood', name: 'Wood', body: '#B57D4E', door: '#D9A468' },
+  { id: 'pink', name: 'Pink', body: '#FF9EC4', door: '#FFC7DA' },
+  { id: 'mint', name: 'Mint', body: '#7ED6A7', door: '#C6F0DB' },
+  { id: 'sky', name: 'Sky', body: '#7CC4F5', door: '#C5E5FB' },
+  { id: 'lilac', name: 'Lilac', body: '#B692F6', door: '#E1D0FF' },
+  { id: 'sun', name: 'Sunny', body: '#FFC94A', door: '#FFE9A8' },
+];
+export const cabinet = (id: string | undefined) => WARDROBES.find((w) => w.id === id) ?? WARDROBES[0];
+
 export const wallColor = (id: string | undefined) => WALLS.find((w) => w.id === id) ?? WALLS[0];
 export const bedding = (id: string | undefined) => BEDDINGS.find((b) => b.id === id) ?? BEDDINGS[0];

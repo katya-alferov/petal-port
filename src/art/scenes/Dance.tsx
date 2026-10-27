@@ -85,8 +85,19 @@ export function MoveIcon({ move }: { move: string }) {
       <circle cx={24} cy={24} r={21} fill={c} stroke={OUTLINE} strokeWidth={3.5} />
       {move === 'wave' && <path d="M14,28 C18,20 22,34 26,26 C30,18 34,32 38,22" {...g} fill="none" strokeWidth={5} />}
       {move === 'hips' && <path d="M12,32 L18,20 M36,32 L30,20 M18,20 L30,20" {...g} fill="none" strokeWidth={5} />}
-      {move === 'cheer' && <path d="M24,12 L27,21 L36,22 L29,28 L31,37 L24,32 L17,37 L19,28 L12,22 L21,21 Z" {...g} />}
-      {move === 'jump' && <path d="M24,10 L34,24 L28,24 L28,36 L20,36 L20,24 L14,24 Z" {...g} />}
+      {move === 'cheer' && (
+        <g>
+          <circle cx={24} cy={15} r={4.5} {...g} />
+          <path d="M24,20 L24,33 M24,33 L19,41 M24,33 L29,41 M24,23 L13,12 M24,23 L35,12" {...g} fill="none" strokeWidth={4} />
+        </g>
+      )}
+      {move === 'jump' && (
+        <g>
+          <path d="M24,8 L33,19 L27,19 L27,29 L21,29 L21,19 L15,19 Z" {...g} />
+          <path d="M12,38 L36,38" {...g} fill="none" strokeWidth={4} />
+          <path d="M16,33 L16,36 M32,33 L32,36" {...g} fill="none" strokeWidth={3} />
+        </g>
+      )}
       {move === 'twirl' && <path d="M24,12 C36,12 38,28 26,30 C18,31 16,22 22,20 C26,19 28,23 25,25" {...g} fill="none" strokeWidth={5} />}
     </svg>
   );

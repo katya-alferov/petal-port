@@ -1,10 +1,17 @@
 // Bedroom (game-systems §17): a second room to design. All choices are free and can be changed any time.
-export type BedroomPart = 'walls' | 'bedding' | 'lamp' | 'picture' | 'rug';
-export const BEDROOM_PARTS: readonly BedroomPart[] = ['walls', 'bedding', 'lamp', 'picture', 'rug'];
+export type BedroomPart = 'walls' | 'bedding' | 'lamp' | 'picture' | 'rug' | 'wardrobe';
+export const BEDROOM_PARTS: readonly BedroomPart[] = ['walls', 'bedding', 'lamp', 'picture', 'rug', 'wardrobe'];
 
 export type BedroomLook = Record<BedroomPart, string>;
 
-export const DEFAULT_BEDROOM: BedroomLook = { walls: 'cream', bedding: 'pink', lamp: 'dome', picture: 'sunset', rug: 'round' };
+export const DEFAULT_BEDROOM: BedroomLook = {
+  walls: 'cream',
+  bedding: 'pink',
+  lamp: 'dome',
+  picture: 'sunset',
+  rug: 'round',
+  wardrobe: 'white',
+};
 
 /** How many parts differ from the starter look (used for a sticker). */
 export function changedParts(look: Partial<BedroomLook> | undefined): number {

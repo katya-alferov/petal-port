@@ -361,8 +361,8 @@ export function TownMap({
       {/* Petal Notes board */}
       <Place
         id="board"
-        hit={[600, 1260, 300, 270]}
-        label="Petal Notes board"
+        hit={[560, 1260, 380, 400]}
+        label="Notice Board"
         onTap={onTap}
         badge={badges.board && <Badge x={860} y={1290} kind={badges.board} />}
       >
@@ -386,13 +386,14 @@ export function TownMap({
           </g>
         ))}
         <path d="M624,1292 L750,1240 L876,1292 Z" fill={CORAL.base} stroke={OUTLINE} strokeWidth={4} strokeLinejoin="round" />
+        <Sign x={750} y={1540} label="Notice Board" color="#FF7BA9" />
       </Place>
 
       {/* Post Box */}
       <Place
         id="postbox"
-        hit={[990, 2060, 170, 220]}
-        label={mail ? 'Post Box: a letter is waiting' : 'Post Box'}
+        hit={[860, 1900, 300, 380]}
+        label={mail ? 'Mail: a letter is waiting' : 'Mail'}
         onTap={onTap}
         badge={badges.postbox && <Badge x={1120} y={2080} kind={badges.postbox} />}
       >
@@ -414,6 +415,7 @@ export function TownMap({
             strokeLinejoin="round"
           />
         </g>
+        <Sign x={1066} y={1990} label="Mail" color="#FFC94A" />
       </Place>
 
       {/* Petal Park (scenery: pond and ducks) */}

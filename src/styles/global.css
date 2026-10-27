@@ -1992,8 +1992,14 @@ g[role='button']:focus-visible {
   animation: dance-bounce 0.5s ease-out;
 }
 @keyframes dance-jump {
-  40% {
-    transform: translateY(-9%);
+  30% {
+    transform: translateY(-16%) scaleY(1.04);
+  }
+  60% {
+    transform: translateY(-16%) scaleY(1.04);
+  }
+  85% {
+    transform: translateY(0) scaleY(0.94);
   }
 }
 @keyframes dance-twirl {

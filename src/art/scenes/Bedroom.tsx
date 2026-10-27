@@ -11,8 +11,10 @@ export interface BedroomColors {
   floor: string;
   main: string;
   accent: string;
+  cabinet: string;
+  cabinetDoor: string;
 }
-export type BedroomSpot = 'lamp' | 'picture' | 'window' | 'bed';
+export type BedroomSpot = 'lamp' | 'picture' | 'window' | 'bed' | 'wardrobe';
 
 function Picture({ id }: { id: string }) {
   const f = { x: 130, y: 260, w: 280, h: 240 };
@@ -183,28 +185,28 @@ export function BedroomArt({
   return (
     <svg
       viewBox="0 0 1170 1400"
-      preserveAspectRatio="xMidYMax slice"
+      preserveAspectRatio="xMidYMax meet"
       role={onTap ? 'group' : undefined}
       aria-label={onTap ? 'Your bedroom' : undefined}
       aria-hidden={onTap ? undefined : true}
       data-testid={onTap ? 'bedroom-art' : undefined}
-      style={{ width: '100%', height: '100%', display: 'block' }}
+      style={{ width: '100%', height: '100%', display: 'block', overflow: 'visible' }}
     >
-      <rect width={1170} height={1400} fill={colors.wall} />
-      {Array.from({ length: 12 }, (_, i) => (
-        <rect key={i} x={i * 100} y={0} width={50} height={1010} fill={colors.stripe} />
+      <rect x={-1500} y={-2500} width={4170} height={3900} fill={colors.wall} />
+      {Array.from({ length: 28 }, (_, i) => (
+        <rect key={i} x={i * 100 - 600} y={-2500} width={50} height={3510} fill={colors.stripe} />
       ))}
-      <rect x={0} y={1000} width={1170} height={400} fill={colors.floor} />
+      <rect x={-1500} y={1000} width={4170} height={1400} fill={colors.floor} />
       {Array.from({ length: 12 }, (_, i) => (
         <path key={i} d={`M${i * 100},1000 L${i * 100 - 120 + i * 24},1400`} stroke="#00000022" strokeWidth={4} />
       ))}
-      <rect x={0} y={984} width={1170} height={26} fill="#FFF7EC" {...sw} strokeWidth={5} />
+      <rect x={-1500} y={984} width={4170} height={26} fill="#FFF7EC" {...sw} strokeWidth={5} />
       {hot('picture', 'Wall picture', [110, 240, 320, 280], <Picture id={picture} />)}
       {hot(
         'window',
         'Window',
-        [740, 200, 360, 460],
-        <g>
+        [480, 200, 360, 460],
+        <g transform="translate(-260 0)">
           <rect x={780} y={230} width={280} height={380} rx={26} fill="#BDE8EC" {...sw} strokeWidth={10} />
           <circle cx={990} cy={310} r={32} fill="#FFE08A" stroke={OUTLINE} strokeWidth={4} />
           <path d="M780,520 C860,500 960,530 1060,510 L1060,610 L780,610 Z" fill="#7ED6A7" />
@@ -216,6 +218,20 @@ export function BedroomArt({
             {...sw}
             strokeWidth={5}
           />
+        </g>,
+      )}
+      {hot(
+        'wardrobe',
+        'Wardrobe',
+        [950, 500, 210, 600],
+        <g>
+          <rect x={970} y={520} width={170} height={560} rx={16} fill={colors.cabinet} {...sw} />
+          <rect x={984} y={540} width={68} height={520} rx={10} fill={colors.cabinetDoor} {...sw} strokeWidth={4} />
+          <rect x={1060} y={540} width={68} height={520} rx={10} fill={colors.cabinetDoor} {...sw} strokeWidth={4} />
+          <circle cx={1040} cy={800} r={7} fill="#FFC94A" stroke={OUTLINE} strokeWidth={3} />
+          <circle cx={1072} cy={800} r={7} fill="#FFC94A" stroke={OUTLINE} strokeWidth={3} />
+          <rect x={980} y={1076} width={20} height={24} rx={6} fill="#8E6B50" {...sw} strokeWidth={4} />
+          <rect x={1110} y={1076} width={20} height={24} rx={6} fill="#8E6B50" {...sw} strokeWidth={4} />
         </g>,
       )}
       <Rug id={rug} color={colors.main} />
@@ -244,7 +260,7 @@ export function BedroomArt({
       {lampOn ? (
         <circle cx={857} cy={980} r={230} fill="#FFE9A8" opacity={0.2} pointerEvents="none" />
       ) : (
-        <rect width={1170} height={1400} fill="#1F1B3F" opacity={0.38} pointerEvents="none" />
+        <rect x={-1500} y={-2500} width={4170} height={3900} fill="#1F1B3F" opacity={0.38} pointerEvents="none" />
       )}
       {children}
     </svg>

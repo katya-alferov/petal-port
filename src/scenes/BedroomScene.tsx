@@ -1,7 +1,7 @@
 // Bedroom (game-systems §17): pick walls, bedding, lamp, picture and rug; tap the lamp to switch it on or off.
 import { useState } from 'react';
 import { BedroomArt, type BedroomSpot } from '../art/scenes/Bedroom';
-import { BEDDINGS, bedding, LAMPS, PICTURES, RUGS, WALLS, wallColor, type Choice } from '../content/bedroom';
+import { BEDDINGS, bedding, cabinet, LAMPS, PICTURES, RUGS, WALLS, WARDROBES, wallColor, type Choice } from '../content/bedroom';
 import { DEFAULT_BEDROOM, type BedroomPart } from '../game/bedroom';
 import { play } from '../platform/audio';
 import { useGame } from '../state/store';
@@ -10,12 +10,19 @@ import { ActivityBar } from './common';
 
 const TABS: { id: BedroomPart; label: string }[] = [
   { id: 'walls', label: 'Walls' },
-  { id: 'bedding', label: 'Bedding' },
+  { id: 'bedding', label: 'Bed' },
   { id: 'lamp', label: 'Lamp' },
   { id: 'picture', label: 'Picture' },
   { id: 'rug', label: 'Rug' },
+  { id: 'wardrobe', label: 'Closet' },
 ];
-const SPOT_TAB: Record<BedroomSpot, BedroomPart | null> = { lamp: null, picture: 'picture', window: 'walls', bed: 'bedding' };
+const SPOT_TAB: Record<BedroomSpot, BedroomPart | null> = {
+  lamp: null,
+  picture: 'picture',
+  window: 'walls',
+  bed: 'bedding',
+  wardrobe: 'wardrobe',
+};
 
 export function BedroomScene() {
   const setScene = useGame((s) => s.setScene);
@@ -26,6 +33,7 @@ export function BedroomScene() {
   const [lampOn, setLampOn] = useState(true);
   const w = wallColor(look.walls);
   const b = bedding(look.bedding);
+  const cab = cabinet(look.wardrobe);
 
   const tap = (spot: BedroomSpot) => {
     if (spot === 'lamp') {
@@ -48,7 +56,15 @@ export function BedroomScene() {
       <ActivityBar title="My bedroom" onBack={() => setScene('home')} />
       <div className="bedroom-stage">
         <BedroomArt
-          colors={{ wall: w.wall, stripe: w.stripe, floor: w.floor, main: b.main, accent: b.accent }}
+          colors={{
+            wall: w.wall,
+            stripe: w.stripe,
+            floor: w.floor,
+            main: b.main,
+            accent: b.accent,
+            cabinet: cab.body,
+            cabinetDoor: cab.door,
+          }}
           lamp={look.lamp}
           picture={look.picture}
           rug={look.rug}
@@ -84,6 +100,20 @@ export function BedroomScene() {
                 onClick={() => pick('bedding', c.id)}
               >
                 <span className="swatch-dot" style={{ background: c.main }} aria-hidden="true" />
+                {c.name}
+              </button>
+            ))}
+          {tab === 'wardrobe' &&
+            WARDROBES.map((c) => (
+              <button
+                key={c.id}
+                type="button"
+                className="chip"
+                aria-pressed={look.wardrobe === c.id}
+                data-testid={`bedroom-wardrobe-${c.id}`}
+                onClick={() => pick('wardrobe', c.id)}
+              >
+                <span className="swatch-dot" style={{ background: c.body }} aria-hidden="true" />
                 {c.name}
               </button>
             ))}

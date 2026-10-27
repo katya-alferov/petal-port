@@ -100,6 +100,32 @@ export function HomeScene() {
                 frame={{ x: charX - CHAR_H / 4, y: FLOOR_Y + 470 - CHAR_H * 0.975, width: CHAR_H / 2, height: CHAR_H }}
               />
             </g>
+            {!editing && (
+              <g
+                role="button"
+                tabIndex={0}
+                aria-label="Bedroom"
+                data-testid="home-bedroom"
+                style={{ cursor: 'pointer' }}
+                onClick={() => (play('pop'), setScene('bedroom'))}
+                onKeyDown={(e) => (e.key === 'Enter' || e.key === ' ') && setScene('bedroom')}
+              >
+                <rect x={10} y={FLOOR_Y - 480} width={250} height={480} fill="transparent" />
+                <path
+                  d="M30,1680 L30,1250 C30,1190 240,1190 240,1250 L240,1680 Z"
+                  fill="#C98F5E"
+                  stroke="#5B4A6E"
+                  strokeWidth={8}
+                  strokeLinejoin="round"
+                />
+                <path d="M54,1680 L54,1262 C54,1226 216,1226 216,1262 L216,1680 Z" fill="#E3B183" stroke="#5B4A6E" strokeWidth={5} />
+                <circle cx={196} cy={1480} r={14} fill="#FFC94A" stroke="#5B4A6E" strokeWidth={5} />
+                <rect x={36} y={1130} width={198} height={62} rx={31} fill="#FFF7EC" stroke="#5B4A6E" strokeWidth={6} />
+                <text x={135} y={1175} textAnchor="middle" fontFamily="Fredoka, sans-serif" fontWeight={600} fontSize={42} fill="#3A2E4F">
+                  Bedroom
+                </text>
+              </g>
+            )}
             {visitor && !editing && (
               <g
                 role="button"
@@ -164,11 +190,6 @@ export function HomeScene() {
         >
           {editing ? 'Done' : 'Decorate'}
         </Button>
-        {!editing && (
-          <Button onClick={() => (play('pop'), setScene('bedroom'))} testId="home-bedroom" icon="heart">
-            Bedroom
-          </Button>
-        )}
         {!editing && (
           <Button tone="primary" onClick={() => (play('chime'), setScene('kitchen'))} testId="home-cook" icon="pan">
             Cook

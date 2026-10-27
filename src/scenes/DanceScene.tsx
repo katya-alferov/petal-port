@@ -11,8 +11,8 @@ import { Button } from '../ui/kit';
 import { Icon } from '../ui/icons';
 import { ActivityBar, Character } from './common';
 
-const MOVE_NAME: Record<Move, string> = { wave: 'Wave', hips: 'Hips', cheer: 'Cheer', jump: 'Jump', twirl: 'Twirl' };
-const MOVE_POSE: Record<Move, PoseId> = { wave: 'wave', hips: 'hips', cheer: 'cheer', jump: 'cheer', twirl: 'idle' };
+const MOVE_NAME: Record<Move, string> = { wave: 'Wave', hips: 'Hips', cheer: 'Arms up', jump: 'Big jump', twirl: 'Twirl' };
+const MOVE_POSE: Record<Move, PoseId> = { wave: 'wave', hips: 'hips', cheer: 'cheer', jump: 'hips', twirl: 'idle' };
 const STEP_MS = 850;
 
 type Phase = 'watch' | 'echo' | 'served';
@@ -143,7 +143,7 @@ function DanceShift({ onAgain }: { onAgain: () => void }) {
             animate={false}
             title={`${coach.name}, the coach`}
           />
-          <span className="panel dancer-tag">Coach {coach.name}</span>
+          <span className="panel dancer-tag">{coachMove ? `${MOVE_NAME[coachMove]}!` : `Coach ${coach.name}`}</span>
         </div>
         <div className="dancer" data-move={mine ?? 'none'} style={{ right: '2%' }} data-testid="dancer-you">
           <Character
@@ -154,7 +154,7 @@ function DanceShift({ onAgain }: { onAgain: () => void }) {
             animate={false}
             title="You"
           />
-          <span className="panel dancer-tag">You</span>
+          <span className="panel dancer-tag">{mine ? `${MOVE_NAME[mine]}!` : 'You'}</span>
         </div>
         <ol className="dance-steps" aria-label="Routine steps">
           {routine.map((_, i) => (

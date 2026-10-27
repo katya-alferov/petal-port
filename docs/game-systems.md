@@ -635,9 +635,9 @@ Wave B adds a dress-up goal, an exploration collection and more doll-style cloth
 
 ## 17. Bedroom (Wave E)
 
-- A **Bedroom** button on the Home screen (next to Decorate and Cook) opens a room the player designs. Five choices: **walls** (7 colors), **bedding** (7 colors, the curtains pick up the accent), **lamp** (dome, star, cloud, tulip), **wall picture** (sunset, flowers, starry sky, little boat, sleepy cat) and **rug** (round, star, heart).
+- A **Bedroom** button on the Home screen (next to Decorate and Cook) opens a room the player designs. Six choices: **walls** (7 colors), **bedding** (7 colors, the curtains pick up the accent), **wardrobe** (7 colors), **lamp** (dome, star, cloud, tulip), **wall picture** (sunset, flowers, starry sky, little boat, sleepy cat) and **rug** (round, star, heart).
 - Tapping the lamp switches it on or off (a glow, or a dim room); tapping the picture, window or bed jumps to the matching tab. Everything is free, nothing is locked or expires, and any choice can be changed any time.
-- Stickers: Cozy Designer (change 5 parts from the starter look). Save: optional `home.bedroom` holding only the parts that differ from the starter (`walls: cream`, `bedding: pink`, `lamp: dome`, `picture: sunset`, `rug: round`); unknown ids fall back to the starter.
+- Stickers: Cozy Designer (change 5 parts from the starter look). Save: optional `home.bedroom` holding only the parts that differ from the starter (`walls: cream`, `bedding: pink`, `lamp: dome`, `picture: sunset`, `rug: round`, `wardrobe: white`); unknown ids fall back to the starter.
 
 ## 18. Glow Nails (Wave E)
 
