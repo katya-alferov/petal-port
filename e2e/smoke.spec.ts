@@ -751,7 +751,7 @@ test('art studio: paint every part, hang the picture for first-time coins, and s
   const paints = ['rose', 'sky', 'sun', 'mint', 'lilac', 'orange'];
   for (let i = 0; i < 6; i++) {
     await page.getByTestId(`paint-${paints[i]}`).click();
-    await page.getByTestId(`part-${i}`).click({ force: true });
+    await page.getByTestId(`part-${i}`).dispatchEvent('click'); // regions overlap, so click each by element
   }
   await page.getByTestId('studio-hang').click();
   await expect(page.getByTestId('studio-done')).toContainText('+15');
