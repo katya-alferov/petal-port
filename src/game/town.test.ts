@@ -8,6 +8,8 @@ import { adopt, ballSpot, bowls, care, careToNextTrick, tricksKnown, wantedFood 
 import { addHeart, applyEvent, BOARD_SIZE, fillBoard, GIFT_AT, isReady, makeNote, VISIT_AT } from './requests';
 import { GARDEN_BEDS, load, newSave, sanitize, type SaveGame } from './save';
 import { newStickers } from './stickers';
+import { changedParts, DEFAULT_BEDROOM, withPart } from './bedroom';
+import { BEDDINGS, WALLS } from '../content/bedroom';
 import { FIRST_STARS_BONUS, fits, fitting, judgesFor, SHOW_PAY, showReward, showStars, themeFor } from './show';
 import { SHELLS, SHOW_THEMES } from '../content/show';
 import { WEARABLES, wearable } from '../content/wearables';
@@ -556,5 +558,26 @@ describe('Skate Park (§16)', () => {
     const p = sanitize(raw, SAVE_CONTEXT).progress;
     expect(p.dance).toEqual({ routines: 0, shifts: 0 });
     expect(p.skate).toEqual({ runs: 0, best: 0 });
+  });
+});
+
+describe('Bedroom (§17)', () => {
+  it('counts only parts that differ from the starter look', () => {
+    expect(changedParts(undefined)).toBe(0);
+    expect(changedParts(withPart(undefined, 'walls', DEFAULT_BEDROOM.walls))).toBe(0);
+    let look = withPart(undefined, 'walls', 'mint');
+    look = withPart(look, 'lamp', 'star');
+    expect(changedParts(look)).toBe(2);
+  });
+  it('every starter id exists and ids are unique', () => {
+    expect(WALLS[0].id).toBe(DEFAULT_BEDROOM.walls);
+    expect(BEDDINGS[0].id).toBe(DEFAULT_BEDROOM.bedding);
+    expect(new Set(WALLS.map((w) => w.id)).size).toBe(WALLS.length);
+  });
+  it('sanitize keeps string parts and drops junk', () => {
+    const s = fresh();
+    const bad = { ...s, home: { ...s.home, bedroom: { walls: 'mint', lamp: 7, rug: 'x'.repeat(40) } } } as unknown as SaveGame;
+    const out = sanitize(bad, SAVE_CONTEXT);
+    expect(out.home.bedroom).toEqual({ walls: 'mint' });
   });
 });

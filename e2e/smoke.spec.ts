@@ -94,6 +94,7 @@ test('no serious accessibility violations on each main scene', async ({ page }) 
     'burger',
     'dance',
     'skate',
+    'bedroom',
     'sweets',
     'paris',
     'photo',
@@ -612,4 +613,25 @@ test('skate park: a run always finishes, pays for rolling and for each obstacle 
   const coins = Number(text.replace(/\D/g, ''));
   expect(coins).toBeGreaterThanOrEqual(20);
   expect(coins).toBeLessThanOrEqual(20 + 8 * 3 + 10);
+});
+
+test('bedroom: choices change the room and are remembered', async ({ page }) => {
+  await page.goto('./?fixture=fresh&scene=home');
+  await page.getByTestId('home-bedroom').click();
+  await expect(page.getByTestId('bedroom-art')).toBeVisible();
+  await page.getByTestId('bedroom-walls-mint').click();
+  await expect(page.getByTestId('bedroom-walls-mint')).toHaveAttribute('aria-pressed', 'true');
+  await page.getByRole('tab', { name: 'Lamp' }).click();
+  await page.getByTestId('bedroom-lamp-star').click();
+  await page.getByTestId('bed-picture').click({ force: true });
+  await page.getByTestId('bedroom-picture-cat').click();
+  await page.getByRole('tab', { name: 'Bedding' }).click();
+  await page.getByTestId('bedroom-bedding-teal').click();
+  await page.getByTestId('bed-lamp').click({ force: true });
+  await page.getByRole('tab', { name: 'Rug' }).click();
+  await page.getByTestId('bedroom-rug-heart').click();
+  const look = await page.evaluate(() => (window as any).__petal.getState().save.home.bedroom);
+  expect(look).toEqual({ walls: 'mint', lamp: 'star', picture: 'cat', bedding: 'teal', rug: 'heart' });
+  const stickers = await page.evaluate(() => JSON.stringify((window as any).__petal.getState().save.progress.stickers));
+  expect(stickers).toContain('sticker.bedroom');
 });

@@ -11,6 +11,7 @@ import { CafeScene } from '../scenes/CafeScene';
 import { DebugOverlay } from '../scenes/DebugOverlay';
 import { GalleryScene } from '../scenes/GalleryScene';
 import { HomeScene } from '../scenes/HomeScene';
+import { BedroomScene } from '../scenes/BedroomScene';
 import { KitchenScene } from '../scenes/KitchenScene';
 import { MeScene } from '../scenes/MeScene';
 import { TitleScene } from '../scenes/TitleScene';
@@ -59,6 +60,7 @@ export function App() {
         {scene === 'cafe' && <CafeScene />}
         {scene === 'boutique' && <BoutiqueScene />}
         {scene === 'kitchen' && <KitchenScene />}
+        {scene === 'bedroom' && <BedroomScene />}
         {scene === 'me' && <MeScene />}
         {scene === 'home' && <HomeScene />}
         {scene === 'petshop' && <PetShopScene />}

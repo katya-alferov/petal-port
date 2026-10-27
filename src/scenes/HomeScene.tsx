@@ -165,6 +165,11 @@ export function HomeScene() {
           {editing ? 'Done' : 'Decorate'}
         </Button>
         {!editing && (
+          <Button onClick={() => (play('pop'), setScene('bedroom'))} testId="home-bedroom" icon="heart">
+            Bedroom
+          </Button>
+        )}
+        {!editing && (
           <Button tone="primary" onClick={() => (play('chime'), setScene('kitchen'))} testId="home-cook" icon="pan">
             Cook
           </Button>

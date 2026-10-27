@@ -1,4 +1,5 @@
 // SaveGame model + validate / sanitize / migrate (data-model §3, §5.4). Pure: no DOM, storage or clock.
+import { BEDROOM_PARTS, type BedroomLook } from './bedroom';
 import { MAX_DESIGNS } from './sweets';
 import { MAX_PHOTOS, newTravel, type PhotoRecipe, type Travel } from './travel';
 import type { HomeSlot, ItemId, WearSlot } from '../content/types';
@@ -128,6 +129,8 @@ export interface SaveGame {
     themeId: string;
     /** Window view id (content/views). Missing in older saves means the harbour. */
     view?: string;
+    /** Bedroom design (game-systems §17); missing parts use the starter look. */
+    bedroom?: Partial<BedroomLook>;
     slots: Record<HomeSlot, ItemId>;
     shelf: ItemId[];
   };
@@ -276,6 +279,13 @@ export function sanitize(save: SaveGame, ctx: SaveContext): SaveGame {
     if (!ctx.knownItems.has(id)) s.home.slots[slot] = ctx.starterHome[slot];
   for (const slot of Object.keys(ctx.starterHome) as HomeSlot[]) if (!s.home.slots[slot]) s.home.slots[slot] = ctx.starterHome[slot];
   s.home.shelf = s.home.shelf.filter((id) => ctx.knownItems.has(id)).slice(0, 3);
+  const bedroom = s.home.bedroom as unknown;
+  if (isObj(bedroom)) {
+    const kept: Partial<BedroomLook> = {};
+    for (const part of BEDROOM_PARTS)
+      if (isStr(bedroom[part]) && (bedroom[part] as string).length <= 24) kept[part] = bedroom[part] as string;
+    s.home.bedroom = kept;
+  } else delete s.home.bedroom;
   s.progress = sanitizeProgress((s as Partial<SaveGame>).progress);
   return s;
 }

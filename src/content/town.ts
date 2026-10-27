@@ -120,6 +120,7 @@ export type StickerMotif =
   | 'flower'
   | 'burger'
   | 'cupcake'
+  | 'bed'
   | 'music'
   | 'skate';
 
@@ -474,5 +475,13 @@ export const STICKERS: StickerDef[] = [
     motif: 'skate',
     color: '#FFC94A',
     cond: { kind: 'skatePerfect' },
+  },
+  {
+    id: 'sticker.bedroom',
+    name: 'Cozy Designer',
+    hint: 'Change every part of your bedroom',
+    motif: 'bed',
+    color: '#C8B3FF',
+    cond: { kind: 'bedroom', n: 5 },
   },
 ];

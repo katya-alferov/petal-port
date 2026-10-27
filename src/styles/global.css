@@ -2135,3 +2135,10 @@ g[role='button']:focus-visible {
   font-weight: 800;
   white-space: nowrap;
 }
+
+.bedroom-stage {
+  flex: 1 1 0;
+  min-height: 0;
+  position: relative;
+  overflow: hidden;
+}

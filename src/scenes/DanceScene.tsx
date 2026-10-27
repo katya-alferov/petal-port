@@ -84,6 +84,7 @@ function DanceShift({ onAgain }: { onAgain: () => void }) {
     if (!r.ok) {
       play('soft');
       setOops(r.expected);
+      setPhase('watch');
       setClean(false);
       later(() => {
         setOops(null);

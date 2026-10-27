@@ -147,6 +147,14 @@ const MOTIF: Record<string, (ink: string) => ReactElement> = {
       <circle cx={50} cy={43} r={3} fill={W} />
     </g>
   ),
+  bed: (c) => (
+    <g {...sw}>
+      <rect x={18} y={50} width={64} height={18} rx={6} fill={c} />
+      <rect x={18} y={34} width={10} height={36} rx={4} fill="#FFF7EC" />
+      <rect x={30} y={42} width={22} height={12} rx={6} fill="#FFF7EC" />
+      <path d="M22,70 L22,80 M78,70 L78,80" strokeWidth={5} />
+    </g>
+  ),
   music: (c) => (
     <g {...sw}>
       <path d="M40,64 L40,24 L72,18 L72,58" fill="none" strokeWidth={5} />

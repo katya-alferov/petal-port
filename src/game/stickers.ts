@@ -1,5 +1,6 @@
 // Sticker album (game-systems §8.5): every sticker is earned by something the player did.
 // Conditions only look at counters that never go down, so a sticker can never be lost.
+import { changedParts } from './bedroom';
 import { careCount, tricksKnown } from './pets';
 import type { SaveGame } from './save';
 
@@ -28,6 +29,7 @@ export type StickerCond =
   | { kind: 'burgerShifts'; n: number }
   | { kind: 'sweetShifts'; n: number }
   | { kind: 'danceShifts'; n: number }
+  | { kind: 'bedroom'; n: number }
   | { kind: 'skateRuns'; n: number }
   | { kind: 'skatePerfect' }
   | { kind: 'designs'; n: number }
@@ -82,6 +84,8 @@ export function meets(save: SaveGame, c: StickerCond, facts: StickerFacts): bool
       return p.salon.shifts >= c.n;
     case 'blooms':
       return p.garden.bloomed.length >= c.n;
+    case 'bedroom':
+      return changedParts(save.home.bedroom) >= c.n;
     case 'danceShifts':
       return p.dance.shifts >= c.n;
     case 'skateRuns':

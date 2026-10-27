@@ -1,4 +1,5 @@
 // The single game store (data-model §4). Only `save` is persisted; `ui` is session state.
+import { type BedroomPart, withPart } from '../game/bedroom';
 import { DANCE_SHIFT_BONUS, dancePay } from '../game/dance';
 import { OBSTACLES, skatePay } from '../game/skate';
 import { addDesign, SWEET_SHIFT_BONUS, sweetPay, type Cupcake } from '../game/sweets';
@@ -35,6 +36,7 @@ import { log } from '../platform/log';
 import { readSaves, requestPersist, scheduleWrite } from '../platform/storage';
 
 export type SceneId =
+  | 'bedroom'
   | 'dance'
   | 'skate'
   | 'sweets'
@@ -78,6 +80,7 @@ interface GameStore {
   equipItem: (itemId: string) => void;
   setTheme: (themeId: string) => void;
   setHomeView: (viewId: string) => void;
+  setBedroomPart: (part: BedroomPart, id: string) => void;
   setSetting: <K extends keyof SaveGame['settings']>(k: K, v: SaveGame['settings'][K]) => void;
   /** Buys a wearable or furniture item; returns false when it can't be afforded. */
   buy: (itemId: string) => boolean;
@@ -189,6 +192,10 @@ export const useGame = create<GameStore>((setState, getState) => ({
     const def = WINDOW_VIEWS.find((v) => v.id === view);
     if (!def || !viewUnlocked(def, s.progress)) return;
     setState({ save: touch({ ...s, home: { ...s.home, view } }) });
+  },
+  setBedroomPart: (part, id) => {
+    const s = getState().save;
+    setState({ save: touch({ ...s, home: { ...s.home, bedroom: withPart(s.home.bedroom, part, id) } }) });
   },
   setSetting: (k, v) => {
     const s = getState().save;
