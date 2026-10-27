@@ -13,6 +13,8 @@ export const KITCHEN_ITEMS: KitchenItem[] = [
   { id: 'ing.butter', name: 'Butter' },
   { id: 'ing.carrot', name: 'Carrot' },
   { id: 'ing.fish', name: 'Fish' },
+  { id: 'ing.cheese', name: 'Cheese' },
+  { id: 'ing.bread', name: 'Bread' },
   { id: 'deco.berries', name: 'Berries' },
   { id: 'deco.banana', name: 'Banana' },
   { id: 'deco.syrup', name: 'Syrup' },
@@ -22,6 +24,10 @@ export const KITCHEN_ITEMS: KitchenItem[] = [
   { id: 'deco.sugar', name: 'Sugar' },
   { id: 'deco.strawberry', name: 'Strawberry' },
   { id: 'deco.chocolate', name: 'Chocolate' },
+  { id: 'deco.tomato', name: 'Tomato' },
+  { id: 'deco.herbs', name: 'Herbs' },
+  { id: 'deco.mushroom', name: 'Mushroom' },
+  { id: 'deco.cheese', name: 'Grated cheese' },
 ];
 
 export const RECIPES: RecipeDef[] = [
@@ -55,7 +61,55 @@ export const RECIPES: RecipeDef[] = [
     golden: [2.0, 4.5],
     unlockAfter: 'recipe.pancakes',
   },
+  {
+    id: 'recipe.omelette',
+    name: 'Cheesy Omelette',
+    steps: [
+      { type: 'add', items: ['ing.egg', 'ing.milk', 'ing.cheese'] },
+      { type: 'mix' },
+      { type: 'pour' },
+      { type: 'heat' },
+      { type: 'fold' },
+      { type: 'decorate' },
+    ],
+    shelf: ['ing.cheese', 'ing.carrot', 'ing.egg', 'ing.flour', 'ing.milk'],
+    toppings: ['deco.tomato', 'deco.herbs', 'deco.mushroom', 'deco.cheese'],
+    golden: [2.0, 4.5],
+    unlockAfter: 'recipe.crepes',
+  },
+  {
+    id: 'recipe.waffles',
+    name: 'Waffles',
+    steps: [
+      { type: 'add', items: ['ing.flour', 'ing.egg', 'ing.milk', 'ing.butter'] },
+      { type: 'mix' },
+      { type: 'pour' },
+      { type: 'heat' },
+      { type: 'decorate' },
+    ],
+    shelf: ['ing.butter', 'ing.flour', 'ing.fish', 'ing.egg', 'ing.milk', 'ing.cheese'],
+    toppings: ['deco.berries', 'deco.banana', 'deco.syrup', 'deco.cream', 'deco.chocolate'],
+    golden: [3.0, 6.0],
+    unlockAfter: 'recipe.crepes',
+  },
+  {
+    id: 'recipe.toast',
+    name: 'French Toast',
+    steps: [
+      { type: 'add', items: ['ing.bread', 'ing.egg', 'ing.milk'] },
+      { type: 'mix' },
+      { type: 'pour' },
+      { type: 'heat' },
+      { type: 'decorate' },
+    ],
+    shelf: ['ing.bread', 'ing.carrot', 'ing.egg', 'ing.fish', 'ing.milk'],
+    toppings: ['deco.strawberry', 'deco.syrup', 'deco.sugar', 'deco.banana', 'deco.cream'],
+    golden: [2.5, 5.0],
+    unlockAfter: 'recipe.omelette',
+  },
 ];
+
+export const recipeName = (id: string | undefined) => RECIPES.find((r) => r.id === id)?.name.toLowerCase() ?? 'pancakes';
 
 export function kitchenItem(id: string): KitchenItem | undefined {
   return KITCHEN_ITEMS.find((i) => i.id === id);

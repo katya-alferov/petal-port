@@ -16,6 +16,26 @@ const COOK_SHADE: Record<Cook, Shade> = {
   toasty: sh('#B9743A', '#8E5426', '#D49A5E'),
 };
 
+const EGG_SHADE: Record<Cook, Shade> = {
+  raw: sh('#FFEFA8', '#F2D77A', '#FFF9D6'),
+  pale: sh('#FFE580', '#EBC95A', '#FFF3B8'),
+  golden: sh('#FFD34A', '#E0A92A', '#FFE98F'),
+  toasty: sh('#D99A36', '#B07422', '#EDB968'),
+};
+
+export type DishKind = 'pancake' | 'crepe' | 'omelette' | 'waffle' | 'toast';
+const KINDS: Record<string, DishKind> = {
+  'recipe.crepes': 'crepe',
+  'recipe.omelette': 'omelette',
+  'recipe.waffles': 'waffle',
+  'recipe.toast': 'toast',
+};
+export const dishKind = (recipeId: string): DishKind => KINDS[recipeId] ?? 'pancake';
+/** Where toppings start on the plate for each dish. */
+const TOP_Y: Record<DishKind, number> = { pancake: 88, crepe: 104, omelette: 100, waffle: 98, toast: 96 };
+export const toppingTop = (kind: DishKind) => TOP_Y[kind];
+const shadeFor = (kind: DishKind, cook: Cook) => (kind === 'omelette' ? EGG_SHADE[cook] : COOK_SHADE[cook]);
+
 /** Ingredient and topping icons (viewBox 0 0 100 100). */
 export function KitchenIcon({ id }: { id: string }): ReactElement {
   const body = ((): ReactElement => {
@@ -73,6 +93,33 @@ export function KitchenIcon({ id }: { id: string }): ReactElement {
             <path d="M14,50 C30,26 64,26 76,50 C64,74 30,74 14,50 Z" fill="#8AD3DA" stroke={OUTLINE} strokeWidth={4} />
             <path d="M74,50 L92,34 L92,66 Z" fill="#8AD3DA" stroke={OUTLINE} strokeWidth={4} strokeLinejoin="round" />
             <circle cx={32} cy={46} r={4} fill={OUTLINE} />
+          </g>
+        );
+      case 'ing.cheese':
+        return (
+          <g>
+            <path d="M12,62 L70,30 L90,56 L90,82 L12,82 Z" fill="#FFD34A" stroke={OUTLINE} strokeWidth={4} strokeLinejoin="round" />
+            <path d="M12,62 L90,62" stroke={OUTLINE} strokeWidth={3} />
+            {[
+              [36, 72, 5],
+              [62, 74, 6],
+              [76, 52, 4],
+            ].map(([cx, cy, r]) => (
+              <circle key={cx} cx={cx} cy={cy} r={r} fill="#E0A92A" stroke={OUTLINE} strokeWidth={2.5} />
+            ))}
+          </g>
+        );
+      case 'ing.bread':
+        return (
+          <g>
+            <path
+              d="M22,40 C10,40 10,16 30,16 L70,16 C90,16 90,40 78,40 L78,86 L22,86 Z"
+              fill="#F3C985"
+              stroke={OUTLINE}
+              strokeWidth={4}
+              strokeLinejoin="round"
+            />
+            <path d="M32,40 L68,40 L68,76 L32,76 Z" fill="#FFF0CF" />
           </g>
         );
       default:
@@ -192,6 +239,67 @@ export function Topping({ id, x, y, s = 1 }: { id: string; x: number; y: number;
           <path d="M0,-9 L0,9 M-12,0 L12,0" stroke="#523222" strokeWidth={2} />
         </g>
       );
+    case 'deco.tomato':
+      return (
+        <g transform={t}>
+          <circle r={11} fill="#E5484D" stroke={OUTLINE} strokeWidth={2.5} />
+          <path d="M-5,-9 L0,-14 L5,-9 L0,-7 Z" fill="#5FA67A" stroke={OUTLINE} strokeWidth={2} strokeLinejoin="round" />
+          <circle cx={-4} cy={-3} r={2.4} fill="#FFFFFF" opacity={0.6} />
+        </g>
+      );
+    case 'deco.herbs':
+      return (
+        <g transform={t}>
+          {[
+            [-8, 2, -30],
+            [0, -4, 10],
+            [8, 3, 40],
+          ].map(([dx, dy, r]) => (
+            <ellipse
+              key={dx}
+              cx={dx}
+              cy={dy}
+              rx={3.6}
+              ry={8}
+              fill="#6CC38A"
+              stroke={OUTLINE}
+              strokeWidth={2}
+              transform={`rotate(${r} ${dx} ${dy})`}
+            />
+          ))}
+        </g>
+      );
+    case 'deco.mushroom':
+      return (
+        <g transform={t}>
+          <path d="M-5,2 L-5,11 L5,11 L5,2 Z" fill="#FFF7EC" stroke={OUTLINE} strokeWidth={2.5} strokeLinejoin="round" />
+          <path d="M-13,3 C-13,-12 13,-12 13,3 Z" fill="#C98F5E" stroke={OUTLINE} strokeWidth={2.5} />
+          <circle cx={-4} cy={-4} r={2} fill="#FFF7EC" opacity={0.8} />
+        </g>
+      );
+    case 'deco.cheese':
+      return (
+        <g transform={t}>
+          {[
+            [-8, -2],
+            [2, 4],
+            [8, -4],
+            [-2, -8],
+          ].map(([dx, dy]) => (
+            <rect
+              key={`${dx}${dy}`}
+              x={dx - 5}
+              y={dy - 1.6}
+              width={10}
+              height={3.2}
+              rx={1.6}
+              fill="#FFC94A"
+              stroke={OUTLINE}
+              strokeWidth={1.4}
+            />
+          ))}
+        </g>
+      );
     default:
       return null;
   }
@@ -228,16 +336,17 @@ export function PanArt({
   cook,
   bubbles,
   folded = 0,
-  crepe = false,
+  kind = 'pancake',
 }: {
   size: number;
   cook: Cook;
   bubbles: boolean;
   folded?: number;
-  crepe?: boolean;
+  kind?: DishKind;
 }) {
   const r = 96 * size;
-  const shade = COOK_SHADE[cook];
+  const shade = shadeFor(kind, cook);
+  const crepe = kind === 'crepe' || kind === 'omelette';
   return (
     <g>
       <path d="M250,118 L300,96" stroke={OUTLINE} strokeWidth={22} strokeLinecap="round" />
@@ -261,8 +370,34 @@ export function PanArt({
       />
       {size > 0 && folded === 0 && (
         <g>
-          <ellipse cx={140} cy={crepe ? 118 : 112} rx={r} ry={r * 0.44} fill={shade.shadow} stroke={OUTLINE} strokeWidth={3} />
-          {!crepe && <ellipse cx={136} cy={106} rx={r * 0.92} ry={r * 0.38} fill={shade.base} />}
+          {kind === 'toast' ? (
+            <g>
+              <rect
+                x={140 - r * 0.62}
+                y={112 - r * 0.4}
+                width={r * 1.24}
+                height={r * 0.8}
+                rx={r * 0.18}
+                fill={shade.shadow}
+                stroke={OUTLINE}
+                strokeWidth={3}
+              />
+              <rect x={140 - r * 0.54} y={112 - r * 0.34} width={r * 1.08} height={r * 0.62} rx={r * 0.14} fill={shade.base} />
+            </g>
+          ) : (
+            <ellipse cx={140} cy={crepe ? 118 : 112} rx={r} ry={r * 0.44} fill={shade.shadow} stroke={OUTLINE} strokeWidth={3} />
+          )}
+          {!crepe && kind !== 'toast' && <ellipse cx={136} cy={106} rx={r * 0.92} ry={r * 0.38} fill={shade.base} />}
+          {kind === 'waffle' &&
+            [-2, -1, 0, 1, 2].map((i) => (
+              <path
+                key={i}
+                d={`M${140 + i * r * 0.36},${112 - r * 0.4} L${140 + i * r * 0.36},${112 + r * 0.4}`}
+                stroke={shade.shadow}
+                strokeWidth={2.5}
+                opacity={size >= 1 ? 1 : 0}
+              />
+            ))}
           <ellipse cx={120} cy={102} rx={r * 0.3} ry={r * 0.08} fill={shade.highlight} opacity={0.7} />
           {bubbles &&
             [
@@ -295,24 +430,61 @@ export interface DishToppingSpot {
 
 /** The finished dish on a plate (viewBox 0 0 300 200). Topping x/y are 0..1 across the food. */
 export function DishArt({ recipe, cook, toppings }: { recipe: string; cook: Cook; toppings: DishToppingSpot[] }) {
-  const shade = COOK_SHADE[cook];
-  const crepe = recipe === 'recipe.crepes';
+  const kind = dishKind(recipe);
+  const shade = shadeFor(kind, cook);
   return (
     <g>
       <ellipse cx={150} cy={150} rx={140} ry={44} fill="#FFFFFF" stroke={OUTLINE} strokeWidth={4} />
       <ellipse cx={150} cy={146} rx={100} ry={28} fill="#F1E7EF" />
-      {crepe ? (
+      {kind === 'crepe' && (
         <Shaded d="M70,150 C70,110 110,88 150,88 C190,88 230,110 230,150 C200,140 100,140 70,150 Z" shade={shade} depth={6} />
-      ) : (
+      )}
+      {kind === 'omelette' && (
+        <g>
+          <Shaded d="M62,150 C62,100 106,84 150,84 C194,84 238,100 238,150 C200,142 100,142 62,150 Z" shade={shade} depth={6} />
+          <path
+            d="M96,104 C120,94 150,94 176,98"
+            fill="none"
+            stroke={shade.highlight}
+            strokeWidth={5}
+            strokeLinecap="round"
+            opacity={0.8}
+          />
+        </g>
+      )}
+      {kind === 'pancake' &&
         [0, 1, 2].map((i) => (
           <g key={i}>
             <ellipse cx={150} cy={142 - i * 18} rx={92} ry={26} fill={shade.shadow} stroke={OUTLINE} strokeWidth={3} />
             <ellipse cx={146} cy={137 - i * 18} rx={86} ry={20} fill={shade.base} />
           </g>
-        ))
-      )}
+        ))}
+      {kind === 'waffle' &&
+        [0, 1].map((i) => (
+          <g key={i}>
+            <rect x={70} y={112 - i * 20} width={160} height={46} rx={14} fill={shade.shadow} stroke={OUTLINE} strokeWidth={3} />
+            <rect x={76} y={115 - i * 20} width={148} height={34} rx={11} fill={shade.base} />
+            {[0, 1, 2, 3, 4, 5].map((c) => (
+              <path key={c} d={`M${96 + c * 22},${117 - i * 20} L${96 + c * 22},${147 - i * 20}`} stroke={shade.shadow} strokeWidth={2.5} />
+            ))}
+            <path d={`M80,${132 - i * 20} L220,${132 - i * 20}`} stroke={shade.shadow} strokeWidth={2.5} />
+          </g>
+        ))}
+      {kind === 'toast' &&
+        [0, 1].map((i) => (
+          <g key={i} transform={`translate(${i * 36 - 18} ${i * -10})`}>
+            <path
+              d="M82,140 C70,140 70,104 98,104 L172,104 C200,104 200,140 188,140 L188,152 L82,152 Z"
+              fill={shade.shadow}
+              stroke={OUTLINE}
+              strokeWidth={3}
+              strokeLinejoin="round"
+            />
+            <path d="M90,136 C86,136 86,112 104,112 L166,112 C184,112 184,136 180,136 L180,146 L90,146 Z" fill={shade.base} />
+          </g>
+        ))}
       {toppings.map((t, i) => (
-        <Topping key={i} id={t.id} x={80 + t.x * 140} y={(crepe ? 104 : 88) + t.y * 30} s={1.4} />
+        <Topping key={i} id={t.id} x={80 + t.x * 140} y={toppingTop(kind) + t.y * 30} s={1.4} />
       ))}
     </g>
   );

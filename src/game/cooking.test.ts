@@ -33,3 +33,17 @@ describe('cooking rules (game-systems §4)', () => {
     for (const r of RECIPES) for (const s of r.steps) for (const id of s.items ?? []) expect(r.shelf).toContain(id);
   });
 });
+
+describe('recipe content', () => {
+  it('every recipe has its ingredients on the shelf and known icons', async () => {
+    const { KITCHEN_ITEMS } = await import('../content/recipes');
+    const known = new Set(KITCHEN_ITEMS.map((i) => i.id));
+    const ids = new Set(RECIPES.map((r) => r.id));
+    for (const r of RECIPES) {
+      const want = r.steps.find((s) => s.type === 'add')!.items!;
+      for (const w of want) expect(r.shelf, `${r.id} shelf has ${w}`).toContain(w);
+      for (const id of [...r.shelf, ...r.toppings]) expect(known.has(id), `${r.id} ${id}`).toBe(true);
+      if (r.unlockAfter) expect(ids.has(r.unlockAfter)).toBe(true);
+    }
+  });
+});

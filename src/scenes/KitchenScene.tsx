@@ -1,7 +1,7 @@
 // Home cooking (game-systems §4): add → mix → pour → heat → (fold) → decorate. Nothing can fail.
 import { useEffect, useRef, useState } from 'react';
-import { BowlArt, DishArt, KitchenIcon, PanArt, WhiskIcon, type Cook } from '../art/kitchen';
-import { kitchenItem, RECIPES } from '../content/recipes';
+import { BowlArt, DishArt, dishKind, KitchenIcon, PanArt, toppingTop, WhiskIcon, type Cook } from '../art/kitchen';
+import { kitchenItem, recipeName, RECIPES } from '../content/recipes';
 import { doneness, isRecipeUnlocked, MAX_DECORATIONS, stars as starsFor, type Doneness, type RecipeDef } from '../game/cooking';
 import type { DishTopping } from '../game/save';
 import { play } from '../platform/audio';
@@ -48,7 +48,7 @@ export function KitchenScene() {
                 onClick={() => {
                   if (!open) {
                     play('soft');
-                    useGame.getState().showToast('Cook pancakes first to learn crêpes!', 'pan');
+                    useGame.getState().showToast(`Cook ${recipeName(r.unlockAfter)} first to learn ${r.name}!`, 'pan');
                     return;
                   }
                   play('chime');
@@ -65,7 +65,11 @@ export function KitchenScene() {
                     <span style={{ opacity: 0.25 }}>{'★'.repeat(3 - (rec?.stars ?? 0))}</span>
                   </span>
                   <span style={{ fontWeight: 600 }}>
-                    {open ? (rec ? `Cooked ${rec.cooked}×` : 'New! +20 coins the first time') : '🔒 Cook pancakes once to unlock'}
+                    {open
+                      ? rec
+                        ? `Cooked ${rec.cooked}×`
+                        : 'New! +20 coins the first time'
+                      : `🔒 Cook ${recipeName(r.unlockAfter)} once to unlock`}
                   </span>
                 </span>
               </button>
@@ -98,7 +102,7 @@ function Cooking({ recipe, onAgain, onPick }: { recipe: RecipeDef; onAgain: () =
   const poured = useRef(false);
 
   const s = recipe.steps[step];
-  const crepe = recipe.id === 'recipe.crepes';
+  const kind = dishKind(recipe.id);
   // Advances only from the step that asked, so extra taps can never skip a step.
   const next = () => {
     const from = step;
@@ -230,7 +234,7 @@ function Cooking({ recipe, onAgain, onPick }: { recipe: RecipeDef; onAgain: () =
                 cook={liveCook}
                 bubbles={s.type === 'heat' && !result && heatSecs >= recipe.golden[0]}
                 folded={folds}
-                crepe={crepe}
+                kind={kind}
               />
             </svg>
             {s.type === 'heat' && !result && (
@@ -260,7 +264,7 @@ function Cooking({ recipe, onAgain, onPick }: { recipe: RecipeDef; onAgain: () =
               const r = (e.currentTarget as SVGSVGElement).getBoundingClientRect();
               const x = ((e.clientX - r.left) / r.width) * 300;
               const y = 40 + ((e.clientY - r.top) / r.height) * 160;
-              place(Math.max(0, Math.min(1, (x - 80) / 140)), Math.max(0, Math.min(1, (y - (crepe ? 104 : 88)) / 30)));
+              place(Math.max(0, Math.min(1, (x - 80) / 140)), Math.max(0, Math.min(1, (y - toppingTop(kind)) / 30)));
             }}
           >
             <DishArt recipe={recipe.id} cook={result ?? 'golden'} toppings={toppings} />
@@ -296,7 +300,7 @@ function Cooking({ recipe, onAgain, onPick }: { recipe: RecipeDef; onAgain: () =
             </div>
             {bounce && (
               <p role="status" style={{ margin: 0 }}>
-                Boing! That doesn’t go in {crepe ? 'crêpes' : 'pancakes'}.
+                Boing! That doesn’t go in {recipe.name.toLowerCase()}.
               </p>
             )}
           </>
