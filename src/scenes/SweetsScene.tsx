@@ -1,6 +1,7 @@
 // Sweet Spot (game-systems §13): decorate each customer's cupcake to match the card, then serve it.
 // No timer; a wrong look says what to change. New designs join the album's Treats page.
 import { useRef, useState } from 'react';
+import { SweetShopBackdrop } from '../art/scenes/Restaurants';
 import { CupcakeArt } from '../art/scenes/Sweets';
 import { REGULARS } from '../content/cafe';
 import { frosting, FROSTINGS, nameOf, SWEET_MENU, SWEET_TOPPINGS, SWIRLS, type SweetOption } from '../content/sweets';
@@ -9,7 +10,7 @@ import { play } from '../platform/audio';
 import { useGame } from '../state/store';
 import { Button, Tabs } from '../ui/kit';
 import { Icon } from '../ui/icons';
-import { ActivityBar, FriendFace } from './common';
+import { ActivityBar, Character } from './common';
 
 const LABEL: Record<SweetPart, string> = { frosting: 'Frosting', swirl: 'Swirl', topping: 'Topping' };
 const OPTIONS: Record<SweetPart, SweetOption[]> = { frosting: FROSTINGS, swirl: SWIRLS, topping: SWEET_TOPPINGS };
@@ -98,30 +99,46 @@ function SweetShift({ onAgain }: { onAgain: () => void }) {
   };
 
   return (
-    <section className="scene" aria-label="Sweet Spot" style={{ background: 'linear-gradient(#E3FBF1, #FFF0F6 60%, #FFE3EE)' }}>
+    <section className="scene" aria-label="Sweet Spot" style={{ background: '#FFE9F2' }}>
+      <div className="scene-art">
+        <SweetShopBackdrop />
+      </div>
       <ActivityBar title="Sweet Spot" onBack={() => setScene('town')}>
         <span className="panel salon-count" data-testid="sweet-progress">
           {Math.min(idx + 1, CUSTOMERS_PER_SHIFT)}/{CUSTOMERS_PER_SHIFT}
         </span>
       </ActivityBar>
-      <div className="burger-top">
-        <div className="face" style={{ width: 64, height: 64, flex: 'none' }} aria-hidden="true">
-          <FriendFace id={customer.id} />
+      <div style={{ position: 'relative', flex: 1, minHeight: 0 }}>
+        <div
+          key={idx}
+          className="customer-in"
+          style={{ position: 'absolute', left: '0%', bottom: '18%', height: 'min(70%, 320px)', aspectRatio: '320 / 470' }}
+        >
+          <Character
+            appearance={customer.appearance}
+            outfit={customer.outfit}
+            crop="40 0 320 470"
+            title={customer.name}
+            pose={served ? 'wave' : 'idle'}
+          />
         </div>
-        <div className="panel burger-card" data-testid="sweet-card" data-want={JSON.stringify(want)}>
+        <div className="bubble burger-bubble" data-testid="sweet-card" data-want={JSON.stringify(want)}>
           <b>{customer.name} wants:</b>
-          <ul style={{ margin: 0, padding: 0, listStyle: 'none', fontWeight: 800, lineHeight: 1.25 }}>
-            <li>{nameOf(FROSTINGS, want.frosting)}</li>
-            <li>{nameOf(SWIRLS, want.swirl)}</li>
-            <li>{nameOf(SWEET_TOPPINGS, want.topping)}</li>
-          </ul>
+          <div className="burger-bubble-body">
+            <ul style={{ margin: 0, padding: 0, listStyle: 'none', fontWeight: 800, lineHeight: 1.25 }}>
+              <li>{nameOf(FROSTINGS, want.frosting)}</li>
+              <li>{nameOf(SWIRLS, want.swirl)}</li>
+              <li>{nameOf(SWEET_TOPPINGS, want.topping)}</li>
+            </ul>
+            <div className="sweet-preview" role="img" aria-label="The cupcake on the card">
+              <Cake c={want} />
+            </div>
+          </div>
         </div>
-        <div className="sweet-preview" role="img" aria-label="The cupcake on the card">
-          <Cake c={want} />
+        <div className="counter counter-sweet" />
+        <div className="sweet-plate sweet-stage" key={`${idx}-${wrong ? 'w' : 'ok'}`} data-wobble={!!wrong} data-testid="sweet-stage">
+          <Cake c={have} />
         </div>
-      </div>
-      <div className="sweet-stage" key={`${idx}-${wrong ? 'w' : 'ok'}`} data-wobble={!!wrong} data-testid="sweet-stage">
-        <Cake c={have} />
       </div>
       {wrong && !served && (
         <p role="status" className="panel salon-wrong" style={{ position: 'static', margin: '0 12px 6px' }} data-testid="sweet-wrong">

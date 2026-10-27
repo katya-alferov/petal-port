@@ -117,7 +117,7 @@ export const SHELLS: ShellDef[] = [
     y: 12,
     hint: 'In the Ribbon Boutique',
   },
-  { id: 'shell.cafe', name: 'Café Conch', kind: 'conch', color: '#FFDE8D', scene: 'cafe', x: 93, y: 24, hint: 'At the Sunny Café' },
+  { id: 'shell.cafe', name: 'Café Conch', kind: 'conch', color: '#FFDE8D', scene: 'cafe', x: 60, y: 43, hint: 'At the Sunny Café' },
   {
     id: 'shell.kitchen',
     name: 'Kitchen Star',
@@ -144,7 +144,7 @@ export const SHELLS: ShellDef[] = [
     kind: 'spiral',
     color: '#FFC94A',
     scene: 'show',
-    x: 8,
+    x: 14,
     y: 70,
     hint: 'On the Starlight Stage',
   },

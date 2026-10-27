@@ -1835,48 +1835,70 @@ g[role='button']:focus-visible {
 }
 
 /* Bun & Bite (game-systems §12) */
-.burger-top {
-  display: flex;
-  gap: 8px;
-  align-items: flex-start;
-  padding: 4px 12px;
-}
-.burger-card {
-  flex: 1;
-  min-width: 0;
-  padding: 6px 10px;
-  display: grid;
-  gap: 2px;
-  font-size: 0.95rem;
-}
-.burger-card ol {
+.burger-bubble ol {
   margin: 0;
   padding: 0;
   list-style: none;
   font-weight: 800;
   line-height: 1.25;
 }
-.burger-card li[data-state='done']::before {
+.burger-bubble li[data-state='done']::before {
   content: '✓ ';
 }
-.burger-card li[data-state='next']::before {
+.burger-bubble li[data-state='next']::before {
   content: '→ ';
 }
-.burger-card li[data-state='done'] {
+.burger-bubble li[data-state='done'] {
   opacity: 0.55;
 }
-.burger-card li[data-state='next'] {
+.burger-bubble li[data-state='next'] {
   text-decoration: underline;
 }
 .burger-preview {
-  width: 84px;
-  height: 130px;
+  width: 70px;
+  height: 100px;
   flex: none;
 }
+.burger-bubble {
+  right: 4%;
+  top: 3%;
+  width: 56%;
+  display: grid;
+  gap: 2px;
+  padding: 6px 10px;
+  font-size: 0.9rem;
+}
+.burger-bubble-body {
+  display: flex;
+  gap: 6px;
+  align-items: flex-end;
+  justify-content: space-between;
+}
 .burger-plate {
-  flex: 1;
-  min-height: 0;
-  padding: 0 40px;
+  position: absolute;
+  right: 6%;
+  bottom: 5%;
+  width: 54%;
+  height: 40%;
+  z-index: 2;
+}
+.counter-burger {
+  background: repeating-linear-gradient(90deg, #e8503a 0 70px, #c94430 70px 74px);
+}
+.counter-sweet {
+  background: repeating-linear-gradient(90deg, #ff9ec4 0 70px, #e883ac 70px 74px);
+}
+.sweet-plate {
+  position: absolute;
+  right: 6%;
+  bottom: 5%;
+  width: 46%;
+  height: 40%;
+  z-index: 2;
+}
+.sweet-plate > svg {
+  width: 100%;
+  height: 100%;
 }
 .burger-plate > svg {
   width: 100%;
@@ -1920,18 +1942,9 @@ g[role='button']:focus-visible {
 
 /* Sweet Spot (game-systems §13) */
 .sweet-preview {
-  width: 96px;
-  height: 106px;
+  width: 74px;
+  height: 82px;
   flex: none;
-}
-.sweet-stage {
-  flex: 1;
-  min-height: 0;
-  padding: 0 60px;
-}
-.sweet-stage > svg {
-  width: 100%;
-  height: 100%;
 }
 .sweet-stage[data-wobble='true'] {
   animation: burger-wobble 0.35s;

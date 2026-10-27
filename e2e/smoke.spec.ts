@@ -530,3 +530,32 @@ test('next up: the ideas list opens a place when tapped', async ({ page }) => {
   await page.getByTestId('idea-ticket').click();
   await expect(page.getByTestId('airport-desk')).toBeVisible();
 });
+
+test('every secret shell can be tapped for real: nothing covers it and it is away from the screen edge', async ({ page }) => {
+  test.setTimeout(120_000);
+  const scenes = ['town', 'home', 'boutique', 'cafe', 'kitchen', 'petshop', 'show'];
+  for (const scene of scenes) {
+    await page.goto(`./?fixture=fresh&scene=${scene}`);
+    await page.waitForTimeout(1800); // customers and bubbles have arrived
+    const ids = await page.evaluate(() =>
+      [...document.querySelectorAll('[data-testid^="shell-"]')].map((e) => e.getAttribute('data-testid')!),
+    );
+    expect(ids.length, scene).toBeGreaterThan(0);
+    for (const id of ids) {
+      const el = page.getByTestId(id);
+      await el.evaluate((e) => e.scrollIntoView({ block: 'center' }));
+      const hit = await el.evaluate((e) => {
+        const r = e.getBoundingClientRect();
+        const cx = r.left + r.width / 2;
+        const cy = r.top + r.height / 2;
+        const top = document.elementFromPoint(cx, cy);
+        return { ok: !!top && (top === e || e.contains(top)), left: r.left, right: r.right, vw: window.innerWidth };
+      });
+      expect(hit.ok, `${scene} ${id} is covered`).toBe(true);
+      expect(hit.left, `${scene} ${id} is in the swipe-back zone`).toBeGreaterThanOrEqual(8);
+      // A real mouse click (not forced) collects it.
+      await el.click();
+      await expect(page.getByTestId(id)).toHaveCount(0);
+    }
+  }
+});

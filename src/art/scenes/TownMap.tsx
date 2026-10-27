@@ -754,14 +754,15 @@ export function TownMap({
           tabIndex={0}
           aria-label="A shiny shell"
           data-testid={`shell-${sh.id}`}
-          className="shell-spot"
           style={{ cursor: 'pointer' }}
           onClick={() => onShell?.(sh.id)}
           onKeyDown={(e) => (e.key === 'Enter' || e.key === ' ') && onShell?.(sh.id)}
         >
           <rect x={sh.x - 70} y={sh.y - 70} width={140} height={140} rx={70} fill="transparent" />
-          <g transform={`translate(${sh.x - 42} ${sh.y - 46}) scale(0.84)`}>
-            <ShellArt kind={sh.kind} color={sh.color} />
+          <g transform={`translate(${sh.x - 42} ${sh.y - 46}) scale(0.84)`} pointerEvents="none">
+            <g className="shell-spot">
+              <ShellArt kind={sh.kind} color={sh.color} />
+            </g>
           </g>
         </g>
       ))}

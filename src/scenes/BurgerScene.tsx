@@ -1,6 +1,7 @@
 // Bun & Bite Burger Bar (game-systems §12): four customers per shift. Stack the burger in the order on
 // the card. A wrong tap wobbles the plate and names the next ingredient; nothing is lost.
 import { useRef, useState } from 'react';
+import { BurgerShopBackdrop } from '../art/scenes/Restaurants';
 import { BurgerStack, IngredientIcon, LAYER_NAMES } from '../art/scenes/Burger';
 import { REGULARS } from '../content/cafe';
 import { BURGER_SHIFT_BONUS, burgerOrders, burgerPay, CUSTOMERS_PER_SHIFT, tapPart, type BurgerPart } from '../game/burger';
@@ -8,7 +9,7 @@ import { play } from '../platform/audio';
 import { useGame } from '../state/store';
 import { Button } from '../ui/kit';
 import { Icon } from '../ui/icons';
-import { ActivityBar, FriendFace } from './common';
+import { ActivityBar, Character } from './common';
 
 const PARTS: BurgerPart[] = ['bun-bottom', 'patty', 'cheese', 'lettuce', 'tomato', 'pickle', 'bun-top'];
 
@@ -73,35 +74,51 @@ function BurgerShift({ onAgain }: { onAgain: () => void }) {
   };
 
   return (
-    <section className="scene" aria-label="Bun and Bite" style={{ background: 'linear-gradient(#FFE9C9, #FFF7EC 55%, #FFD9A8)' }}>
+    <section className="scene" aria-label="Bun and Bite" style={{ background: '#FFE2CF' }}>
+      <div className="scene-art">
+        <BurgerShopBackdrop />
+      </div>
       <ActivityBar title="Bun & Bite" onBack={() => setScene('town')}>
         <span className="panel salon-count" data-testid="burger-progress">
           {Math.min(idx + 1, CUSTOMERS_PER_SHIFT)}/{CUSTOMERS_PER_SHIFT}
         </span>
       </ActivityBar>
-      <div className="burger-top">
-        <div className="face" style={{ width: 64, height: 64, flex: 'none' }} aria-hidden="true">
-          <FriendFace id={customer.id} />
+      <div style={{ position: 'relative', flex: 1, minHeight: 0 }}>
+        <div
+          key={idx}
+          className="customer-in"
+          style={{ position: 'absolute', left: '0%', bottom: '18%', height: 'min(70%, 320px)', aspectRatio: '320 / 470' }}
+        >
+          <Character
+            appearance={customer.appearance}
+            outfit={customer.outfit}
+            crop="40 0 320 470"
+            title={customer.name}
+            pose={served ? 'wave' : 'idle'}
+          />
         </div>
-        <div className="panel burger-card" data-testid="burger-card" data-order={JSON.stringify(order)}>
+        <div className="bubble burger-bubble" data-testid="burger-card" data-order={JSON.stringify(order)}>
           <b>{customer.name} would like:</b>
-          <ol>
-            {[...order].reverse().map((p, i) => {
-              const level = order.length - 1 - i;
-              return (
-                <li key={i} data-state={level < stack.length ? 'done' : level === stack.length ? 'next' : 'todo'}>
-                  {LAYER_NAMES[p]}
-                </li>
-              );
-            })}
-          </ol>
+          <div className="burger-bubble-body">
+            <ol>
+              {[...order].reverse().map((p, i) => {
+                const level = order.length - 1 - i;
+                return (
+                  <li key={i} data-state={level < stack.length ? 'done' : level === stack.length ? 'next' : 'todo'}>
+                    {LAYER_NAMES[p]}
+                  </li>
+                );
+              })}
+            </ol>
+            <div className="burger-preview" aria-hidden="true">
+              <BurgerStack parts={order} />
+            </div>
+          </div>
         </div>
-        <div className="burger-preview" aria-hidden="true">
-          <BurgerStack parts={order} />
+        <div className="counter counter-burger" />
+        <div className="burger-plate" key={wobble} data-wobble={wobble > 0 && !served} data-testid="burger-plate">
+          <BurgerStack parts={stack} />
         </div>
-      </div>
-      <div className="burger-plate" key={wobble} data-wobble={wobble > 0 && !served} data-testid="burger-plate">
-        <BurgerStack parts={stack} />
       </div>
       {slip && (
         <p role="status" className="panel salon-wrong" style={{ position: 'static', margin: '0 12px 6px' }} data-testid="burger-wrong">
