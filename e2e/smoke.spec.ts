@@ -95,6 +95,8 @@ test('no serious accessibility violations on each main scene', async ({ page }) 
     'dance',
     'skate',
     'bedroom',
+    'nails',
+    'posies',
     'sweets',
     'paris',
     'photo',
@@ -634,4 +636,63 @@ test('bedroom: choices change the room and are remembered', async ({ page }) => 
   expect(look).toEqual({ walls: 'mint', lamp: 'star', picture: 'cat', bedding: 'teal', rug: 'heart' });
   const stickers = await page.evaluate(() => JSON.stringify((window as any).__petal.getState().save.progress.stickers));
   expect(stickers).toContain('sticker.bedroom');
+});
+
+const coinsOf = (page: import('@playwright/test').Page) =>
+  page.evaluate(
+    () =>
+      (window as unknown as { __petal: { getState: () => { save: { wallet: { coins: number } } } } }).__petal.getState().save.wallet.coins,
+  );
+
+test('glow nails: a wrong nail is named, then a full shift pays with tips and a bonus', async ({ page }) => {
+  test.setTimeout(120_000);
+  await page.goto('./?fixture=fresh&scene=nails');
+  const start = await coinsOf(page);
+  for (let i = 0; i < 4; i++) {
+    const order = JSON.parse((await page.getByTestId('nails-card').getAttribute('data-order'))!) as {
+      colors: string[];
+      gems: boolean[];
+    };
+    if (i === 0) {
+      // Checking too early explains what to look at and takes nothing away except this client's tip.
+      await page.getByTestId('nails-check').click();
+      await expect(page.getByTestId('nails-wrong')).toContainText('Look again');
+    }
+    for (let n = 0; n < 5; n++) {
+      await page.getByTestId(`polish-${order.colors[n]}`).click();
+      await page.getByTestId(`nail-${n}`).click({ force: true });
+    }
+    if (order.gems.some(Boolean)) {
+      await page.getByTestId('polish-gem').click();
+      for (let n = 0; n < 5; n++) if (order.gems[n]) await page.getByTestId(`nail-${n}`).click({ force: true });
+    }
+    await page.getByTestId('nails-check').click();
+    await expect(page.getByTestId('nails-served')).toContainText(i === 0 ? '+14' : '+18');
+    await page.getByTestId('nails-next').click();
+  }
+  await expect(page.getByTestId('nails-done')).toBeVisible();
+  expect((await coinsOf(page)) - start).toBe(14 + 18 * 3 + 12);
+});
+
+test('petal posies: checking names what is missing, then a full shift pays with tips and a bonus', async ({ page }) => {
+  test.setTimeout(120_000);
+  await page.goto('./?fixture=fresh&scene=posies');
+  const start = await coinsOf(page);
+  for (let i = 0; i < 4; i++) {
+    const order = JSON.parse((await page.getByTestId('posies-card').getAttribute('data-order'))!) as {
+      counts: Record<string, number>;
+      wrap: string;
+    };
+    if (i === 0) {
+      await page.getByTestId('posies-check').click();
+      await expect(page.getByTestId('posies-wrong')).toContainText('Almost!');
+    }
+    for (const [flower, n] of Object.entries(order.counts)) for (let k = 0; k < n; k++) await page.getByTestId(`flower-${flower}`).click();
+    await page.getByTestId(`wrap-${order.wrap}`).click();
+    await page.getByTestId('posies-check').click();
+    await expect(page.getByTestId('posies-served')).toContainText(i === 0 ? '+14' : '+18');
+    await page.getByTestId('posies-next').click();
+  }
+  await expect(page.getByTestId('posies-done')).toBeVisible();
+  expect((await coinsOf(page)) - start).toBe(14 + 18 * 3 + 12);
 });

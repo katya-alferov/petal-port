@@ -32,6 +32,8 @@ export type StickerCond =
   | { kind: 'bedroom'; n: number }
   | { kind: 'skateRuns'; n: number }
   | { kind: 'skatePerfect' }
+  | { kind: 'nailShifts'; n: number }
+  | { kind: 'posyShifts'; n: number }
   | { kind: 'designs'; n: number }
   | { kind: 'souvenirs'; n: number };
 
@@ -90,6 +92,10 @@ export function meets(save: SaveGame, c: StickerCond, facts: StickerFacts): bool
       return p.dance.shifts >= c.n;
     case 'skateRuns':
       return p.skate.runs >= c.n;
+    case 'nailShifts':
+      return p.nails.shifts >= c.n;
+    case 'posyShifts':
+      return p.posies.shifts >= c.n;
     case 'skatePerfect':
       return p.skate.best >= 8;
     case 'sweetShifts':

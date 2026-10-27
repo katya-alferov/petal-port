@@ -30,6 +30,8 @@ const PLACES: Record<PlaceId, { name: string; line: string; go?: SceneId; soon?:
   burger: { name: 'Bun & Bite', line: 'Stack burgers just the way each customer asks and earn coins!', go: 'burger' },
   sweets: { name: 'Sweet Spot', line: 'Decorate cupcakes for customers and collect every design!', go: 'sweets' },
   dance: { name: 'Dance Studio', line: 'Watch the coach’s routine, then dance it back!', go: 'dance' },
+  nails: { name: 'Glow Nails', line: 'Paint nails to match each client’s picture, with gems on top!', go: 'nails' },
+  posies: { name: 'Petal Posies', line: 'Pick the flowers and wrapping for each customer’s bouquet!', go: 'posies' },
   skate: { name: 'Skate Park', line: 'Roll along the course and jump the obstacles. Bumps are fine!', go: 'skate' },
   garden: { name: 'Petal Garden', line: 'Plant free seeds. They grow every time you finish something fun!', go: 'garden' },
   stage: { name: 'Starlight Stage', line: 'Dress up for a theme, walk the runway, and wow the judges!', go: 'show' },
@@ -84,6 +86,8 @@ export function TownScene() {
             sweets: save.progress.sweets.shifts === 0 ? 'new' : undefined,
             dance: save.progress.dance.shifts === 0 ? 'new' : undefined,
             skate: save.progress.skate.runs === 0 ? 'new' : undefined,
+            nails: save.progress.nails.shifts === 0 ? 'new' : undefined,
+            posies: save.progress.posies.shifts === 0 ? 'new' : undefined,
             garden: bloomsReady ? 'new' : save.progress.garden.beds.every((b) => b === null) ? 'new' : undefined,
           }}
           bloomsReady={bloomsReady}

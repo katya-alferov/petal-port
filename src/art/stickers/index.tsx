@@ -163,6 +163,22 @@ const MOTIF: Record<string, (ink: string) => ReactElement> = {
       <path d="M40,32 L72,26" strokeWidth={6} />
     </g>
   ),
+  nails: (c) => (
+    <g {...sw}>
+      <rect x={34} y={22} width={32} height={52} rx={16} fill="#FFEDE0" />
+      <rect x={40} y={28} width={20} height={26} rx={9} fill={c} />
+      <path d="M50,60 l5,6 l-5,7 l-5,-7 Z" fill="#FFFFFF" strokeWidth={3} />
+    </g>
+  ),
+  posy: (c) => (
+    <g {...sw}>
+      <path d="M50,52 L50,84" strokeWidth={5} />
+      {[0, 72, 144, 216, 288].map((r) => (
+        <ellipse key={r} cx={50} cy={34} rx={9} ry={14} fill={c} strokeWidth={4} transform={`rotate(${r} 50 50)`} />
+      ))}
+      <circle cx={50} cy={50} r={8} fill="#FFC94A" />
+    </g>
+  ),
   skate: (c) => (
     <g {...sw}>
       <path d="M18,52 C18,44 30,42 50,42 C70,42 82,44 82,52 C82,60 70,62 50,62 C30,62 18,60 18,52 Z" fill={c} />

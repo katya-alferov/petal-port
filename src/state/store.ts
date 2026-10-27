@@ -1,6 +1,8 @@
 // The single game store (data-model §4). Only `save` is persisted; `ui` is session state.
 import { type BedroomPart, withPart } from '../game/bedroom';
 import { DANCE_SHIFT_BONUS, dancePay } from '../game/dance';
+import { NAILS_SHIFT_BONUS, nailsPay } from '../game/nails';
+import { POSY_SHIFT_BONUS, posyPay } from '../game/posies';
 import { OBSTACLES, skatePay } from '../game/skate';
 import { addDesign, SWEET_SHIFT_BONUS, sweetPay, type Cupcake } from '../game/sweets';
 import { BURGER_SHIFT_BONUS, burgerPay } from '../game/burger';
@@ -36,6 +38,8 @@ import { log } from '../platform/log';
 import { readSaves, requestPersist, scheduleWrite } from '../platform/storage';
 
 export type SceneId =
+  | 'nails'
+  | 'posies'
   | 'bedroom'
   | 'dance'
   | 'skate'
@@ -118,6 +122,11 @@ interface GameStore {
   danceServed: (clean: boolean) => number;
   danceShiftDone: () => number;
   skateDone: (clearedCount: number) => number;
+  /** Wave E (game-systems §18, §19). */
+  nailsServed: (clean: boolean) => number;
+  nailsShiftDone: () => number;
+  posyServed: (clean: boolean) => number;
+  posyShiftDone: () => number;
   plantSeed: (bed: number, seed: string) => void;
   /** Wave D (game-systems §11). Each returns whether it worked. */
   buyTicket: () => boolean;
@@ -448,6 +457,34 @@ export const useGame = create<GameStore>((setState, getState) => ({
     s = grown({ ...s, progress: { ...s.progress, skate: { runs: sk.runs + 1, best: Math.max(sk.best, n) } } });
     setState({ save: touch(s) });
     return coins;
+  },
+  nailsServed: (clean) => {
+    let s = getState().save;
+    const coins = nailsPay(clean);
+    s = earn(s, coins);
+    s = { ...s, progress: { ...s.progress, nails: { ...s.progress.nails, clients: s.progress.nails.clients + 1 } } };
+    setState({ save: touch(s) });
+    return coins;
+  },
+  nailsShiftDone: () => {
+    let s = earn(getState().save, NAILS_SHIFT_BONUS);
+    s = grown({ ...s, progress: { ...s.progress, nails: { ...s.progress.nails, shifts: s.progress.nails.shifts + 1 } } });
+    setState({ save: touch(s) });
+    return NAILS_SHIFT_BONUS;
+  },
+  posyServed: (clean) => {
+    let s = getState().save;
+    const coins = posyPay(clean);
+    s = earn(s, coins);
+    s = { ...s, progress: { ...s.progress, posies: { ...s.progress.posies, bouquets: s.progress.posies.bouquets + 1 } } };
+    setState({ save: touch(s) });
+    return coins;
+  },
+  posyShiftDone: () => {
+    let s = earn(getState().save, POSY_SHIFT_BONUS);
+    s = grown({ ...s, progress: { ...s.progress, posies: { ...s.progress.posies, shifts: s.progress.posies.shifts + 1 } } });
+    setState({ save: touch(s) });
+    return POSY_SHIFT_BONUS;
   },
   plantSeed: (bed, seedId) => {
     const s = getState().save;

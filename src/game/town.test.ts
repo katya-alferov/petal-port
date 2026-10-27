@@ -8,6 +8,8 @@ import { adopt, ballSpot, bowls, care, careToNextTrick, tricksKnown, wantedFood 
 import { addHeart, applyEvent, BOARD_SIZE, fillBoard, GIFT_AT, isReady, makeNote, VISIT_AT } from './requests';
 import { GARDEN_BEDS, load, newSave, sanitize, type SaveGame } from './save';
 import { newStickers } from './stickers';
+import { nailOrders, wrongNails, emptyWork, NAILS, CLIENTS_PER_SHIFT as NAIL_CLIENTS } from './nails';
+import { checkPosy, countOf, posyOrders, MAX_FLOWERS } from './posies';
 import { changedParts, DEFAULT_BEDROOM, withPart } from './bedroom';
 import { BEDDINGS, WALLS } from '../content/bedroom';
 import { FIRST_STARS_BONUS, fits, fitting, judgesFor, SHOW_PAY, showReward, showStars, themeFor } from './show';
@@ -579,5 +581,48 @@ describe('Bedroom (§17)', () => {
     const bad = { ...s, home: { ...s.home, bedroom: { walls: 'mint', lamp: 7, rug: 'x'.repeat(40) } } } as unknown as SaveGame;
     const out = sanitize(bad, SAVE_CONTEXT);
     expect(out.home.bedroom).toEqual({ walls: 'mint' });
+  });
+});
+
+describe('Glow Nails (§18)', () => {
+  it('shifts have four clients that grow from one color to three plus gems', () => {
+    const o = nailOrders(1);
+    expect(o).toHaveLength(NAIL_CLIENTS);
+    expect(new Set(o[0].colors).size).toBe(1);
+    expect(new Set(o[1].colors).size).toBe(2);
+    expect(new Set(o[2].colors).size).toBe(3);
+    expect(o[3].gems.filter(Boolean)).toHaveLength(2);
+    expect(nailOrders(7)).toEqual(nailOrders(7));
+  });
+  it('names exactly the nails that differ', () => {
+    const order = nailOrders(2)[3];
+    const work = { colors: [...order.colors], gems: [...order.gems] };
+    expect(wrongNails(order, work)).toEqual([]);
+    work.colors[1] = null;
+    work.gems[4] = !work.gems[4];
+    expect(wrongNails(order, work)).toEqual([1, 4]);
+    expect(wrongNails(order, emptyWork()).length).toBeGreaterThan(0);
+    expect(emptyWork().colors).toHaveLength(NAILS);
+  });
+});
+
+describe('Petal Posies (§19)', () => {
+  it('bouquets grow from 3 to 6 flowers and fit the vase', () => {
+    const o = posyOrders(3);
+    o.forEach((order, i) => {
+      const total = Object.values(order.counts).reduce((a, b) => a + (b ?? 0), 0);
+      expect(total).toBe(i + 3);
+      expect(total).toBeLessThanOrEqual(MAX_FLOWERS);
+    });
+  });
+  it('order does not matter, and gaps say what to add or remove', () => {
+    const order = posyOrders(1)[1];
+    const flowers = Object.entries(order.counts).flatMap(([f, n]) => Array<string>(n ?? 0).fill(f)) as Parameters<typeof checkPosy>[1];
+    expect(checkPosy(order, [...flowers].reverse(), order.wrap)).toEqual({ gaps: [], wrapOk: true });
+    const fewer = flowers.slice(1);
+    const r = checkPosy(order, fewer, null);
+    expect(r.wrapOk).toBe(false);
+    expect(r.gaps).toEqual([{ flower: flowers[0], need: 1 }]);
+    expect(countOf(flowers)[flowers[0]]).toBeGreaterThan(0);
   });
 });

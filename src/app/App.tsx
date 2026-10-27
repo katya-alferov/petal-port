@@ -12,6 +12,8 @@ import { DebugOverlay } from '../scenes/DebugOverlay';
 import { GalleryScene } from '../scenes/GalleryScene';
 import { HomeScene } from '../scenes/HomeScene';
 import { BedroomScene } from '../scenes/BedroomScene';
+import { NailsScene } from '../scenes/NailsScene';
+import { PosiesScene } from '../scenes/PosiesScene';
 import { KitchenScene } from '../scenes/KitchenScene';
 import { MeScene } from '../scenes/MeScene';
 import { TitleScene } from '../scenes/TitleScene';
@@ -61,6 +63,8 @@ export function App() {
         {scene === 'boutique' && <BoutiqueScene />}
         {scene === 'kitchen' && <KitchenScene />}
         {scene === 'bedroom' && <BedroomScene />}
+        {scene === 'nails' && <NailsScene />}
+        {scene === 'posies' && <PosiesScene />}
         {scene === 'me' && <MeScene />}
         {scene === 'home' && <HomeScene />}
         {scene === 'petshop' && <PetShopScene />}

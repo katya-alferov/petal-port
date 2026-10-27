@@ -632,3 +632,28 @@ Wave B adds a dress-up goal, an exploration collection and more doll-style cloth
 - An obstacle is **cleared** if it reaches the skater during the jump (with a little slack). A bump only wobbles the skater ("Oops! Roll on."): the run always finishes and nothing is taken away. This is the only real-time activity; it has no countdown and never ends early.
 - Pay **20** for rolling, **+3** per obstacle cleared, **+10** for clearing all 8 (max 54). A finished run grows the garden.
 - Stickers: Skate Rookie (1 run), Perfect Run (all 8 in one run). Save: optional `progress.skate {runs, best}`.
+
+## 17. Bedroom (Wave E)
+
+- A **Bedroom** button on the Home screen (next to Decorate and Cook) opens a room the player designs. Five choices: **walls** (7 colors), **bedding** (7 colors, the curtains pick up the accent), **lamp** (dome, star, cloud, tulip), **wall picture** (sunset, flowers, starry sky, little boat, sleepy cat) and **rug** (round, star, heart).
+- Tapping the lamp switches it on or off (a glow, or a dim room); tapping the picture, window or bed jumps to the matching tab. Everything is free, nothing is locked or expires, and any choice can be changed any time.
+- Stickers: Cozy Designer (change 5 parts from the starter look). Save: optional `home.bedroom` holding only the parts that differ from the starter (`walls: cream`, `bedding: pink`, `lamp: dome`, `picture: sunset`, `rug: round`); unknown ids fall back to the starter.
+
+## 18. Glow Nails (Wave E)
+
+- A sixth job on the new Glow Street (the map is now 1170 x 5420; the airport moved down another 520 px). Each client shows a hand with the nails she'd like; the player paints a bare hand to match: pick one of six polishes, a **Gem** or **Wipe**, then tap a nail (every nail has a tap and keyboard alternative; there is no drag).
+- A shift is 4 clients: **one color, two colors, three colors, then three colors plus 2 gems**, seeded by the shift number. **All done!** checks the hand: wrong nails wobble and are named ("Look again at the ring finger and thumb"). Fix them as often as needed; no timer, nothing lost, only the tip is missed.
+- Pay **14** per client, **+4** tip when the first check was right, **+12** shift bonus (max 4 x 18 + 12 = 84). A finished shift grows the garden.
+- Stickers: Nail Artist (1 shift), Glam Hands (5 shifts). Save: optional `progress.nails {clients, shifts}`.
+
+## 19. Petal Posies (Wave E)
+
+- A seventh job on Glow Street: a flower shop. Each customer wants a bouquet: some flowers (of 6 kinds) and a wrapping paper color (4). **Order does not matter.** A shift is 4 customers with **3, 4, 5, then 6 flowers** of one, two, two and three kinds. Tap a flower to add it (max 8), Undo removes the last one.
+- **All done!** checks the bouquet: the message says what is missing or extra ("It needs 1 more rose, 2 fewer daisies, sky wrapping"); the bouquet wobbles. Nothing is lost except the tip.
+- Pay **14** per customer, **+4** tip when the first check was right, **+12** shift bonus (max 84). A finished shift grows the garden.
+- Stickers: Little Florist (1 shift), Bouquet Boss (5 shifts). Save: optional `progress.posies {bouquets, shifts}`.
+
+## 20. More home recipes (Wave E)
+
+- The kitchen now has **five** recipes on the same step engine (add, mix, pour, cook/flip, fold, decorate), unlocked in order: Fluffy Pancakes → Crêpes → **Cheesy Omelette** (eggs, milk, cheese; folds like a crêpe; toppings tomato, herbs, mushroom, grated cheese) and **Waffles** (also unlocked by crêpes: flour, egg, milk, butter; grid top; golden window 3.0 to 6.0 s); **French Toast** (bread, egg, milk) unlocks after the omelette.
+- Same rules as before: 1 star always, 2 stars with no wrong ingredient, 3 stars with a golden flip; first cook +20 coins, first 3 stars +20. New items: cheese, bread, tomato, herbs, mushroom, grated cheese. Stickers: Egg-cellent, Waffle Time, Brunch Star.

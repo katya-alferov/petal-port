@@ -5,6 +5,8 @@ import { OUTLINE, Shaded, scallopCircle } from '../kit';
 import { ShellArt } from '../shells';
 
 export type PlaceId =
+  | 'nails'
+  | 'posies'
   | 'dance'
   | 'skate'
   | 'boutique'
@@ -24,7 +26,7 @@ export type PlaceId =
 
 export const MAP_W = 1170;
 /** Sparkle Street (Glam Salon and Petal Garden) sits between the harbour and the airport. */
-const STREET = 1700;
+const STREET = 2220;
 export const MAP_H = 3200 + STREET;
 
 /** Where each place sits, so the scene can scroll to it. */
@@ -44,6 +46,8 @@ export const PLACE_Y: Record<PlaceId, number> = {
   sweets: 3500,
   dance: 4020,
   skate: 4020,
+  nails: 4540,
+  posies: 4540,
   airport: 2860 + STREET,
 };
 
@@ -597,7 +601,7 @@ export function TownMap({
       </g>
 
       {/* Sparkle Street: a pink-and-lilac row of new places (game-systems §10) */}
-      <path d="M0,2740 C300,2715 800,2735 1170,2712 L1170,5100 L0,5100 Z" fill="#B8E6C4" stroke={OUTLINE} strokeWidth={5} />
+      <path d="M0,2740 C300,2715 800,2735 1170,2712 L1170,5700 L0,5700 Z" fill="#B8E6C4" stroke={OUTLINE} strokeWidth={5} />
       <path d="M0,3190 L1170,3190 L1170,3240 L0,3240 Z" fill="#F2E3D2" stroke={OUTLINE} strokeWidth={4} />
       <path d="M0,3215 L1170,3215" stroke="#FFFFFF" strokeWidth={8} strokeDasharray="44 36" />
 
@@ -774,6 +778,84 @@ export function TownMap({
         <path d="M660,3985 L1080,3985" stroke="#3BB7C4" strokeWidth={26} strokeLinecap="round" opacity={0.9} />
         <path d="M940,4160 C940,4120 960,4112 990,4112" fill="none" stroke="none" />
         <Sign x={880} y={4270} label="Skate Park" color="#3BB7C4" />
+      </Place>
+
+      {/* Glow Street: Glow Nails and Petal Posies (game-systems §18, §19), drawn at Fun Street coordinates and shifted down */}
+      <g transform="translate(0 520)">
+        <path d="M0,4210 L1170,4210 L1170,4260 L0,4260 Z" fill="#F2E3D2" stroke={OUTLINE} strokeWidth={4} />
+        <path d="M0,4235 L1170,4235" stroke="#FFFFFF" strokeWidth={8} strokeDasharray="44 36" />
+      </g>
+      <Place
+        id="nails"
+        hit={[90, 4350, 480, 420]}
+        label="Glow Nails"
+        onTap={onTap}
+        badge={badges.nails && <Badge x={560} y={4410} kind={badges.nails} />}
+      >
+        <g transform="translate(0 520)">
+          <Shaded d={rect(140, 3950, 400, 250)} shade={PINK} depth={10} />
+          <Shaded d="M120,3960 L340,3860 L560,3960 Z" shade={LILAC} depth={6} />
+          <Awning x={130} y={4030} w={420} a="#FFF7EC" b="#FF7BA9" />
+          <rect x={170} y={4100} width={190} height={100} rx={12} fill="#CFE9FF" stroke={OUTLINE} strokeWidth={4} />
+          <rect x={230} y={4118} width={26} height={60} rx={13} fill="#FFEDE0" stroke={OUTLINE} strokeWidth={3} />
+          <rect x={236} y={4124} width={14} height={22} rx={7} fill="#B692F6" />
+          <rect x={290} y={4128} width={26} height={50} rx={13} fill="#FFEDE0" stroke={OUTLINE} strokeWidth={3} />
+          <rect x={296} y={4134} width={14} height={20} rx={7} fill="#FFC94A" />
+          <rect x={400} y={4090} width={100} height={110} rx={34} fill={LILAC.base} stroke={OUTLINE} strokeWidth={4} />
+          <circle cx={340} cy={3915} r={38} fill="#FFFFFF" stroke={OUTLINE} strokeWidth={4} />
+          <rect x={314} y={3910} width={52} height={38} rx={12} fill="#FF7BA9" stroke={OUTLINE} strokeWidth={4} />
+          <rect x={329} y={3888} width={22} height={24} rx={5} fill="#5B4A6E" />
+          <Sign x={340} y={4270} label="Glow Nails" color="#FF7BA9" />
+        </g>
+      </Place>
+      <Place
+        id="posies"
+        hit={[620, 4350, 500, 420]}
+        label="Petal Posies"
+        onTap={onTap}
+        badge={badges.posies && <Badge x={1090} y={4410} kind={badges.posies} />}
+      >
+        <g transform="translate(0 520)">
+          <Shaded d={rect(670, 3950, 400, 250)} shade={MINT} depth={10} />
+          <Shaded d="M650,3960 L870,3860 L1090,3960 Z" shade={LEAF} depth={6} />
+          <Awning x={660} y={4030} w={420} a="#FFF7EC" b="#5FA67A" />
+          <rect x={700} y={4090} width={150} height={110} rx={12} fill="#CFE9FF" stroke={OUTLINE} strokeWidth={4} />
+          <rect x={940} y={4090} width={100} height={110} rx={34} fill={PINK.base} stroke={OUTLINE} strokeWidth={4} />
+          {[
+            [720, '#FF7BA9'],
+            [790, '#FFC94A'],
+            [860, '#B692F6'],
+          ].map(([x, c]) => (
+            <g key={String(x)}>
+              <path d={`M${x},4210 L${x},4170`} stroke="#3F7F5A" strokeWidth={5} strokeLinecap="round" />
+              <circle cx={Number(x)} cy={4160} r={17} fill={String(c)} stroke={OUTLINE} strokeWidth={4} />
+              <circle cx={Number(x)} cy={4160} r={5} fill="#FFF7EC" />
+              <path
+                d={`M${Number(x) - 22},4200 L${Number(x) + 22},4200 L${Number(x) + 16},4228 L${Number(x) - 16},4228 Z`}
+                fill={WOOD.base}
+                stroke={OUTLINE}
+                strokeWidth={4}
+                strokeLinejoin="round"
+              />
+            </g>
+          ))}
+          <circle cx={870} cy={3915} r={38} fill="#FFFFFF" stroke={OUTLINE} strokeWidth={4} />
+          {[0, 72, 144, 216, 288].map((r) => (
+            <ellipse
+              key={r}
+              cx={870}
+              cy={3903}
+              rx={9}
+              ry={13}
+              fill="#FF7BA9"
+              stroke={OUTLINE}
+              strokeWidth={3}
+              transform={`rotate(${r} 870 3915)`}
+            />
+          ))}
+          <circle cx={870} cy={3915} r={8} fill="#FFC94A" stroke={OUTLINE} strokeWidth={3} />
+          <Sign x={870} y={4270} label="Petal Posies" color="#5FA67A" />
+        </g>
       </Place>
 
       <g transform={`translate(0 ${STREET})`}>

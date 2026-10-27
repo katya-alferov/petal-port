@@ -122,7 +122,9 @@ export type StickerMotif =
   | 'cupcake'
   | 'bed'
   | 'music'
-  | 'skate';
+  | 'skate'
+  | 'nails'
+  | 'posy';
 
 export interface StickerDef {
   id: string;
@@ -222,6 +224,38 @@ export const STICKERS: StickerDef[] = [
     motif: 'pancake',
     color: '#FF9EC4',
     cond: { kind: 'cooked', recipe: 'recipe.toast' },
+  },
+  {
+    id: 'sticker.nails',
+    name: 'Nail Artist',
+    hint: 'Finish a shift at Glow Nails',
+    motif: 'nails',
+    color: '#FF7BA9',
+    cond: { kind: 'nailShifts', n: 1 },
+  },
+  {
+    id: 'sticker.nails-pro',
+    name: 'Glam Hands',
+    hint: 'Finish 5 Glow Nails shifts',
+    motif: 'nails',
+    color: '#B692F6',
+    cond: { kind: 'nailShifts', n: 5 },
+  },
+  {
+    id: 'sticker.posies',
+    name: 'Little Florist',
+    hint: 'Finish a shift at Petal Posies',
+    motif: 'posy',
+    color: '#FF9EC4',
+    cond: { kind: 'posyShifts', n: 1 },
+  },
+  {
+    id: 'sticker.posies-pro',
+    name: 'Bouquet Boss',
+    hint: 'Finish 5 Petal Posies shifts',
+    motif: 'posy',
+    color: '#FFC94A',
+    cond: { kind: 'posyShifts', n: 5 },
   },
   {
     id: 'sticker.shopper',

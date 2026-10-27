@@ -101,6 +101,9 @@ export interface Progress {
   /** Wave D (game-systems §15, §16): Dance Studio routines and shifts, Skate Park runs and best cleared count. */
   dance: { routines: number; shifts: number };
   skate: { runs: number; best: number };
+  /** Wave E (game-systems §18, §19): Glow Nails clients and shifts, Petal Posies bouquets and shifts. */
+  nails: { clients: number; shifts: number };
+  posies: { bouquets: number; shifts: number };
   /** Petal Garden beds: the seed planted and the growth it has gathered. */
   garden: { beds: (GardenBed | null)[]; bloomed: string[]; picked: number };
   /** Wave D (game-systems §11): the Paris trip, souvenirs and photos kept as small recipes. */
@@ -171,6 +174,8 @@ export function newProgress(): Progress {
     sweets: { served: 0, shifts: 0, made: [] },
     dance: { routines: 0, shifts: 0 },
     skate: { runs: 0, best: 0 },
+    nails: { clients: 0, shifts: 0 },
+    posies: { bouquets: 0, shifts: 0 },
     garden: { beds: Array.from({ length: GARDEN_BEDS }, () => null), bloomed: [], picked: 0 },
     travel: newTravel(),
   };
@@ -350,6 +355,10 @@ function sanitizeProgress(raw: unknown): Progress {
   if (isObj(bg)) p.burger = { orders: clampInt(bg.orders), shifts: clampInt(bg.shifts) };
   const dn = raw.dance;
   if (isObj(dn)) p.dance = { routines: clampInt(dn.routines), shifts: clampInt(dn.shifts) };
+  const nl = raw.nails;
+  if (isObj(nl)) p.nails = { clients: clampInt(nl.clients), shifts: clampInt(nl.shifts) };
+  const ps = raw.posies;
+  if (isObj(ps)) p.posies = { bouquets: clampInt(ps.bouquets), shifts: clampInt(ps.shifts) };
   const sk = raw.skate;
   if (isObj(sk)) p.skate = { runs: clampInt(sk.runs), best: clampInt(sk.best, 8) };
   const sw = raw.sweets;

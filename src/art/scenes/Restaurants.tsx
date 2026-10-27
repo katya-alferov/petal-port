@@ -1,5 +1,6 @@
 // Back walls for the two small restaurants (Bun & Bite, Sweet Spot), in the same style as the Sunny
 // Café's: canvas 1170×1400 anchored to the bottom, with a menu board, window, shelf and a bright awning.
+import type React from 'react';
 import { OUTLINE } from '../kit';
 
 const sw = { stroke: OUTLINE, strokeWidth: 6, strokeLinejoin: 'round' as const, strokeLinecap: 'round' as const };
@@ -159,5 +160,80 @@ export function SweetShopBackdrop() {
       ))}
       <Counter top="#FFF7EC" front="#FF9EC4" stripe="#E883AC" />
     </svg>
+  );
+}
+
+const Frame = ({ children, wall, stripe }: { children: React.ReactNode; wall: string; stripe: string }) => (
+  <svg
+    viewBox="0 0 1170 1400"
+    preserveAspectRatio="xMidYMax slice"
+    aria-hidden="true"
+    style={{ width: '100%', height: '100%', display: 'block' }}
+  >
+    <rect width={1170} height={1400} fill={wall} />
+    {Array.from({ length: 12 }, (_, i) => (
+      <rect key={i} x={i * 100} y={0} width={50} height={1400} fill={stripe} />
+    ))}
+    {children}
+  </svg>
+);
+
+/** Glow Nails: a lilac-and-pink studio with a mirror and a rack of polish bottles. */
+export function NailShopBackdrop() {
+  return (
+    <Frame wall="#F3E8FF" stripe="#EADBFF">
+      <Pennants colors={['#C8B3FF', '#FF9EC4', '#FFF7EC']} />
+      <rect x={70} y={220} width={300} height={400} rx={150} fill="#E8F8FF" {...sw} strokeWidth={14} />
+      <path d="M130,360 C170,300 230,300 270,360" stroke="#FFFFFF" strokeWidth={14} strokeLinecap="round" fill="none" opacity={0.8} />
+      <rect x={480} y={330} width={620} height={22} rx={8} fill="#C98F5E" {...sw} strokeWidth={5} />
+      <rect x={480} y={470} width={620} height={22} rx={8} fill="#C98F5E" {...sw} strokeWidth={5} />
+      {['#FF7BA9', '#C94C8A', '#5BB8F0', '#5FD3A0', '#FFC94A', '#B692F6', '#FF7BA9', '#5BB8F0'].map((c, i) => (
+        <g key={i}>
+          <rect x={505 + i * 72} y={266} width={46} height={64} rx={14} fill={c} {...sw} strokeWidth={4} />
+          <rect x={518 + i * 72} y={246} width={20} height={24} rx={6} fill="#5B4A6E" />
+        </g>
+      ))}
+      {['#B692F6', '#FFC94A', '#5FD3A0', '#C94C8A', '#5BB8F0', '#FF7BA9', '#FFC94A', '#B692F6'].map((c, i) => (
+        <g key={i}>
+          <rect x={505 + i * 72} y={406} width={46} height={64} rx={14} fill={c} {...sw} strokeWidth={4} />
+          <rect x={518 + i * 72} y={386} width={20} height={24} rx={6} fill="#5B4A6E" />
+        </g>
+      ))}
+      <Counter top="#FFF7EC" front="#B692F6" stripe="#9A78DB" />
+    </Frame>
+  );
+}
+
+/** Petal Posies: a leafy green shop with a flower stand and buckets. */
+export function PosyShopBackdrop() {
+  return (
+    <Frame wall="#E4F8E6" stripe="#D5F1D8">
+      <Pennants colors={['#FF9EC4', '#FFC94A', '#B692F6']} />
+      <Window x={780} y={200} sea={false} />
+      <rect x={70} y={230} width={360} height={290} rx={20} fill="#3F6B4F" stroke="#8B5E3C" strokeWidth={18} />
+      <text x={250} y={300} textAnchor="middle" fontFamily="Fredoka, sans-serif" fontSize={50} fill="#FFF7EC">
+        Fresh Posies
+      </text>
+      {[
+        ['#FF7BA9', 150],
+        ['#FFC94A', 250],
+        ['#B692F6', 350],
+      ].map(([c, x]) => (
+        <g key={String(x)}>
+          <path d={`M${x},470 L${x},400`} stroke="#6CC38A" strokeWidth={8} strokeLinecap="round" />
+          <circle cx={Number(x)} cy={380} r={26} fill={String(c)} stroke="#FFF7EC" strokeWidth={5} />
+          <circle cx={Number(x)} cy={380} r={8} fill="#FFF7EC" opacity={0.8} />
+        </g>
+      ))}
+      <rect x={470} y={620} width={620} height={22} rx={8} fill="#C98F5E" {...sw} strokeWidth={5} />
+      {['#FF7BA9', '#FFC94A', '#B692F6', '#FF8A65', '#FFFFFF'].map((c, i) => (
+        <g key={i}>
+          <path d={`M${520 + i * 110},620 L${520 + i * 110},520`} stroke="#6CC38A" strokeWidth={8} strokeLinecap="round" />
+          <circle cx={520 + i * 110} cy={500} r={30} fill={c} {...sw} strokeWidth={4} />
+          <circle cx={520 + i * 110} cy={500} r={9} fill="#FFC94A" />
+        </g>
+      ))}
+      <Counter top="#FFF7EC" front="#6CC38A" stripe="#4FAE70" />
+    </Frame>
   );
 }
