@@ -14,6 +14,7 @@ const BANDS: Record<string, [number, number]> = {
   headwear: [25, 40],
   neck: [20, 35],
   bag: [30, 45],
+  eyewear: [25, 40],
 };
 
 describe('economy (game-systems §6)', () => {

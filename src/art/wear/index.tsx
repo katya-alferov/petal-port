@@ -628,6 +628,54 @@ export const WEAR_ART: Record<string, (p: WearArtProps) => ReactElement> = {
       <path d="M262,40 L265,48 L273,51 L265,54 L262,62 L259,54 L251,51 L259,48 Z" fill="#FFF7EC" stroke={OUTLINE} strokeWidth={1.5} />
     </g>
   ),
+  'wear/headwear/ribbon-bow': ({ main, accent }) => (
+    <g>
+      <g transform="translate(250,70)">
+        <Shaded d="M0,0 C-26,-30 -46,-22 -44,0 C-46,22 -26,30 0,0 Z" shade={main} depth={3} tint="main" />
+        <Shaded d="M0,0 C26,-30 46,-22 44,0 C46,22 26,30 0,0 Z" shade={main} depth={3} tint="main" />
+        <path
+          d="M-6,4 L-18,40 L-6,34 L0,44 L4,6 Z"
+          fill={accent.base}
+          stroke={OUTLINE}
+          strokeWidth={2.5}
+          strokeLinejoin="round"
+          data-tint="accent"
+        />
+        <path
+          d="M6,4 L20,38 L8,34 L2,44 L-2,6 Z"
+          fill={accent.base}
+          stroke={OUTLINE}
+          strokeWidth={2.5}
+          strokeLinejoin="round"
+          data-tint="accent"
+        />
+        <circle cx={0} cy={0} r={9} fill={accent.base} stroke={OUTLINE} strokeWidth={2.5} data-tint="accent" />
+      </g>
+    </g>
+  ),
+  'wear/neck/pearls': ({ main }) => (
+    <g data-tint="main">
+      {Array.from({ length: 9 }, (_, i) => {
+        const t = i / 8;
+        const x = 182 + t * 36;
+        const y = 246 + Math.sin(t * Math.PI) * 30;
+        return <circle key={`pearl${i}`} cx={x} cy={y} r={5.5} fill={main.base} stroke={OUTLINE} strokeWidth={2} />;
+      })}
+      <circle cx={196} cy={268} r={2} fill="#FFFFFF" opacity={0.9} />
+    </g>
+  ),
+  'wear/eyewear/star-glasses': ({ main }) => (
+    <g data-tint="main">
+      {[167, 233].map((cx) => (
+        <g key={cx}>
+          <path d={STAR(cx, 144, 28)} fill={main.shadow} opacity={0.82} stroke={OUTLINE} strokeWidth={6} strokeLinejoin="round" />
+          <path d={STAR(cx, 144, 28)} fill="none" stroke={main.base} strokeWidth={2.5} strokeLinejoin="round" />
+        </g>
+      ))}
+      <path d="M192,140 Q200,134 208,140" fill="none" stroke={OUTLINE} strokeWidth={6} strokeLinecap="round" />
+      <path d="M192,140 Q200,134 208,140" fill="none" stroke={main.base} strokeWidth={3} strokeLinecap="round" />
+    </g>
+  ),
   'wear/headwear/kitty-ears': ({ main, accent }) => (
     <g>
       {[0, 1].map((side) => (

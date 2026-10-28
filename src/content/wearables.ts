@@ -1,4 +1,5 @@
 // Wearables catalog: starters, Ribbon Boutique stock (prices per game-systems §6.4) and café rank gifts.
+import type { SwatchId } from './palette';
 import type { WearableDef, WearSlot } from './types';
 
 const starter = { kind: 'starter' } as const;
@@ -510,6 +511,127 @@ export const WEARABLES: WearableDef[] = [
     ],
   },
 ];
+
+// Boutique expansion (game-systems §28): colour variants of existing shapes plus a few new shapes.
+const variant = (baseId: string, id: string, name: string, price: number, main: SwatchId, accent: SwatchId): WearableDef => {
+  const base = WEARABLES.find((w) => w.id === baseId)!;
+  return {
+    ...base,
+    id,
+    name,
+    source: shop(price),
+    tints: base.tints.map((t) => ({ ...t, default: t.id === 'main' ? main : accent })),
+  };
+};
+
+WEARABLES.push(
+  variant('top.ruffle-blouse', 'top.mint-blouse', 'Mint Ruffle Blouse', 45, 'mint', 'cream'),
+  variant('top.ruffle-blouse', 'top.lilac-blouse', 'Lilac Ruffle Blouse', 45, 'lilac', 'sunshine'),
+  variant('top.tank-heart', 'top.sunny-tank', 'Sunny Heart Tank', 35, 'sunshine', 'coral'),
+  variant('top.tank-heart', 'top.sea-tank', 'Seaside Heart Tank', 35, 'sea', 'cream'),
+  variant('top.star-hoodie', 'top.berry-hoodie', 'Berry Star Hoodie', 55, 'berry', 'cream'),
+  variant('top.star-hoodie', 'top.mint-hoodie', 'Mint Star Hoodie', 55, 'mint', 'sunshine'),
+  variant('bottom.tutu', 'bottom.lilac-tutu', 'Lilac Tutu', 45, 'lilac', 'petal'),
+  variant('bottom.tutu', 'bottom.mint-tutu', 'Mint Tutu', 45, 'mint', 'cream'),
+  variant('bottom.denim-shorts', 'bottom.coral-shorts', 'Coral Shorts', 40, 'coral', 'cream'),
+  variant('bottom.pleated-skirt', 'bottom.berry-skirt', 'Berry Pleated Skirt', 40, 'berry', 'cream'),
+  variant('bottom.pleated-skirt', 'bottom.denim-skirt', 'Denim Pleated Skirt', 40, 'denim', 'sunshine'),
+  variant('bottom.star-leggings', 'bottom.sea-leggings', 'Ocean Star Leggings', 40, 'sea', 'sunshine'),
+  variant('dress.sundress', 'dress.lemon-sundress', 'Lemon Sundress', 80, 'sunshine', 'cream'),
+  variant('dress.sundress', 'dress.mint-sundress', 'Mint Sundress', 80, 'mint', 'coral'),
+  variant('dress.party', 'dress.lilac-party', 'Lilac Party Dress', 90, 'lilac', 'petal'),
+  variant('dress.party', 'dress.sea-party', 'Sea Party Dress', 90, 'sea', 'sunshine'),
+  variant('dress.princess-gown', 'dress.sea-gown', 'Mermaid Gown', 90, 'sea', 'mint'),
+  variant('dress.princess-gown', 'dress.sunny-gown', 'Golden Gown', 90, 'sunshine', 'coral'),
+  variant('outerwear.denim-jacket', 'outerwear.pink-jacket', 'Pink Jacket', 70, 'petal', 'cream'),
+  variant('outerwear.denim-jacket', 'outerwear.mint-jacket', 'Mint Jacket', 70, 'mint', 'denim'),
+  variant('shoes.ballet-flats', 'shoes.lilac-flats', 'Lilac Ballet Flats', 40, 'lilac', 'cream'),
+  variant('shoes.ballet-flats', 'shoes.coral-flats', 'Coral Ballet Flats', 40, 'coral', 'cream'),
+  variant('shoes.rain-boots', 'shoes.pink-boots', 'Pink Rain Boots', 50, 'petal', 'cream'),
+  variant('shoes.rain-boots', 'shoes.sunny-boots', 'Sunny Rain Boots', 50, 'sunshine', 'cream'),
+  variant('shoes.jelly-sandals', 'shoes.mint-sandals', 'Mint Jelly Sandals', 40, 'mint', 'cream'),
+  variant('headwear.beret', 'headwear.berry-beret', 'Berry Beret', 35, 'berry', 'cream'),
+  variant('headwear.beret', 'headwear.sea-beret', 'Seaside Beret', 35, 'sea', 'cream'),
+  variant('headwear.bow-headband', 'headwear.lilac-headband', 'Lilac Bow Headband', 25, 'lilac', 'cream'),
+  variant('headwear.bucket-hat', 'headwear.coral-bucket', 'Coral Bucket Hat', 35, 'coral', 'cream'),
+  variant('headwear.kitty-ears', 'headwear.bunny-ears', 'Pink Kitty Ears', 30, 'petal', 'cream'),
+  variant('headwear.tiara', 'headwear.sea-tiara', 'Sea Crown', 40, 'sea', 'sunshine'),
+  variant('neck.scarf', 'neck.berry-scarf', 'Berry Scarf', 35, 'berry', 'cream'),
+  variant('neck.heart-necklace', 'neck.sun-necklace', 'Sunshine Necklace', 20, 'sunshine', 'cream'),
+  variant('bag.heart-purse', 'bag.mint-purse', 'Mint Purse', 30, 'mint', 'cream'),
+  variant('bag.heart-purse', 'bag.lilac-purse', 'Lilac Purse', 30, 'lilac', 'cream'),
+  variant('bag.picnic-basket', 'bag.berry-basket', 'Berry Basket', 35, 'berry', 'cream'),
+  variant('bag.star-purse', 'bag.sea-star-purse', 'Ocean Star Purse', 40, 'sea', 'sunshine'),
+  variant('eyewear.heart-sunglasses', 'eyewear.sunny-hearts', 'Sunny Heart Glasses', 30, 'sunshine', 'cream'),
+  variant('eyewear.heart-sunglasses', 'eyewear.mint-hearts', 'Mint Heart Glasses', 30, 'mint', 'cream'),
+  variant('eyewear.round-glasses', 'eyewear.berry-glasses', 'Berry Round Glasses', 25, 'berry', 'cream'),
+  {
+    id: 'headwear.ribbon-bow',
+    type: 'wearable',
+    slot: 'headwear',
+    name: 'Big Ribbon Bow',
+    source: shop(30),
+    tags: ['party', 'cute'],
+    art: 'wear/headwear/ribbon-bow',
+    tints: [
+      { id: 'main', default: 'petal' },
+      { id: 'accent', default: 'sunshine' },
+    ],
+  },
+  {
+    id: 'headwear.ribbon-bow-blue',
+    type: 'wearable',
+    slot: 'headwear',
+    name: 'Blue Ribbon Bow',
+    source: shop(30),
+    tags: ['party', 'cute'],
+    art: 'wear/headwear/ribbon-bow',
+    tints: [
+      { id: 'main', default: 'sea' },
+      { id: 'accent', default: 'cream' },
+    ],
+  },
+  {
+    id: 'neck.pearls',
+    type: 'wearable',
+    slot: 'neck',
+    name: 'Pearl Necklace',
+    source: shop(35),
+    tags: ['party', 'fancy'],
+    art: 'wear/neck/pearls',
+    tints: [{ id: 'main', default: 'cream' }],
+  },
+  {
+    id: 'neck.pearls-pink',
+    type: 'wearable',
+    slot: 'neck',
+    name: 'Rose Pearls',
+    source: shop(35),
+    tags: ['party', 'fancy'],
+    art: 'wear/neck/pearls',
+    tints: [{ id: 'main', default: 'petal' }],
+  },
+  {
+    id: 'eyewear.star-glasses',
+    type: 'wearable',
+    slot: 'eyewear',
+    name: 'Star Glasses',
+    source: shop(35),
+    tags: ['party', 'sparkly'],
+    art: 'wear/eyewear/star-glasses',
+    tints: [{ id: 'main', default: 'sunshine' }],
+  },
+  {
+    id: 'eyewear.star-glasses-lilac',
+    type: 'wearable',
+    slot: 'eyewear',
+    name: 'Lilac Star Glasses',
+    source: shop(35),
+    tags: ['party', 'sparkly'],
+    art: 'wear/eyewear/star-glasses',
+    tints: [{ id: 'main', default: 'lilac' }],
+  },
+);
 
 export function wearable(id: string): WearableDef | undefined {
   return WEARABLES.find((w) => w.id === id);

@@ -691,3 +691,8 @@ Wave B adds a dress-up goal, an exploration collection and more doll-style cloth
 ## 27. Home and Bedroom screen rules (Wave F)
 
 - Decorating the living room hides the player's character until Done; the Bedroom is a button in the home button row (no door art, so nothing in the room is covered). In the Bedroom the design options (tabs and choices) appear only after pressing **Design**, and **Done** hides them again.
+
+## 28. Boutique expansion and gift previews (Wave G)
+
+- The Ribbon Boutique now sells about **40 more wearables** (every slot, mostly new colourways of existing shapes plus new shapes: Big Ribbon Bow, Pearl Necklace, Star Glasses) and **26 more home items** (rugs, wall prints, plants incl. Tulip Pot, lamps incl. Cloud Lamp, seats incl. Cosy Beanbag, curtains, Tea Party Table, shelves). Prices stay inside the §6.4 bands; eyewear is **25–40**. Trying on is still free.
+- Notice Board, Friends tab: each friend row shows a small picture of the gift they give at 4 hearts, labelled "Gift", which turns to "✓ Got it" once the gift is earned.

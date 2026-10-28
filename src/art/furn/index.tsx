@@ -91,6 +91,65 @@ export const FURN_ART: Record<string, (p: FurnArtProps) => ReactElement> = {
       <rect x={62} y={62} width={176} height={156} fill="none" stroke={OUTLINE} strokeWidth={3} />
     </g>
   ),
+  'furn/seat/beanbag': ({ main, accent }) => (
+    <g>
+      <Shaded d="M40,296 C24,250 50,170 150,160 C250,170 276,250 260,296 Z" shade={main} shine={[84, 196, 12, 22]} />
+      <path d="M64,220 C110,206 190,206 236,220" fill="none" stroke={accent.base} strokeWidth={6} strokeLinecap="round" />
+      <path d="M150,162 C148,190 148,206 150,214" fill="none" stroke={OUTLINE} strokeWidth={3} strokeLinecap="round" />
+    </g>
+  ),
+  'furn/lamp/cloud': ({ main, accent }) => (
+    <g>
+      <path d="M150,290 L150,170" stroke={OUTLINE} strokeWidth={14} strokeLinecap="round" />
+      <path d="M150,290 L150,170" stroke={BRASS.base} strokeWidth={7} strokeLinecap="round" />
+      <Shaded d="M110,290 C110,278 128,272 150,272 C172,272 190,278 190,290 Z" shade={BRASS} depth={3} />
+      <Shaded
+        d="M82,160 C60,160 54,130 80,122 C78,92 118,78 140,96 C156,70 206,80 208,114 C240,112 250,152 222,160 Z"
+        shade={main}
+        shine={[110, 100, 12, 10]}
+      />
+      <circle cx={132} cy={132} r={5} fill={OUTLINE} />
+      <circle cx={168} cy={132} r={5} fill={OUTLINE} />
+      <path d="M140,144 Q150,152 160,144" fill="none" stroke={OUTLINE} strokeWidth={3} strokeLinecap="round" />
+      <circle cx={118} cy={142} r={7} fill={accent.base} opacity={0.7} />
+      <circle cx={182} cy={142} r={7} fill={accent.base} opacity={0.7} />
+    </g>
+  ),
+  'furn/plant/tulips': ({ main }) => (
+    <g>
+      {[
+        [120, 120],
+        [150, 96],
+        [180, 124],
+      ].map(([x, y]) => (
+        <g key={`t${x}`}>
+          <path d={`M${x},232 C${x},190 ${x},150 ${x},${y + 30}`} stroke={OUTLINE} strokeWidth={12} strokeLinecap="round" fill="none" />
+          <path d={`M${x},232 C${x},190 ${x},150 ${x},${y + 30}`} stroke={LEAF.base} strokeWidth={6} strokeLinecap="round" fill="none" />
+          <Shaded
+            d={`M${x - 20},${y} C${x - 20},${y + 34} ${x + 20},${y + 34} ${x + 20},${y} L${x + 10},${y - 18} L${x},${y - 4} L${x - 10},${y - 18} Z`}
+            shade={{ base: '#FF7BA9', shadow: '#D65A87', highlight: '#FFB3CD' }}
+            depth={3}
+          />
+        </g>
+      ))}
+      <Shaded d="M106,236 L194,236 L184,296 L116,296 Z" shade={main} depth={4} shine={[124, 250, 6, 10]} />
+      <rect x={100} y={228} width={100} height={16} rx={6} fill={main.base} stroke={OUTLINE} strokeWidth={3} />
+    </g>
+  ),
+  'furn/table/tea': ({ main, accent }) => (
+    <g>
+      <path d="M96,296 L108,200 M204,296 L192,200" stroke={OUTLINE} strokeWidth={14} strokeLinecap="round" />
+      <path d="M96,296 L108,200 M204,296 L192,200" stroke={WOOD.base} strokeWidth={7} strokeLinecap="round" />
+      <Shaded
+        d="M70,196 C70,186 100,182 150,182 C200,182 230,186 230,196 C230,206 200,210 150,210 C100,210 70,206 70,196 Z"
+        shade={main}
+        depth={4}
+      />
+      <Shaded d="M116,182 C112,150 128,140 150,140 C172,140 188,150 184,182 Z" shade={accent} depth={3} shine={[128, 154, 8, 10]} />
+      <path d="M184,160 C204,158 206,178 188,178" fill="none" stroke={OUTLINE} strokeWidth={5} strokeLinecap="round" />
+      <circle cx={150} cy={134} r={7} fill={accent.base} stroke={OUTLINE} strokeWidth={3} />
+    </g>
+  ),
   'furn/lamp/arc': ({ main }) => (
     <g>
       <path d="M232,284 C240,160 190,60 96,56" fill="none" stroke={OUTLINE} strokeWidth={14} strokeLinecap="round" />

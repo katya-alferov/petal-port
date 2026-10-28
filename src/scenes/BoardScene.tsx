@@ -154,6 +154,16 @@ export function BoardScene() {
                           : 'Best friends forever!'}
                   </span>
                 </div>
+                <div
+                  className="gift-box"
+                  data-got={h >= GIFT_AT}
+                  data-testid={`gift-${r.id}`}
+                  role="img"
+                  aria-label={`${itemName(r.gift)}${h >= GIFT_AT ? ' (received)' : ''}`}
+                >
+                  <GiftThumb id={r.gift} />
+                  <span className="gift-tag">{h >= GIFT_AT ? '✓ Got it' : 'Gift'}</span>
+                </div>
                 {h >= VISIT_AT && (
                   <Button
                     onClick={() => {
