@@ -676,6 +676,261 @@ export const WEAR_ART: Record<string, (p: WearArtProps) => ReactElement> = {
       <path d="M192,140 Q200,134 208,140" fill="none" stroke={main.base} strokeWidth={3} strokeLinecap="round" />
     </g>
   ),
+  'wear/top/stripe-tee': ({ main, accent }) => (
+    <Shaded d={TEE} shade={main} shine={[176, 290, 16, 34]} tint="main">
+      {[286, 312, 338, 364, 390].map((y) => (
+        <rect key={`st${y}`} x={130} y={y} width={140} height={11} fill={accent.base} data-tint="accent" />
+      ))}
+    </Shaded>
+  ),
+  'wear/top/polka-tank': ({ main, accent }) => (
+    <Shaded d={TANK} shade={main} shine={[176, 286, 14, 30]} tint="main">
+      {[
+        [180, 290],
+        [220, 290],
+        [200, 322],
+        [170, 346],
+        [230, 346],
+        [200, 376],
+        [172, 392],
+        [228, 392],
+      ].map(([x, y]) => (
+        <circle key={`pk${x}-${y}`} cx={x} cy={y} r={7} fill={accent.base} data-tint="accent" />
+      ))}
+    </Shaded>
+  ),
+  'wear/top/bow-sweater': ({ main, accent }) => (
+    <g>
+      <Shaded d={TEE} shade={main} shine={[172, 284, 20, 32]} tint="main">
+        <rect x={130} y={396} width={140} height={14} fill={main.shadow} />
+        <path d="M156,372 L244,372" stroke={accent.base} strokeWidth={5} data-tint="accent" />
+      </Shaded>
+      <g transform="translate(200,262)">
+        <Shaded d="M0,0 C-22,-16 -34,-8 -30,6 C-26,18 -12,12 0,0 Z" shade={accent} depth={3} tint="accent" />
+        <Shaded d="M0,0 C22,-16 34,-8 30,6 C26,18 12,12 0,0 Z" shade={accent} depth={3} tint="accent" />
+        <circle cx={0} cy={0} r={6} fill={accent.shadow} stroke={OUTLINE} strokeWidth={2} />
+      </g>
+    </g>
+  ),
+  'wear/bottom/rainbow-skirt': ({ main }) => (
+    <Shaded d={SKIRT} shade={main} shine={[176, 450, 14, 30]} tint="main">
+      {['#FF7BA9', '#FFC94A', '#7ED6A7', '#3BB7C4', '#B39DFF'].map((c, i) => (
+        <rect key={c} x={110} y={470 + i * 14} width={180} height={14} fill={c} />
+      ))}
+      <rect x={130} y={384} width={140} height={14} fill={main.shadow} />
+    </Shaded>
+  ),
+  'wear/bottom/daisy-skirt': ({ main, accent }) => (
+    <Shaded d={SKIRT} shade={main} shine={[176, 450, 14, 30]} tint="main">
+      {[
+        [170, 440],
+        [226, 430],
+        [200, 484],
+        [150, 510],
+        [250, 504],
+      ].map(([x, y]) => (
+        <Flower key={`dz${x}-${y}`} x={x} y={y} r={8} petal="#FFFFFF" center={accent.base} />
+      ))}
+      <rect x={130} y={384} width={140} height={14} fill={accent.base} data-tint="accent" />
+    </Shaded>
+  ),
+  'wear/dress/polka-dress': ({ main, accent }) => (
+    <g>
+      <Shaded d={DRESS} shade={main} shine={[176, 300, 16, 36]} tint="main">
+        {[
+          [170, 300],
+          [226, 304],
+          [198, 340],
+          [150, 430],
+          [240, 440],
+          [196, 470],
+          [150, 520],
+          [244, 524],
+          [198, 556],
+        ].map(([x, y]) => (
+          <circle key={`pd${x}-${y}`} cx={x} cy={y} r={9} fill="#FFFFFF" />
+        ))}
+        <rect x={140} y={362} width={120} height={14} fill={accent.base} data-tint="accent" />
+      </Shaded>
+      <g transform="translate(200,369)">
+        <Shaded d="M0,0 C-22,-14 -32,-6 -28,8 C-24,18 -10,12 0,0 Z" shade={accent} depth={3} tint="accent" />
+        <Shaded d="M0,0 C22,-14 32,-6 28,8 C24,18 10,12 0,0 Z" shade={accent} depth={3} tint="accent" />
+      </g>
+    </g>
+  ),
+  'wear/dress/berry-dress': ({ main, accent }) => (
+    <Shaded d={DRESS} shade={main} shine={[176, 300, 16, 36]} tint="main">
+      {[
+        [170, 430],
+        [236, 450],
+        [200, 500],
+        [150, 540],
+        [250, 540],
+      ].map(([x, y]) => (
+        <g key={`by${x}-${y}`}>
+          <path
+            d={`M${x},${y + 16} C${x - 18},${y + 4} ${x - 14},${y - 12} ${x},${y - 8} C${x + 14},${y - 12} ${x + 18},${y + 4} ${x},${y + 16} Z`}
+            fill={accent.base}
+            stroke={OUTLINE}
+            strokeWidth={1.5}
+            data-tint="accent"
+          />
+          <path d={`M${x - 7},${y - 8} L${x},${y - 14} L${x + 7},${y - 8}`} fill="none" stroke="#3F7F5A" strokeWidth={3} />
+        </g>
+      ))}
+      <rect x={140} y={362} width={120} height={14} fill={main.shadow} />
+    </Shaded>
+  ),
+  'wear/outerwear/poncho': ({ main, accent }) => (
+    <Shaded
+      d={`M146,254 C150,246 166,242 182,240 C188,257 212,257 218,240 C234,242 250,246 254,254 C276,300 286,350 290,404${scallopHem(290, 110, 404, 8, 12)} C114,350 124,300 146,254 Z`}
+      shade={main}
+      shine={[160, 320, 14, 40]}
+      tint="main"
+    >
+      {[300, 332, 364].map((y) => (
+        <path key={`pc${y}`} d={`M100,${y} L300,${y}`} stroke={accent.base} strokeWidth={8} data-tint="accent" />
+      ))}
+    </Shaded>
+  ),
+  'wear/shoes/star-sneakers': ({ main, accent }) => (
+    <Pair>
+      <g>
+        <Shaded d={SNEAKER} shade={main} depth={4} shine={[168, 750, 7, 4]} tint="main" />
+        <path d="M156,771 C170,776 192,776 203,770" fill="none" stroke="#FFFFFF" strokeWidth={4} />
+        <path d={STAR(182, 757, 8)} fill={accent.base} stroke={OUTLINE} strokeWidth={1.5} data-tint="accent" />
+      </g>
+    </Pair>
+  ),
+  'wear/headwear/party-hat': ({ main, accent }) => (
+    <g>
+      <Shaded d="M164,66 C176,40 190,16 200,-14 C210,16 224,40 236,66 C212,74 188,74 164,66 Z" shade={main} depth={5} tint="main">
+        {[
+          [190, 50],
+          [210, 40],
+          [200, 24],
+          [220, 60],
+        ].map(([x, y]) => (
+          <circle key={`ph${x}-${y}`} cx={x} cy={y} r={4} fill={accent.base} data-tint="accent" />
+        ))}
+      </Shaded>
+      <circle cx={200} cy={-14} r={9} fill={accent.base} stroke={OUTLINE} strokeWidth={2.5} data-tint="accent" />
+    </g>
+  ),
+  'wear/headwear/butterfly-clips': ({ main, accent }) => (
+    <g>
+      {[
+        [148, 82, 1],
+        [254, 104, -1],
+      ].map(([x, y, f]) => (
+        <g key={`bc${x}`} transform={`translate(${x},${y}) scale(${f},1)`}>
+          <Shaded d="M0,0 C-6,-22 -26,-26 -26,-8 C-26,6 -10,8 0,0 Z" shade={main} depth={3} tint="main" />
+          <Shaded d="M0,0 C-4,14 -20,20 -18,6 C-16,-2 -8,-2 0,0 Z" shade={accent} depth={2} tint="accent" />
+          <path d="M0,0 L6,-10" stroke={OUTLINE} strokeWidth={2} strokeLinecap="round" />
+        </g>
+      ))}
+    </g>
+  ),
+  'wear/neck/bandana': ({ main, accent }) => (
+    <Shaded d="M166,246 C184,262 216,262 234,246 L214,296 C206,302 194,302 186,296 Z" shade={main} depth={3} tint="main">
+      {[
+        [190, 272],
+        [210, 272],
+        [200, 286],
+      ].map(([x, y]) => (
+        <circle key={`bn${x}-${y}`} cx={x} cy={y} r={3.5} fill={accent.base} data-tint="accent" />
+      ))}
+    </Shaded>
+  ),
+  'wear/neck/flower-garland': ({ main, accent }) => (
+    <g>
+      <path d="M180,246 C186,276 214,276 220,246" fill="none" stroke="#3F7F5A" strokeWidth={4} />
+      {[
+        [182, 254],
+        [190, 268],
+        [200, 273],
+        [210, 268],
+        [218, 254],
+      ].map(([x, y], i) => (
+        <Flower key={`fg${x}`} x={x} y={y} r={5} petal={i % 2 ? accent.base : main.base} center="#FFC94A" />
+      ))}
+    </g>
+  ),
+  'wear/bag/round-bag': ({ main, accent }) => (
+    <g>
+      <Limb
+        pts={[
+          [226, 248],
+          [250, 330],
+          [256, 404],
+        ]}
+        width={5}
+        shade={main}
+      />
+      <Shaded
+        d="M232,430 C232,406 280,406 280,430 C280,456 232,456 232,430 Z"
+        shade={main}
+        depth={4}
+        shine={[246, 420, 6, 4]}
+        tint="main"
+      />
+      <path d="M236,430 L276,430" stroke={accent.base} strokeWidth={3} data-tint="accent" />
+      <circle cx={256} cy={430} r={4} fill={accent.base} stroke={OUTLINE} strokeWidth={1.5} data-tint="accent" />
+    </g>
+  ),
+  'wear/bag/berry-bag': ({ main, accent }) => (
+    <g>
+      <Limb
+        pts={[
+          [226, 248],
+          [250, 330],
+          [256, 404],
+        ]}
+        width={5}
+        shade={accent}
+      />
+      <Shaded
+        d="M256,456 C226,440 226,408 256,412 C286,408 286,440 256,456 Z"
+        shade={main}
+        depth={4}
+        shine={[244, 424, 6, 4]}
+        tint="main"
+      />
+      <path d="M244,412 L256,402 L268,412" fill="none" stroke="#3F7F5A" strokeWidth={4} strokeLinecap="round" />
+      {[
+        [246, 428],
+        [264, 430],
+        [256, 442],
+      ].map(([x, y]) => (
+        <circle key={`bb${x}`} cx={x} cy={y} r={1.8} fill={accent.highlight} />
+      ))}
+    </g>
+  ),
+  'wear/eyewear/cat-eye-glasses': ({ main }) => (
+    <g data-tint="main">
+      {[0, 1].map((side) => (
+        <g key={`ce${side}`} transform={side ? mirrorX(200) : undefined}>
+          <path
+            d="M146,130 C160,132 182,134 190,142 C190,160 176,166 164,164 C150,162 144,150 146,130 Z"
+            fill="#FFFFFF"
+            opacity={0.35}
+            stroke={OUTLINE}
+            strokeWidth={6}
+            strokeLinejoin="round"
+          />
+          <path
+            d="M146,130 C160,132 182,134 190,142 C190,160 176,166 164,164 C150,162 144,150 146,130 Z"
+            fill="none"
+            stroke={main.base}
+            strokeWidth={2.5}
+            strokeLinejoin="round"
+          />
+        </g>
+      ))}
+      <path d="M190,142 Q200,136 210,142" fill="none" stroke={OUTLINE} strokeWidth={6} strokeLinecap="round" />
+      <path d="M190,142 Q200,136 210,142" fill="none" stroke={main.base} strokeWidth={3} strokeLinecap="round" />
+    </g>
+  ),
   'wear/headwear/kitty-ears': ({ main, accent }) => (
     <g>
       {[0, 1].map((side) => (
