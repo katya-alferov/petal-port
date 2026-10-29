@@ -25,7 +25,23 @@ import { SALON_MENU, SEEDS } from '../content/wavec';
 import { BLOOM_AT, grow, pickBloom, plant, stage } from './garden';
 import { seasonFor } from './season';
 import { dancePay, danceOrders, MOVES, ROUTINES_PER_SHIFT, stepMove } from './dance';
-import { cleared, course, OBSTACLES, reachTime, runEnd, SKATE_PAY, SLACK, skatePay, SPEED } from './skate';
+import {
+  caught,
+  cleared,
+  course,
+  heightAt,
+  OBSTACLES,
+  reachTime,
+  runEnd,
+  SKATE_PAY,
+  SLACK,
+  skatePay,
+  SPEED,
+  stars,
+  STARS,
+  tap,
+  trick,
+} from './skate';
 import { nextGoals } from './goals';
 import { addDesign, checkCupcake, designKey, MAX_DESIGNS, sweetOrders, sweetPay } from './sweets';
 import { SWEET_MENU } from '../content/sweets';
@@ -543,19 +559,75 @@ describe('Skate Park (§16)', () => {
     expect(course(1)).toEqual(c);
     expect(course(2)).not.toEqual(c);
   });
+  it('a tap jumps, a second tap in the air double-jumps higher, and taps on the way down are ignored', () => {
+    let f = tap([], 1);
+    expect(f).toHaveLength(1);
+    expect(heightAt(f, 1.4)).toBeCloseTo(1, 1); // single-jump peak, 0.4 s in
+    expect(tap(f, 1.05)).toBe(f); // too soon for a double
+    f = tap(f, 1.4);
+    expect(f).toHaveLength(2);
+    expect(f[1].double).toBe(true);
+    expect(heightAt(f, 1.8)).toBeGreaterThan(1.8);
+    expect(tap(f, 1.9)).toBe(f); // already doubled
+    expect(heightAt(f, 3)).toBe(0);
+    expect(tap(f, 3)).toHaveLength(3); // a fresh jump from the ground
+  });
+  it('the course has 2 walls and 6 sky stars that only a double jump can reach', () => {
+    const c = course(1);
+    expect(c.filter((o) => o.kind === 'wall')).toHaveLength(2);
+    expect(stars(1)).toHaveLength(STARS);
+    const st = stars(1)[0];
+    const single = tap([], reachTime(st) - 0.4);
+    expect(caught(st, single)).toBe(false);
+    const dbl = tap(single, reachTime(st) - 0.4 + 0.35);
+    expect(caught(st, dbl)).toBe(true);
+  });
   it('an obstacle is cleared only when the jump covers the moment it reaches the skater', () => {
-    const o = course(1)[0];
+    const o = course(1).find((x) => x.kind !== 'wall')!;
     const reach = reachTime(o);
-    expect(cleared(o, reach - 0.3)).toBe(true);
-    expect(cleared(o, reach - 1.2)).toBe(false);
-    expect(cleared(o, reach + 0.3)).toBe(false);
-    expect(cleared(o, null)).toBe(false);
-    expect(cleared(o, reach - 0.8 - SLACK / SPEED / 2)).toBe(true);
+    expect(cleared(o, tap([], reach - 0.4))).toBe(true);
+    expect(cleared(o, tap([], reach - 1.2))).toBe(false);
+    expect(cleared(o, tap([], reach + 0.3))).toBe(false);
+    expect(cleared(o, [])).toBe(false);
+    expect(cleared(o, tap([], reach - 0.8 - SLACK / SPEED / 2))).toBe(true);
+  });
+  it('a wall needs a double jump, and a high clear is a spin trick', () => {
+    const w = course(1).find((x) => x.kind === 'wall')!;
+    const reach = reachTime(w);
+    const single = tap([], reach - 0.4);
+    expect(cleared(w, single)).toBe(false);
+    const dbl = tap(single, reach - 0.4 + 0.3);
+    expect(cleared(w, dbl)).toBe(true);
+    expect(trick(w, dbl)).toBe(true);
+    const o = course(1).find((x) => x.kind === 'cone' || x.kind === 'rail' || x.kind === 'ramp')!;
+    expect(trick(o, tap([], reachTime(o) - 0.4))).toBe(false);
+  });
+  it('a perfect run (8 obstacles, 6 stars, tricks on walls) is possible on every course', () => {
+    for (let run = 1; run <= 30; run++) {
+      let f: ReturnType<typeof tap> = [];
+      const events: { at: number; kind: 'single' | 'double' }[] = [];
+      for (const o of course(run)) events.push({ at: reachTime(o), kind: o.kind === 'wall' ? 'double' : 'single' });
+      const sk = stars(run);
+      for (const i of [0, 3]) events.push({ at: reachTime(sk[i + 1]), kind: 'double' });
+      for (const e of events.sort((x, y) => x.at - y.at)) {
+        if (e.kind === 'single') f = tap(f, e.at - 0.4);
+        else f = tap(tap(f, e.at - 0.8), e.at - 0.4);
+      }
+      expect(
+        course(run).every((o) => cleared(o, f)),
+        `run ${run} obstacles`,
+      ).toBe(true);
+      expect(
+        sk.every((st) => caught(st, f)),
+        `run ${run} stars`,
+      ).toBe(true);
+    }
   });
   it('pays 20 for rolling, 3 per obstacle and 10 for a perfect run', () => {
     expect(skatePay(0)).toBe(SKATE_PAY);
     expect(skatePay(5)).toBe(35);
     expect(skatePay(8)).toBe(20 + 24 + 10);
+    expect(skatePay(8, 6, 2)).toBe(20 + 24 + 10 + 12 + 4);
     expect(runEnd(course(1))).toBeGreaterThan(reachTime(course(1)[7]));
   });
   it('old saves get empty dance and skate records', () => {
@@ -564,7 +636,7 @@ describe('Skate Park (§16)', () => {
     delete raw.progress.skate;
     const p = sanitize(raw, SAVE_CONTEXT).progress;
     expect(p.dance).toEqual({ routines: 0, shifts: 0 });
-    expect(p.skate).toEqual({ runs: 0, best: 0 });
+    expect(p.skate).toEqual({ runs: 0, best: 0, stars: 0, tricks: 0 });
   });
 });
 

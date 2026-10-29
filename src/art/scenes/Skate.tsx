@@ -59,6 +59,20 @@ export function SkateObstacle({ kind, x }: { kind: string; x: number }) {
         <rect x={126} y={-40} width={9} height={40} fill="#8E86A0" {...sw} />
       </g>
     );
+  if (kind === 'wall')
+    return (
+      <g transform={`translate(${x} ${GROUND_Y})`}>
+        <rect x={0} y={-80} width={46} height={80} rx={4} fill="#FF9BBE" {...sw} />
+        {[-60, -40, -20].map((y) => (
+          <path key={y} d={`M0,${y} L46,${y}`} stroke="#5B4A6E" strokeWidth={3} />
+        ))}
+        {[-70, -30].map((y) => (
+          <path key={y} d={`M23,${y - 10} L23,${y + 10}`} stroke="#5B4A6E" strokeWidth={3} />
+        ))}
+        <path d="M-6,-92 L23,-112 L52,-92" fill="none" stroke="#5B4A6E" strokeWidth={4} strokeLinecap="round" strokeLinejoin="round" />
+        <path d="M-6,-92 L23,-112 L52,-92" fill="none" stroke="#FFC94A" strokeWidth={2} strokeLinecap="round" strokeLinejoin="round" />
+      </g>
+    );
   return (
     <g transform={`translate(${x} ${GROUND_Y})`}>
       <path d="M0,0 L120,0 L120,-56 Z" fill="#FFC94A" {...sw} />
@@ -74,5 +88,20 @@ export function Board() {
       <circle cx={34} cy={30} r={8} fill="#FFF7EC" {...sw} />
       <circle cx={106} cy={30} r={8} fill="#FFF7EC" {...sw} />
     </svg>
+  );
+}
+
+/** A sky star floating `lift` units above the ground, centred on `x`. */
+export function SkyStar({ x, lift }: { x: number; lift: number }) {
+  const pts = Array.from({ length: 10 }, (_, i) => {
+    const ang = -Math.PI / 2 + (i * Math.PI) / 5;
+    const r = i % 2 ? 9 : 20;
+    return `${(Math.cos(ang) * r).toFixed(1)},${(Math.sin(ang) * r).toFixed(1)}`;
+  }).join(' ');
+  return (
+    <g transform={`translate(${x} ${GROUND_Y - lift})`} data-testid="sky-star">
+      <polygon points={pts} fill="#FFC94A" {...sw} strokeLinejoin="round" />
+      <circle cx={-4} cy={-4} r={3} fill="#FFF7EC" />
+    </g>
   );
 }

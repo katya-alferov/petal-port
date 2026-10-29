@@ -232,6 +232,48 @@ test('kitchen: cook pancakes start to finish and see them on the table', async (
   await shot(page, '12-home-with-dish');
 });
 
+test('kitchen: the grilled cheese and the choco cookies can be cooked after their recipes unlock', async ({ page }) => {
+  await page.goto('./?fixture=fresh&scene=home');
+  await page.evaluate(() => {
+    const g = (
+      window as unknown as {
+        __petal: {
+          getState: () => { save: { progress: { recipes: object } } & object };
+          setState: (s: object) => void;
+        };
+      }
+    ).__petal;
+    const save = g.getState().save;
+    const done = { cooked: 1, stars: 1 };
+    g.setState({
+      save: { ...save, progress: { ...save.progress, recipes: { 'recipe.omelette': done, 'recipe.waffles': done } } },
+    });
+  });
+  await page.getByTestId('home-cook').click();
+  await page.getByTestId('recipe-recipe.sandwich').click();
+  for (const id of ['ing.bread', 'ing.cheese', 'ing.butter']) await page.getByTestId(`ing-${id}`).click();
+  await expect(page.getByTestId('step-heat')).toBeVisible();
+  await page.waitForTimeout(2500);
+  await page.getByTestId('flip').click();
+  await expect(page.getByTestId('cook-result')).toBeVisible();
+  await page.getByTestId('deco-deco.tomato').click();
+  await shot(page, '13-grilled-cheese');
+  await page.getByTestId('deco-done').click();
+  await expect(page.getByTestId('cook-card')).toContainText(/\+(20|40) coins/);
+  await page.getByTestId('cook-home').click();
+  await page.getByTestId('home-cook').click();
+  await page.getByTestId('recipe-recipe.cookies').click();
+  for (const id of ['ing.flour', 'ing.butter', 'ing.egg', 'deco.chocolate']) await page.getByTestId(`ing-${id}`).click();
+  for (let i = 0; i < 6; i++) await page.getByTestId('whisk').click();
+  await page.getByTestId('pour').click();
+  await page.waitForTimeout(3200);
+  await page.getByTestId('flip').click();
+  await page.getByTestId('deco-deco.sprinkles').click();
+  await shot(page, '14-choco-cookies');
+  await page.getByTestId('deco-done').click();
+  await expect(page.getByTestId('cook-card')).toContainText(/\+(20|40) coins/);
+});
+
 test('town: every place opens a card; the airport opens', async ({ page }) => {
   await page.goto('./?fixture=fresh&scene=town');
   const tapPlace = async (id: string) => {
@@ -616,10 +658,11 @@ test('skate park: a run always finishes, pays for rolling and for each obstacle 
   } finally {
     clearInterval(jumper);
   }
+  await expect(page.getByTestId('skate-extras')).toContainText('sky stars');
   const text = (await page.getByTestId('skate-coins').textContent()) ?? '';
   const coins = Number(text.replace(/\D/g, ''));
   expect(coins).toBeGreaterThanOrEqual(20);
-  expect(coins).toBeLessThanOrEqual(20 + 8 * 3 + 10);
+  expect(coins).toBeLessThanOrEqual(20 + 8 * 3 + 10 + 6 * 2 + 8 * 2);
 });
 
 test('bedroom: choices change the room and are remembered', async ({ page }) => {

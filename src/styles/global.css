@@ -2137,8 +2137,14 @@ g[role='button']:focus-visible {
   width: 100%;
   height: 100%;
 }
-.skater[data-jumping='true'] {
-  animation: skate-jump 0.8s ease-in-out;
+.skater-body[data-tricked='true'] {
+  animation: 0.6s ease-in-out both;
+}
+.skater-body[data-tricked='true'][data-spin='a'] {
+  animation-name: skate-spin-a;
+}
+.skater-body[data-tricked='true'][data-spin='b'] {
+  animation-name: skate-spin-b;
 }
 .skater[data-bump='true'] .skater-body {
   animation: skate-bump 0.5s ease-in-out;
@@ -2150,9 +2156,14 @@ g[role='button']:focus-visible {
   bottom: -2%;
   height: 12%;
 }
-@keyframes skate-jump {
-  50% {
-    transform: translateY(-34%);
+@keyframes skate-spin-a {
+  to {
+    transform: rotate(360deg);
+  }
+}
+@keyframes skate-spin-b {
+  to {
+    transform: rotate(360deg);
   }
 }
 @keyframes skate-bump {

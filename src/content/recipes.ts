@@ -107,6 +107,30 @@ export const RECIPES: RecipeDef[] = [
     golden: [2.5, 5.0],
     unlockAfter: 'recipe.omelette',
   },
+  {
+    id: 'recipe.sandwich',
+    name: 'Grilled Cheese',
+    steps: [{ type: 'add', items: ['ing.bread', 'ing.cheese', 'ing.butter'] }, { type: 'heat' }, { type: 'decorate' }],
+    shelf: ['ing.bread', 'ing.carrot', 'ing.cheese', 'ing.fish', 'ing.butter', 'ing.milk'],
+    toppings: ['deco.tomato', 'deco.herbs', 'deco.mushroom', 'deco.cheese'],
+    golden: [2.0, 4.5],
+    unlockAfter: 'recipe.omelette',
+  },
+  {
+    id: 'recipe.cookies',
+    name: 'Choco Cookies',
+    steps: [
+      { type: 'add', items: ['ing.flour', 'ing.butter', 'ing.egg', 'deco.chocolate'] },
+      { type: 'mix' },
+      { type: 'pour' },
+      { type: 'heat' },
+      { type: 'decorate' },
+    ],
+    shelf: ['ing.flour', 'ing.butter', 'ing.carrot', 'ing.egg', 'deco.chocolate', 'ing.fish'],
+    toppings: ['deco.sprinkles', 'deco.chocolate', 'deco.cream', 'deco.strawberry', 'deco.sugar'],
+    golden: [3.0, 6.0],
+    unlockAfter: 'recipe.waffles',
+  },
 ];
 
 export const recipeName = (id: string | undefined) => RECIPES.find((r) => r.id === id)?.name.toLowerCase() ?? 'pancakes';

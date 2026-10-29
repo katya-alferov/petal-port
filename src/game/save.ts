@@ -102,7 +102,7 @@ export interface Progress {
   sweets: { served: number; shifts: number; made: string[] };
   /** Wave D (game-systems §15, §16): Dance Studio routines and shifts, Skate Park runs and best cleared count. */
   dance: { routines: number; shifts: number };
-  skate: { runs: number; best: number };
+  skate: { runs: number; best: number; stars: number; tricks: number };
   /** Wave E (game-systems §21, §22): Picnic Pairs games, hardest board cleared, songs played to the end. */
   park: { games: number; hard: boolean; songs: string[] };
   /** Wave F (game-systems §24 to §26): Art Studio, Puzzle Shop and Fishing Dock. */
@@ -181,7 +181,7 @@ export function newProgress(): Progress {
     burger: { orders: 0, shifts: 0 },
     sweets: { served: 0, shifts: 0, made: [] },
     dance: { routines: 0, shifts: 0 },
-    skate: { runs: 0, best: 0 },
+    skate: { runs: 0, best: 0, stars: 0, tricks: 0 },
     park: { games: 0, hard: false, songs: [] },
     studio: { made: [], works: [] },
     puzzle: { games: 0, done: [] },
@@ -405,7 +405,8 @@ function sanitizeProgress(raw: unknown): Progress {
       songs: Array.isArray(pk.songs) ? [...new Set(pk.songs.filter(isStr))].slice(0, 20) : [],
     };
   const sk = raw.skate;
-  if (isObj(sk)) p.skate = { runs: clampInt(sk.runs), best: clampInt(sk.best, 8) };
+  if (isObj(sk))
+    p.skate = { runs: clampInt(sk.runs), best: clampInt(sk.best, 8), stars: clampInt(sk.stars, 6), tricks: clampInt(sk.tricks, 100000) };
   const sw = raw.sweets;
   if (isObj(sw))
     p.sweets = {

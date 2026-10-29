@@ -8,7 +8,7 @@ import { pairsPay, BOARDS } from '../game/pairs';
 import { SONG_PAY, SONGS } from '../game/piano';
 import { NAILS_SHIFT_BONUS, nailsPay } from '../game/nails';
 import { POSY_SHIFT_BONUS, posyPay } from '../game/posies';
-import { OBSTACLES, skatePay } from '../game/skate';
+import { OBSTACLES, skatePay, STARS } from '../game/skate';
 import { addDesign, SWEET_SHIFT_BONUS, sweetPay, type Cupcake } from '../game/sweets';
 import { BURGER_SHIFT_BONUS, burgerPay } from '../game/burger';
 import { souvenir } from '../content/travel';
@@ -130,7 +130,7 @@ interface GameStore {
   /** Wave D (game-systems §15, §16). */
   danceServed: (clean: boolean) => number;
   danceShiftDone: () => number;
-  skateDone: (clearedCount: number) => number;
+  skateDone: (clearedCount: number, starCount?: number, tricks?: number) => number;
   /** Wave E (game-systems §18, §19). */
   /** Wave E (game-systems §21, §22): coins paid; a song pays once. */
   pairsDone: (level: number, misses: number) => number;
@@ -465,12 +465,20 @@ export const useGame = create<GameStore>((setState, getState) => ({
     setState({ save: touch(s) });
     return DANCE_SHIFT_BONUS;
   },
-  skateDone: (clearedCount) => {
+  skateDone: (clearedCount, starCount = 0, tricks = 0) => {
     const n = Math.max(0, Math.min(clearedCount, OBSTACLES));
-    const coins = skatePay(n);
+    const st = Math.max(0, Math.min(starCount, STARS));
+    const tr = Math.max(0, Math.min(tricks, OBSTACLES));
+    const coins = skatePay(n, st, tr);
     let s = earn(getState().save, coins);
     const sk = s.progress.skate;
-    s = grown({ ...s, progress: { ...s.progress, skate: { runs: sk.runs + 1, best: Math.max(sk.best, n) } } });
+    s = grown({
+      ...s,
+      progress: {
+        ...s.progress,
+        skate: { runs: sk.runs + 1, best: Math.max(sk.best, n), stars: Math.max(sk.stars, st), tricks: sk.tricks + tr },
+      },
+    });
     setState({ save: touch(s) });
     return coins;
   },

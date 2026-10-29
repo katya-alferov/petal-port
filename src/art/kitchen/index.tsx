@@ -23,16 +23,18 @@ const EGG_SHADE: Record<Cook, Shade> = {
   toasty: sh('#D99A36', '#B07422', '#EDB968'),
 };
 
-export type DishKind = 'pancake' | 'crepe' | 'omelette' | 'waffle' | 'toast';
+export type DishKind = 'pancake' | 'crepe' | 'omelette' | 'waffle' | 'toast' | 'sandwich' | 'cookie';
 const KINDS: Record<string, DishKind> = {
   'recipe.crepes': 'crepe',
   'recipe.omelette': 'omelette',
   'recipe.waffles': 'waffle',
   'recipe.toast': 'toast',
+  'recipe.sandwich': 'sandwich',
+  'recipe.cookies': 'cookie',
 };
 export const dishKind = (recipeId: string): DishKind => KINDS[recipeId] ?? 'pancake';
 /** Where toppings start on the plate for each dish. */
-const TOP_Y: Record<DishKind, number> = { pancake: 88, crepe: 104, omelette: 100, waffle: 98, toast: 96 };
+const TOP_Y: Record<DishKind, number> = { pancake: 88, crepe: 104, omelette: 100, waffle: 98, toast: 96, sandwich: 96, cookie: 100 };
 export const toppingTop = (kind: DishKind) => TOP_Y[kind];
 const shadeFor = (kind: DishKind, cook: Cook) => (kind === 'omelette' ? EGG_SHADE[cook] : COOK_SHADE[cook]);
 
@@ -370,7 +372,7 @@ export function PanArt({
       />
       {size > 0 && folded === 0 && (
         <g>
-          {kind === 'toast' ? (
+          {kind === 'toast' || kind === 'sandwich' ? (
             <g>
               <rect
                 x={140 - r * 0.62}
@@ -387,7 +389,7 @@ export function PanArt({
           ) : (
             <ellipse cx={140} cy={crepe ? 118 : 112} rx={r} ry={r * 0.44} fill={shade.shadow} stroke={OUTLINE} strokeWidth={3} />
           )}
-          {!crepe && kind !== 'toast' && <ellipse cx={136} cy={106} rx={r * 0.92} ry={r * 0.38} fill={shade.base} />}
+          {!crepe && kind !== 'toast' && kind !== 'sandwich' && <ellipse cx={136} cy={106} rx={r * 0.92} ry={r * 0.38} fill={shade.base} />}
           {kind === 'waffle' &&
             [-2, -1, 0, 1, 2].map((i) => (
               <path
@@ -481,6 +483,41 @@ export function DishArt({ recipe, cook, toppings }: { recipe: string; cook: Cook
               strokeLinejoin="round"
             />
             <path d="M90,136 C86,136 86,112 104,112 L166,112 C184,112 184,136 180,136 L180,146 L90,146 Z" fill={shade.base} />
+          </g>
+        ))}
+      {kind === 'sandwich' &&
+        [0, 1].map((i) => (
+          <g key={i} transform={`translate(${i * 40 - 20} ${i * -6})`}>
+            <path d="M80,152 L80,112 L176,112 L176,152 Z" fill={shade.shadow} stroke={OUTLINE} strokeWidth={3} strokeLinejoin="round" />
+            <path d="M86,148 L86,118 L170,118 L170,148 Z" fill={shade.base} />
+            <path d="M80,132 L176,132" stroke="#FFD34A" strokeWidth={9} />
+            <path d="M80,132 L176,132" stroke={OUTLINE} strokeWidth={2} strokeDasharray="6 5" opacity={0.5} />
+            <path
+              d="M104,136 C104,150 112,150 112,140 M140,136 C140,152 150,152 150,138"
+              fill="none"
+              stroke="#FFD34A"
+              strokeWidth={6}
+              strokeLinecap="round"
+            />
+          </g>
+        ))}
+      {kind === 'cookie' &&
+        [
+          [112, 142],
+          [190, 142],
+          [150, 120],
+        ].map(([cx, cy]) => (
+          <g key={`${cx}-${cy}`}>
+            <ellipse cx={cx} cy={cy} rx={44} ry={20} fill={shade.shadow} stroke={OUTLINE} strokeWidth={3} />
+            <ellipse cx={cx - 2} cy={cy - 3} rx={38} ry={15} fill={shade.base} />
+            {[
+              [-16, -4],
+              [4, -8],
+              [18, 2],
+              [-4, 6],
+            ].map(([dx, dy]) => (
+              <ellipse key={`${dx}${dy}`} cx={cx + dx} cy={cy + dy} rx={5} ry={3} fill="#5B3B26" />
+            ))}
           </g>
         ))}
       {toppings.map((t, i) => (
