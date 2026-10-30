@@ -19,7 +19,7 @@ import { changedParts, DEFAULT_BEDROOM, withPart } from './bedroom';
 import { BEDDINGS, WALLS } from '../content/bedroom';
 import { FIRST_STARS_BONUS, fits, fitting, judgesFor, SHOW_PAY, showReward, showStars, themeFor } from './show';
 import { SHELLS, SHOW_THEMES } from '../content/show';
-import { WEARABLES, wearable } from '../content/wearables';
+import { WEARABLES, priceOf, wearable } from '../content/wearables';
 import { HAIR_COLORS } from '../content/appearance';
 import { SALON_MENU, SEEDS } from '../content/wavec';
 import { BLOOM_AT, grow, pickBloom, plant, stage } from './garden';
@@ -219,7 +219,7 @@ describe('save: Wave A fields', () => {
     if (r.kind === 'ok') {
       expect(r.save.progress.pet).toBeNull();
       expect(r.save.progress.requests).toEqual({ made: 0, done: 0, board: [] });
-      expect(r.save.progress.mail).toEqual({ lastWeek: -1, opened: 0 });
+      expect(r.save.progress.mail).toEqual({ lastWeek: -1, opened: 0, log: [] });
     }
   });
   it('sanitize drops broken notes and clamps hearts', () => {
@@ -917,5 +917,40 @@ describe('Trips beyond Paris (§31)', () => {
     const u = sanitize(raw, SAVE_CONTEXT).progress.travel;
     expect(u.tickets).toEqual(['newyork']);
     expect(u.stamps).toEqual(['funfair.wheel']);
+  });
+});
+
+import { MAX_LOG, weeklyWheel, WHEEL_WEDGES } from './mail';
+import { CARE_PAY } from './pets';
+import { CAFE_MENU } from '../content/cafe';
+import { SONG_PAY, SONG_REPEAT } from './piano';
+
+describe('weekly prize wheel, care pay and song pay', () => {
+  const boutique = WEARABLES.filter((w) => priceOf(w) !== null).map((w) => w.id);
+  it('has 6 distinct wedges, a valid win, and is the same for the same week', () => {
+    const a = weeklyWheel(2900, 3, boutique, {});
+    expect(a.wedges).toHaveLength(WHEEL_WEDGES);
+    expect(new Set(a.wedges).size).toBe(WHEEL_WEDGES);
+    expect(a.win).toBeGreaterThanOrEqual(0);
+    expect(a.win).toBeLessThan(WHEEL_WEDGES);
+    expect(weeklyWheel(2900, 3, boutique, {})).toEqual(a);
+  });
+  it('puts clothes the player does not own first', () => {
+    const owned = Object.fromEntries(boutique.slice(0, boutique.length - 6).map((id) => [id, true]));
+    const w = weeklyWheel(2901, 0, boutique, owned);
+    expect(w.wedges.every((id) => !owned[id])).toBe(true);
+  });
+  it('keeps the mail log bounded', () => {
+    expect(MAX_LOG).toBeGreaterThan(20);
+  });
+  it('pays small coins for every care action and for repeated songs', () => {
+    for (const k of ['feed', 'wash', 'play'] as const) expect(CARE_PAY[k]).toBeGreaterThanOrEqual(1);
+    expect(SONG_REPEAT).toBeGreaterThan(0);
+    expect(SONG_REPEAT).toBeLessThan(SONG_PAY);
+  });
+  it('the café menu offers 4 cups, 4 drinks and 4 pastries', () => {
+    expect(CAFE_MENU.cups).toHaveLength(4);
+    expect(CAFE_MENU.bases).toHaveLength(4);
+    expect(CAFE_MENU.pastries).toHaveLength(4);
   });
 });

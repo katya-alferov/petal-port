@@ -4,6 +4,7 @@ import { FISH_IDS } from './fishing';
 import { MAX_WORKS, type Work } from './studio';
 import { BEDROOM_PARTS, type BedroomLook } from './bedroom';
 import { MAX_DESIGNS } from './sweets';
+import { MAX_LOG, type MailLog } from './mail';
 import { MAX_PHOTOS, newTravel, type PhotoRecipe, type Travel } from './travel';
 import type { HomeSlot, ItemId, WearSlot } from '../content/types';
 import type { SwatchId } from '../content/palette';
@@ -86,7 +87,7 @@ export interface Progress {
   friends: Record<string, number>;
   requests: { made: number; done: number; board: RequestNote[] };
   /** Post Box: the last week index a letter was opened in, and how many were opened. */
-  mail: { lastWeek: number; opened: number };
+  mail: { lastWeek: number; opened: number; /** Newest first (game-systems §32). */ log: MailLog[] };
   /** Sticker ids earned, in order. */
   stickers: string[];
   /** A friend visiting the player's home, or null. */
@@ -176,7 +177,7 @@ export function newProgress(): Progress {
     pet: null,
     friends: {},
     requests: { made: 0, done: 0, board: [] },
-    mail: { lastWeek: -1, opened: 0 },
+    mail: { lastWeek: -1, opened: 0, log: [] },
     stickers: [],
     visitor: null,
     shows: { done: 0, best: {} },
@@ -358,7 +359,11 @@ function sanitizeProgress(raw: unknown): Progress {
   }
   const mail = raw.mail;
   if (isObj(mail))
-    p.mail = { lastWeek: isNum(mail.lastWeek) ? Math.max(-1, Math.floor(mail.lastWeek)) : -1, opened: clampInt(mail.opened) };
+    p.mail = {
+      lastWeek: isNum(mail.lastWeek) ? Math.max(-1, Math.floor(mail.lastWeek)) : -1,
+      opened: clampInt(mail.opened),
+      log: Array.isArray(mail.log) ? mail.log.filter(isMailLog).slice(0, MAX_LOG) : [],
+    };
   if (Array.isArray(raw.stickers)) p.stickers = [...new Set(raw.stickers.filter(isStr))];
   if (isStr(raw.visitor)) p.visitor = raw.visitor;
   const shows = raw.shows;
@@ -508,6 +513,10 @@ export function load(raw: unknown, ctx: SaveContext): LoadResult {
   return { kind: 'ok', save: sanitize(migrated as SaveGame, ctx) };
 }
 
+function isMailLog(v: unknown): v is MailLog {
+  return isObj(v) && isNum(v.week) && isStr(v.from) && isStr(v.text) && (v.prize === null || isStr(v.prize)) && isNum(v.coins);
+}
+
 function isPhoto(v: unknown): v is PhotoRecipe {
   return (
     isObj(v) &&
@@ -517,7 +526,7 @@ function isPhoto(v: unknown): v is PhotoRecipe {
     isStr(v.prop) &&
     ['none', 'beret', 'croissant', 'balloon'].includes(v.prop) &&
     Array.isArray(v.stickers) &&
-    v.stickers.length <= 6 &&
+    v.stickers.length <= 7 &&
     v.stickers.every((x) => x === null || isStr(x)) &&
     isNum(v.at)
   );

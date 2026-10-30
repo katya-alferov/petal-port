@@ -5,6 +5,8 @@ import type { PetAction, PetState } from './save';
 export const TRICK_AT = [0, 3, 8, 15, 25] as const;
 export const WASH_SPOTS = 5;
 export const CATCHES = 3;
+/** A little pocket money for each finished care activity (game-systems §32). */
+export const CARE_PAY: Record<PetAction, number> = { feed: 1, wash: 2, play: 2 };
 
 export function careCount(pet: PetState): number {
   return pet.fed + pet.washed + pet.played;

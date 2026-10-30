@@ -210,6 +210,8 @@ export function PhotoStickerArt({ id }: { id: string }) {
           <path d="M20,53 C20,72 80,72 80,53 Z" fill="#FF7BA9" {...sw} />
         </g>
       );
+    case 'beret':
+      return <SouvenirArt kind="beret" color="#FF7BA9" />;
     default:
       return (
         <g>

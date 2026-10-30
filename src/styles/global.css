@@ -767,8 +767,28 @@ body {
 }
 .jar-row {
   display: grid;
-  grid-template-columns: repeat(4, 1fr);
+  grid-template-columns: repeat(auto-fit, minmax(62px, 1fr));
   gap: 8px;
+}
+.jar-row-wide {
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+}
+.jar-row-wide .jar svg {
+  width: 56px;
+  height: 56px;
+}
+.jar-split {
+  display: grid;
+  gap: 6px;
+}
+.jar-section {
+  display: grid;
+  gap: 2px;
+}
+.jar-label {
+  font: 800 0.8rem var(--font-body, inherit);
+  color: var(--ink);
+  opacity: 0.75;
 }
 .jar {
   all: unset;
@@ -2773,4 +2793,90 @@ g[role='button']:focus-visible {
 .prize svg {
   width: 72px;
   height: 72px;
+}
+
+.wheel-wrap {
+  position: relative;
+  display: grid;
+  justify-items: center;
+  gap: 10px;
+  margin-top: 8px;
+}
+.wheel {
+  position: relative;
+  width: 240px;
+  height: 240px;
+  border-radius: 50%;
+  border: var(--stroke);
+  box-shadow:
+    0 0 0 6px #ffc94a,
+    0 0 0 9px var(--ink);
+  will-change: transform;
+}
+.wheel-slot {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  justify-content: center;
+}
+.wheel-thumb {
+  margin-top: 14px;
+  width: 64px;
+  height: 64px;
+}
+.wheel-pointer {
+  position: absolute;
+  top: -8px;
+  left: 50%;
+  margin-left: -12px;
+  width: 0;
+  height: 0;
+  border-left: 12px solid transparent;
+  border-right: 12px solid transparent;
+  border-top: 22px solid #ff7ba9;
+  filter: none;
+  z-index: 3;
+}
+.wheel-hub {
+  position: absolute;
+  top: 108px;
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  background: #ffc94a;
+  border: var(--stroke);
+  z-index: 2;
+}
+.mail-row {
+  display: flex;
+  gap: 10px;
+  align-items: center;
+  padding: 8px 10px;
+  box-shadow: none;
+  border-width: 2px;
+}
+.mail-stamp {
+  width: 40px;
+  height: 40px;
+  flex: none;
+  border-radius: 8px;
+  background: #ffd6e5;
+  border: 2px dashed var(--ink);
+  display: grid;
+  place-items: center;
+  font-family: 'Fredoka', sans-serif;
+  font-weight: 700;
+}
+.mail-text {
+  font-size: 0.9rem;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.mail-prize {
+  width: 56px;
+  height: 56px;
+  flex: none;
+  display: grid;
+  place-items: center;
 }

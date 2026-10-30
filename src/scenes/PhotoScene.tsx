@@ -1,7 +1,7 @@
-// Photo mode (game-systems §7.3): pose, prop and up to 6 stickers, then the shutter. The photo is
+// Photo mode (game-systems §7.3): pose and up to 7 stickers (the beret is sticker 7; there are no props any more), then the shutter. The photo is
 // saved as a tiny recipe and drawn again from the same art, so nothing is captured from the screen.
 import { useState } from 'react';
-import { PHOTO_POSES, PHOTO_PROPS, PHOTO_STICKERS, type PhotoPose, type PhotoProp } from '../content/travel';
+import { PHOTO_POSES, PHOTO_STICKERS, STICKER_SPOTS, type PhotoPose } from '../content/travel';
 import { MAX_PHOTOS } from '../game/travel';
 import { play } from '../platform/audio';
 import { useGame } from '../state/store';
@@ -9,8 +9,8 @@ import { Button, Tabs } from '../ui/kit';
 import { ActivityBar } from './common';
 import { PhotoView } from './PhotoView';
 
-type Part = 'pose' | 'prop' | 'stickers';
-const SPOTS = 6;
+type Part = 'pose' | 'stickers';
+const SPOTS = STICKER_SPOTS.length;
 
 export function PhotoScene() {
   const setScene = useGame((s) => s.setScene);
@@ -20,7 +20,6 @@ export function PhotoScene() {
   const takePhoto = useGame((s) => s.takePhoto);
   const [part, setPart] = useState<Part>('pose');
   const [pose, setPose] = useState<PhotoPose>('wave');
-  const [prop, setProp] = useState<PhotoProp>('none');
   const [stickers, setStickers] = useState<(string | null)[]>(Array(SPOTS).fill(null));
   const [flash, setFlash] = useState(false);
   const [saved, setSaved] = useState<{ first: boolean } | null>(null);
@@ -29,7 +28,7 @@ export function PhotoScene() {
     const at = stickers.findIndex((s) => s === null);
     if (at < 0) {
       play('soft');
-      showToast('All 6 sticker spots are used. Tap Clear to start over.', 'sparkle');
+      showToast('All 7 sticker spots are used. Tap Clear to start over.', 'sparkle');
       return;
     }
     play('pop');
@@ -44,7 +43,7 @@ export function PhotoScene() {
     play('chime');
     setFlash(true);
     window.setTimeout(() => setFlash(false), 140);
-    const r = takePhoto({ place: 'paris', pose, prop, stickers, at: Date.now() });
+    const r = takePhoto({ place: 'paris', pose, prop: 'none', stickers, at: Date.now() });
     if (r) setSaved(r);
   };
 
@@ -53,7 +52,7 @@ export function PhotoScene() {
     <section className="scene" aria-label="Photo mode" style={{ background: 'linear-gradient(#FFE9F2, #FFF7EC)' }}>
       <ActivityBar title="Photo spot" onBack={() => setScene('paris')} />
       <div className="photo-frame">
-        <PhotoView photo={{ pose, prop, stickers }} appearance={player.appearance} outfit={player.outfit} title="Your photo" />
+        <PhotoView photo={{ pose, prop: 'none', stickers }} appearance={player.appearance} outfit={player.outfit} title="Your photo" />
         {flash && <div className="photo-flash" aria-hidden="true" />}
       </div>
       <div className="tray" style={{ flex: '0 0 auto' }}>
@@ -63,7 +62,6 @@ export function PhotoScene() {
           onChange={(p) => (play('pop'), setPart(p))}
           tabs={[
             { id: 'pose', label: 'Pose' },
-            { id: 'prop', label: 'Prop' },
             { id: 'stickers', label: `Stickers ${placed}/${SPOTS}` },
           ]}
         />
@@ -77,19 +75,6 @@ export function PhotoScene() {
                 aria-pressed={pose === o.id}
                 data-testid={`pose-${o.id}`}
                 onClick={() => (play('swap'), setPose(o.id))}
-              >
-                {o.name}
-              </button>
-            ))}
-          {part === 'prop' &&
-            PHOTO_PROPS.map((o) => (
-              <button
-                key={o.id}
-                type="button"
-                className="chip"
-                aria-pressed={prop === o.id}
-                data-testid={`prop-${o.id}`}
-                onClick={() => (play('swap'), setProp(o.id))}
               >
                 {o.name}
               </button>

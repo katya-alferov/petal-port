@@ -667,7 +667,7 @@ Wave B adds a dress-up goal, an exploration collection and more doll-style cloth
 ## 22. Bandstand piano (Wave E)
 
 - The second Petal Park activity: eight rainbow keys (C major scale, a soft triangle-wave note each). **Free play** is always available. A **song book** (Twinkle Star, Happy Tune, Little Lamb) glows the next key; a wrong key still plays its note, says "Try the glowing key", and the song waits. No timer.
-- Each song pays **15** coins once, the first time it is played to the end (replays are free fun, no coins). Stickers: Little Pianist (1 song), Maestro (all 3). Save: `progress.park.songs` holds the song ids played to the end.
+- Each song pays **15** coins once, the first time it is played to the end (every replay to the end pays **5** coins, so the piano always counts; the song list only grows the first time). Stickers: Little Pianist (1 song), Maestro (all 3). Save: `progress.park.songs` holds the song ids played to the end.
 
 ## 23. Versions and going back
 
@@ -722,3 +722,12 @@ Wave B adds a dress-up goal, an exploration collection and more doll-style cloth
   - **Wishing fountain:** pick a coin, toss it in, choose a wish.
 - **Prizes** (souvenirs on the shelf, never coins): Castle Snow-Dome (Carousel), Rocket Pin (Fireworks), Sky Wheel Lens (Big Wheel), Bell Ringer Teddy (Strong Bell), and a finale prize when the passport is full: Sparkle Wand and Rainbow Lollipop. When Storybook Kingdom's passport is full, the park turns to night.
 - Stickers: Big Apple Visitor, First Ride, Kingdom Guest, Funfair Fan.
+
+## 32. Round 20 tweaks: café, piano, post box, photos, pets
+
+- **Café:** the Cups tab is two labelled halves, **4 cups** (Small cup, Big mug, Tall glass, Teacup) and **4 drinks** (Cocoa, Lemonade, Berry tea, Mint soda). The bakery has **4 pastries** (Croissant, Cupcake, Cookie, Donut). Toppings are drawn 1.4x larger on the cup, and a tray of more than 4 items wraps to 3 per row. Cup, drink and pastry sets only add ids (permanent).
+- **Piano:** first play to the end pays 15, every later play to the end pays 5.
+- **Pet care:** each care action also pays small coins: feed 1, wash 2, play 2.
+- **Photo mode (Paris):** the Prop option is removed. There are **7 sticker spots**; the seventh sticker is the Beret. Old photos that saved a prop still draw it.
+- **Post Box:** one letter a week as before, now with a **prize wheel** of 6 boutique clothes (unowned ones first). The winning wedge is fixed by the week (seeded); the prize goes to the closet the moment the letter opens, so closing early loses nothing. If the winning clothes are already owned, 40 coins are paid instead. Spinning is free and risks nothing; it is an owner-approved exception to the "no spin wheels" rule because it costs nothing, is once a week and never expires.
+- **Letter history:** `progress.mail.log` keeps the last 60 letters (newest first: week, sender, text, prize id or coins) and the Post Box shows them as "My letters" rows with the prize picture.

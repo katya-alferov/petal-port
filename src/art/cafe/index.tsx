@@ -10,8 +10,11 @@ const LIQUID: Record<string, string> = {
   'base.cocoa': '#8B5E3C',
   'base.lemonade': '#FFE08A',
   'base.berry-tea': '#E5739B',
+  'base.mint-soda': '#7ED6A7',
   'base.petal-latte': '#E9C9A5',
 };
+const GLASS = sh('#E3F6FB', '#B4DCE8', '#FFFFFF');
+const TEACUP = sh('#FFC8DD', '#F59BBE', '#FFFFFF');
 const DOUGH = sh('#E8B06A', '#C98A4A', '#F6D398');
 const CREAM = sh('#FFFFFF', '#EADFE6', '#FFFFFF');
 
@@ -133,41 +136,64 @@ export interface DrinkArtProps {
   stencil?: string;
 }
 
+/** The box a drink is drawn in: toppings rise above the cup, so it starts a little above 0. */
+export const DRINK_VIEWBOX = '0 -26 200 246';
+
 /** A drink in a 200×220 box, sitting on y = 210. Missing parts are simply not drawn. */
 export function DrinkArt({ cup, base, toppings = [], stencil }: DrinkArtProps): ReactElement {
   const large = cup === 'cup.large';
-  const top = large ? 70 : 100;
-  const w = large ? 70 : 56;
-  const cupShade = large ? MUG : CUP;
+  const tall = cup === 'cup.tall';
+  const teacup = cup === 'cup.teacup';
+  const top = large ? 76 : tall ? 66 : teacup ? 128 : 104;
+  const w = large ? 70 : tall ? 46 : teacup ? 64 : 56;
+  const cupShade = large ? MUG : tall ? GLASS : teacup ? TEACUP : CUP;
   const body = large
     ? `M${100 - w},${top} L${100 + w},${top} L${100 + w - 6},210 L${100 - w + 6},210 Z`
-    : `M${100 - w},${top} L${100 + w},${top} L${100 + w - 16},210 L${100 - w + 16},210 Z`;
+    : tall
+      ? `M${100 - w},${top} L${100 + w},${top} L${100 + w - 12},210 L${100 - w + 12},210 Z`
+      : teacup
+        ? `M${100 - w},${top} L${100 + w},${top} C${100 + w},${top + 52} 140,196 100,196 C60,196 ${100 - w},${top + 52} ${100 - w},${top} Z`
+        : `M${100 - w},${top} L${100 + w},${top} L${100 + w - 16},210 L${100 - w + 16},210 Z`;
   const liquid = base ? (LIQUID[base] ?? '#8B5E3C') : undefined;
   // Cream and marshmallows stack: draw drizzle/sprinkles last so they sit on top.
   const order = ['top.lemon', 'top.marshmallow', 'top.cream', 'top.caramel', 'top.sprinkles'];
   const sorted = [...toppings].sort((a, b) => order.indexOf(a) - order.indexOf(b));
+  const handle = (x: number, y0: number, y1: number, out: number, color: string, sw$ = 16) => (
+    <g>
+      <path d={`M${x},${y0} C${x + out},${y0} ${x + out},${y1} ${x - 4},${y1}`} fill="none" stroke={OUTLINE} strokeWidth={sw$} />
+      <path d={`M${x},${y0} C${x + out},${y0} ${x + out},${y1} ${x - 4},${y1}`} fill="none" stroke={color} strokeWidth={sw$ / 2} />
+    </g>
+  );
   return (
     <g>
       {cup ? (
         <g>
-          {large && (
+          {large && handle(100 + w - 2, top + 30, top + 100, 40, cupShade.base)}
+          {teacup && (
+            <>
+              <ellipse cx={100} cy={202} rx={84} ry={11} fill="#FFFFFF" stroke={OUTLINE} strokeWidth={4} />
+              {handle(100 + w - 4, top + 14, top + 52, 36, cupShade.base, 14)}
+            </>
+          )}
+          {tall && <path d={`M${100 + 16},${top - 4} L${100 + 40},${top - 50}`} stroke={OUTLINE} strokeWidth={11} strokeLinecap="round" />}
+          {tall && <path d={`M${100 + 16},${top - 4} L${100 + 40},${top - 50}`} stroke="#FF7BA9" strokeWidth={6} strokeLinecap="round" />}
+          <Shaded d={body} shade={cupShade} depth={6} shine={[100 - w + 18, top + 44, 7, 26]} />
+          {!large && !tall && !teacup && (
+            <rect x={100 - w + 10} y={top + 40} width={(w - 10) * 2} height={30} fill="#FF7BA9" opacity={0.85} />
+          )}
+          {teacup &&
+            [
+              [74, top + 34],
+              [100, top + 52],
+              [126, top + 34],
+            ].map(([x, y]) => <circle key={`${x}`} cx={x} cy={y} r={5} fill="#FFFFFF" opacity={0.9} />)}
+          {tall && liquid && (
             <path
-              d={`M${100 + w - 2},${top + 30} C${100 + w + 40},${top + 30} ${100 + w + 40},${top + 100} ${100 + w - 6},${top + 100}`}
-              fill="none"
-              stroke={OUTLINE}
-              strokeWidth={16}
+              d={`M${100 - w + 3},${top + 14} L${100 + w - 3},${top + 14} L${100 + w - 11},208 L${100 - w + 11},208 Z`}
+              fill={liquid}
+              opacity={0.55}
             />
           )}
-          {large && (
-            <path
-              d={`M${100 + w - 2},${top + 30} C${100 + w + 40},${top + 30} ${100 + w + 40},${top + 100} ${100 + w - 6},${top + 100}`}
-              fill="none"
-              stroke={cupShade.base}
-              strokeWidth={8}
-            />
-          )}
-          <Shaded d={body} shade={cupShade} depth={6} shine={[100 - w + 22, top + 40, 8, 26]} />
-          {!large && <rect x={100 - w + 10} y={top + 40} width={(w - 10) * 2} height={30} fill="#FF7BA9" opacity={0.85} />}
           <ellipse cx={100} cy={top} rx={w} ry={14} fill={liquid ?? '#F1E7EF'} stroke={OUTLINE} strokeWidth={3.5} />
           {liquid && <ellipse cx={100 - w * 0.3} cy={top - 3} rx={w * 0.35} ry={4} fill="#FFFFFF" opacity={0.35} />}
           {stencil && STENCIL_PATH[stencil] && (
@@ -177,12 +203,15 @@ export function DrinkArt({ cup, base, toppings = [], stencil }: DrinkArtProps): 
               transform={`translate(0 ${top}) scale(1 0.6) translate(0 ${-top})`}
             />
           )}
-          {sorted.map((t) => (
-            <Topping key={t} id={t} cx={100} cy={top} w={w} />
-          ))}
+          {/* Toppings are drawn bigger (about 1.4x) so they are easy to see. */}
+          <g transform={`translate(100 ${top}) scale(1.4) translate(-100 ${-top})`}>
+            {sorted.map((t) => (
+              <Topping key={t} id={t} cx={100} cy={top} w={w * 0.8} />
+            ))}
+          </g>
         </g>
       ) : (
-        <path d="M44,100 L156,100 L140,210 L60,210 Z" fill="none" stroke={OUTLINE} strokeWidth={4} strokeDasharray="10 8" opacity={0.5} />
+        <path d="M44,104 L156,104 L140,210 L60,210 Z" fill="none" stroke={OUTLINE} strokeWidth={4} strokeDasharray="10 8" opacity={0.5} />
       )}
     </g>
   );
@@ -230,6 +259,32 @@ export function PastryArt({ id }: { id?: string }): ReactElement {
           ))}
         </g>
       )}
+      {id === 'pastry.donut' && (
+        <g>
+          <Shaded d={scallopCircle(100, 156, 56, 16, 2)} shade={DOUGH} depth={5} />
+          <Shaded d={scallopCircle(100, 150, 50, 12, 6)} shade={sh('#FFADCA', '#F27FAE', '#FFE0EC')} depth={4} />
+          <ellipse cx={100} cy={152} rx={15} ry={9} fill="#F1E7EF" stroke={OUTLINE} strokeWidth={3} />
+          {[
+            [70, 136, '#FFC94A'],
+            [92, 128, '#3BB7C4'],
+            [124, 132, '#FFFFFF'],
+            [134, 156, '#B692F6'],
+            [64, 160, '#7ED6A7'],
+            [100, 176, '#FFFFFF'],
+          ].map(([x, y, c]) => (
+            <rect
+              key={`${x}`}
+              x={Number(x)}
+              y={Number(y)}
+              width={9}
+              height={3.5}
+              rx={1.75}
+              fill={String(c)}
+              transform={`rotate(${Number(x) % 90} ${Number(x)} ${Number(y)})`}
+            />
+          ))}
+        </g>
+      )}
       {!id && <path d="M60,170 L140,170" stroke={OUTLINE} strokeWidth={4} strokeDasharray="10 8" opacity={0.4} />}
     </g>
   );
@@ -239,7 +294,7 @@ export function PastryArt({ id }: { id?: string }): ReactElement {
 export function CafeIcon({ id }: { id: string }): ReactElement {
   if (id.startsWith('cup.'))
     return (
-      <svg viewBox="0 0 200 220" aria-hidden="true">
+      <svg viewBox={DRINK_VIEWBOX} aria-hidden="true">
         <DrinkArt cup={id} />
       </svg>
     );
@@ -279,7 +334,7 @@ export function CafeIcon({ id }: { id: string }): ReactElement {
       </svg>
     );
   return (
-    <svg viewBox="0 0 200 160" aria-hidden="true">
+    <svg viewBox="36 36 128 100" aria-hidden="true">
       <ellipse cx={100} cy={120} rx={70} ry={18} fill="#E9C9A5" stroke={OUTLINE} strokeWidth={4} />
       <Topping id={id} cx={id === 'top.lemon' ? 70 : 100} cy={118} w={60} />
     </svg>

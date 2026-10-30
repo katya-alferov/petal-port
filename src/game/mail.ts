@@ -1,3 +1,5 @@
+import { makeRng } from './rng';
+
 // Post Box (game-systems §8.4): one letter waits each calendar week. A missed week is not lost
 // or stacked; the letter simply waits until the player opens the box.
 const DAY = 86_400_000;
@@ -30,3 +32,45 @@ export function letterGift(letter: LetterDef, owned: Readonly<Record<string, unk
   const item = letter.gifts.find((g) => !owned[g]);
   return item ? { item } : { coins: letter.coins };
 }
+
+// ---- The weekly prize wheel (game-systems §32) --------------------------------------------------------------
+// Each week's letter comes with a wheel of 6 boutique clothes. The spin is for fun: the winning wedge is
+// fixed by the week (seeded), the prize is always given when the letter is opened, and nothing is bought,
+// risked or taken away.
+
+export const WHEEL_WEDGES = 6;
+/** Coins instead, when the winning clothes are already in the closet. */
+export const WHEEL_COINS = 40;
+
+export interface Wheel {
+  /** Six wearable ids, in wedge order. */
+  wedges: string[];
+  /** Index of the winning wedge. */
+  win: number;
+}
+
+/** The wheel for a week: unowned boutique clothes first, so the wedges are things worth winning. */
+export function weeklyWheel(week: number, opened: number, boutique: readonly string[], owned: Readonly<Record<string, unknown>>): Wheel {
+  const rng = makeRng(week * 6151 + opened * 17 + 5);
+  const order = [...boutique];
+  for (let i = order.length - 1; i > 0; i--) {
+    const j = Math.floor(rng() * (i + 1));
+    [order[i], order[j]] = [order[j], order[i]];
+  }
+  const fresh = order.filter((id) => !owned[id]);
+  const rest = order.filter((id) => owned[id]);
+  const wedges = [...fresh, ...rest].slice(0, WHEEL_WEDGES);
+  return { wedges, win: Math.floor(rng() * wedges.length) };
+}
+
+export interface MailLog {
+  week: number;
+  /** Regular id of the sender. */
+  from: string;
+  text: string;
+  /** The clothes won (an item id), or null when it was coins instead. */
+  prize: string | null;
+  coins: number;
+}
+
+export const MAX_LOG = 60;

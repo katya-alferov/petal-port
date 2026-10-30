@@ -1,6 +1,6 @@
 // Sunny Café "Order Up!" (game-systems §3): 5 customers, picture orders, no timer, nothing lost on a mistake.
 import { useMemo, useState } from 'react';
-import { CafeBackdrop, CafeIcon, DrinkArt, PastryArt } from '../art/cafe';
+import { CafeBackdrop, CafeIcon, DRINK_VIEWBOX, DrinkArt, PastryArt } from '../art/cafe';
 import { CAFE_INGREDIENTS, CAFE_MENU, RANK_GIFTS, REGULARS, ingredient } from '../content/cafe';
 import { wearable } from '../content/wearables';
 import { addToBuilt, checkOrder, LATTE_BASE, ORDERS_PER_SHIFT, RANK_NAMES, shiftOrders, type Built, type Check } from '../game/cafe';
@@ -23,6 +23,15 @@ function Icons({ ids, mark }: { ids: string[]; mark?: 'missing' | 'extra' }) {
         </span>
       ))}
     </>
+  );
+}
+
+function Jar({ id, on, add }: { id: string; on: boolean; add: (id: string) => void }) {
+  return (
+    <button type="button" className="jar" aria-pressed={on} onClick={() => add(id)} data-testid={`jar-${id}`}>
+      <CafeIcon id={id} />
+      {CAFE_INGREDIENTS.find((i) => i.id === id)?.name}
+    </button>
   );
 }
 
@@ -108,10 +117,10 @@ function CafeShift({ onAgain }: { onAgain: () => void }) {
   };
 
   const jars: Record<TrayTab, string[]> = {
-    drinks: [...CAFE_MENU.cups, ...CAFE_MENU.bases, ...(shift.rank >= 3 ? [LATTE_BASE] : [])],
+    drinks: [...CAFE_MENU.cups, ...CAFE_MENU.bases],
     toppings: [...CAFE_MENU.toppings, ...(shift.rank >= 2 ? CAFE_MENU.rank2Toppings : [])],
     bakery: [...CAFE_MENU.pastries],
-    latte: [...CAFE_MENU.stencils],
+    latte: [LATTE_BASE, ...CAFE_MENU.stencils],
   };
   const tabs: { id: TrayTab; label: string }[] = [
     { id: 'drinks', label: 'Cups' },
@@ -156,7 +165,7 @@ function CafeShift({ onAgain }: { onAgain: () => void }) {
         >
           <span style={{ fontWeight: 800, fontSize: '0.85rem' }}>{regular.name} wants:</span>
           <div style={{ display: 'flex', alignItems: 'flex-end', gap: 4, width: '100%', justifyContent: 'center' }}>
-            <svg viewBox="0 0 200 220" style={{ width: order.pastry ? '55%' : '70%' }} role="img" aria-label="The drink to make">
+            <svg viewBox={DRINK_VIEWBOX} style={{ width: order.pastry ? '55%' : '70%' }} role="img" aria-label="The drink to make">
               <DrinkArt {...order.drink} />
             </svg>
             {order.pastry && (
@@ -209,9 +218,9 @@ function CafeShift({ onAgain }: { onAgain: () => void }) {
           </button>
           <svg
             key={wobble}
-            viewBox="0 0 200 220"
+            viewBox={DRINK_VIEWBOX}
             className={wobble ? 'wobble' : undefined}
-            style={{ height: '100%', maxHeight: 170, minWidth: 0, flex: '0 1 auto' }}
+            style={{ height: '100%', maxHeight: 200, minWidth: 0, flex: '0 1 auto' }}
             role="img"
             aria-label="Your drink"
             data-testid="built-drink"
@@ -232,14 +241,31 @@ function CafeShift({ onAgain }: { onAgain: () => void }) {
       </div>
       <div className="tray">
         {tabs.length > 1 && <Tabs<TrayTab> label="Counter" value={tab} onChange={(t) => (play('pop'), setTab(t))} tabs={tabs} />}
-        <div className="jar-row" role="group" aria-label="Ingredients">
-          {jars[tab].map((id) => (
-            <button key={id} type="button" className="jar" aria-pressed={isOn(id)} onClick={() => add(id)} data-testid={`jar-${id}`}>
-              <CafeIcon id={id} />
-              {CAFE_INGREDIENTS.find((i) => i.id === id)?.name}
-            </button>
-          ))}
-        </div>
+        {tab === 'drinks' ? (
+          <div className="jar-split">
+            {(
+              [
+                ['Cups', CAFE_MENU.cups],
+                ['Drinks', CAFE_MENU.bases],
+              ] as const
+            ).map(([label, ids]) => (
+              <div key={label} className="jar-section">
+                <span className="jar-label">{label}</span>
+                <div className="jar-row" role="group" aria-label={label}>
+                  {ids.map((id) => (
+                    <Jar key={id} id={id} on={isOn(id)} add={add} />
+                  ))}
+                </div>
+              </div>
+            ))}
+          </div>
+        ) : (
+          <div className={`jar-row${jars[tab].length > 4 ? ' jar-row-wide' : ''}`} role="group" aria-label="Ingredients">
+            {jars[tab].map((id) => (
+              <Jar key={id} id={id} on={isOn(id)} add={add} />
+            ))}
+          </div>
+        )}
       </div>
 
       {rankUp && (

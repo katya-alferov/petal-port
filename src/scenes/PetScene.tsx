@@ -59,13 +59,13 @@ export function PetScene() {
   };
 
   const finish = (action: PetAction, line: string) => {
-    const trick = petCared(action);
+    const r = petCared(action);
     play('chime');
     setMood('happy');
     setHearts((h) => h + 1);
-    setSay(line);
+    setSay(r ? `${line} +${r.coins} ${r.coins === 1 ? 'coin' : 'coins'}` : line);
     setMode('menu');
-    if (trick !== null) setLearned(trick);
+    if (r && r.trick !== null) setLearned(r.trick);
   };
 
   const start = (m: Mode) => {

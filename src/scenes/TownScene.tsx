@@ -11,7 +11,7 @@ import { isReady } from '../game/requests';
 import { regular } from '../content/cafe';
 import { Character, FurnitureThumb, MainDock, PetFigure, SLOT_CROP, TopBar, useFindShell } from './common';
 import { shellsIn } from '../content/show';
-import { letterWaiting, type LetterDef } from '../game/mail';
+import { letterWaiting, type LetterDef, type Wheel } from '../game/mail';
 import { stage } from '../game/garden';
 import { seasonFor } from '../game/season';
 import { SeasonDrift } from '../art/Season';
@@ -56,7 +56,9 @@ export function TownScene() {
   const scroller = useRef<HTMLDivElement>(null);
   const save = useGame((s) => s.save);
   const openMail = useGame((s) => s.openMail);
-  const [letter, setLetter] = useState<{ letter: LetterDef; gift: { item: string } | { coins: number } } | null>(null);
+  const [letter, setLetter] = useState<{ letter: LetterDef; wheel: Wheel; gift: { item: string } | { coins: number } } | null>(null);
+  const [spun, setSpun] = useState(false);
+  const [spinning, setSpinning] = useState(false);
   const mailWaiting = letterWaiting(save.progress.mail, currentWeek());
   const findShell = useFindShell();
   const bloomsReady = save.progress.garden.beds.some((b) => b && stage(b.growth) === 'bloom');
@@ -181,28 +183,39 @@ export function TownScene() {
         </Sheet>
       )}
       {open === 'postbox' && (
-        <Sheet title="Post Box" onClose={() => (setOpen(null), setLetter(null))}>
+        <Sheet
+          title="Post Box"
+          onClose={() => {
+            setOpen(null);
+            setLetter(null);
+            setSpun(false);
+            setSpinning(false);
+          }}
+        >
           {letter ? (
             <div className="letter pop-in" data-testid="letter">
               <p style={{ marginTop: 0 }}>Dear friend,</p>
               <p>{letter.letter.text}</p>
               <p style={{ textAlign: 'right' }}>Love, {regular(letter.letter.from)?.name}</p>
-              <div style={{ display: 'flex', gap: 10, alignItems: 'center', justifyContent: 'center' }}>
-                {'item' in letter.gift ? (
-                  <>
-                    <div style={{ width: 90, height: 90 }}>
-                      <GiftThumb id={letter.gift.item} />
-                    </div>
-                    <b>You got a gift!</b>
-                  </>
-                ) : (
-                  <b>You got {letter.gift.coins} coins!</b>
-                )}
-              </div>
+              <PrizeWheel
+                wheel={letter.wheel}
+                gift={letter.gift}
+                spun={spun}
+                spinning={spinning}
+                onSpin={() => {
+                  play('chime');
+                  setSpinning(true);
+                  window.setTimeout(() => {
+                    setSpinning(false);
+                    setSpun(true);
+                    play('chime');
+                  }, 3200);
+                }}
+              />
             </div>
           ) : mailWaiting ? (
             <div style={{ display: 'grid', gap: 12, justifyItems: 'center' }}>
-              <p style={{ margin: 0 }}>A letter is waiting for you!</p>
+              <p style={{ margin: 0 }}>A letter with a gift is waiting for you!</p>
               <Button
                 tone="primary"
                 icon="mail"
@@ -211,6 +224,7 @@ export function TownScene() {
                   const r = openMail();
                   if (!r) return;
                   play('chime');
+                  setSpun(false);
                   setLetter(r);
                 }}
               >
@@ -222,6 +236,25 @@ export function TownScene() {
               No new letter yet. Friends write once a week, and your letter will wait here for you. You’ve read {save.progress.mail.opened}{' '}
               {save.progress.mail.opened === 1 ? 'letter' : 'letters'}.
             </p>
+          )}
+          {save.progress.mail.log.length > 0 && (
+            <div data-testid="mail-history" style={{ marginTop: 14 }}>
+              <h3 style={{ margin: '0 0 8px' }}>My letters</h3>
+              <ul style={{ listStyle: 'none', padding: 0, margin: 0, display: 'grid', gap: 8, gridTemplateColumns: 'minmax(0, 1fr)' }}>
+                {save.progress.mail.log.map((m, i) => (
+                  <li key={`${m.week}-${i}`} className="panel mail-row" data-testid="mail-row">
+                    <div className="mail-stamp" aria-hidden="true">
+                      {regular(m.from)?.name.slice(0, 1)}
+                    </div>
+                    <div style={{ flex: 1, minWidth: 0, textAlign: 'left' }}>
+                      <b>{regular(m.from)?.name}</b> · <span>{weekLabel(m.week)}</span>
+                      <div className="mail-text">{m.text}</div>
+                    </div>
+                    <div className="mail-prize">{m.prize ? <GiftThumb id={m.prize} /> : <b>+{m.coins}</b>}</div>
+                  </li>
+                ))}
+              </ul>
+            </div>
           )}
         </Sheet>
       )}
@@ -254,4 +287,66 @@ function GiftThumb({ id }: { id: string }) {
       <Character appearance={appearance} outfit={{ [w.slot]: { itemId: w.id } }} crop={SLOT_CROP[w.slot]} animate={false} title={w.name} />
     );
   return <FurnitureThumb id={id} />;
+}
+
+function weekLabel(week: number): string {
+  return new Date((week * 7 - 3) * 86_400_000).toLocaleDateString(undefined, { month: 'short', day: 'numeric', timeZone: 'UTC' });
+}
+
+const WEDGE_COLORS = ['#FFD6E5', '#FFF0B3', '#D4F1E2', '#DCD0FA', '#FFE0C2', '#CDEBF7'];
+
+function PrizeWheel({
+  wheel,
+  gift,
+  spun,
+  spinning,
+  onSpin,
+}: {
+  wheel: Wheel;
+  gift: { item: string } | { coins: number };
+  spun: boolean;
+  spinning: boolean;
+  onSpin: () => void;
+}) {
+  const n = wheel.wedges.length;
+  const step = 360 / n;
+  const angle = spinning || spun ? 360 * 5 - wheel.win * step : 0;
+  const stops = WEDGE_COLORS.slice(0, n).map((c, i) => `${c} ${i * step}deg ${(i + 1) * step}deg`);
+  return (
+    <div className="wheel-wrap" data-testid="prize-wheel">
+      <div className="wheel-pointer" aria-hidden="true" />
+      <div
+        className="wheel"
+        style={{
+          background: `conic-gradient(from ${-step / 2}deg, ${stops.join(', ')})`,
+          transform: `rotate(${angle}deg)`,
+          transition: spinning ? 'transform 3.1s cubic-bezier(.15,.7,.2,1)' : 'none',
+        }}
+      >
+        {wheel.wedges.map((id, i) => (
+          <div key={id} className="wheel-slot" style={{ transform: `rotate(${i * step}deg)` }}>
+            <div
+              className="wheel-thumb"
+              style={{
+                transform: `rotate(${-i * step - angle}deg)`,
+                transition: spinning ? 'transform 3.1s cubic-bezier(.15,.7,.2,1)' : 'none',
+              }}
+            >
+              <GiftThumb id={id} />
+            </div>
+          </div>
+        ))}
+      </div>
+      <div className="wheel-hub" aria-hidden="true" />
+      {spun ? (
+        <div className="pop-in" data-testid="wheel-result" style={{ textAlign: 'center', marginTop: 10 }}>
+          {'item' in gift ? <b>You won it! It’s in your closet.</b> : <b>You already have that one, so here are {gift.coins} coins!</b>}
+        </div>
+      ) : (
+        <Button tone="primary" testId="wheel-spin" disabledReason={spinning ? 'Spinning…' : undefined} onClick={onSpin}>
+          Spin!
+        </Button>
+      )}
+    </div>
+  );
 }

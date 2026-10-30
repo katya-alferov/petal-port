@@ -16,6 +16,8 @@ export const SONGS: Song[] = [
   { id: 'song.lamb', name: 'Little Lamb', notes: [2, 1, 0, 1, 2, 2, 2, 1, 1, 1, 2, 4, 4] },
 ];
 export const SONG_PAY = 15;
+/** Every later time a song is played to the end still pays a little. */
+export const SONG_REPEAT = 5;
 
 export type Press = { ok: true; done: boolean } | { ok: false; expected: number };
 export function press(song: Song, played: number, key: number): Press {

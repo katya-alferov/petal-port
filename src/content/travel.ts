@@ -59,7 +59,7 @@ export const PHOTO_PROPS: { id: PhotoProp; name: string }[] = [
   { id: 'balloon', name: 'Balloon' },
 ];
 
-export type PhotoStickerId = 'heart' | 'star' | 'bonjour' | 'tower' | 'macaron' | 'sparkle';
+export type PhotoStickerId = 'heart' | 'star' | 'bonjour' | 'tower' | 'macaron' | 'sparkle' | 'beret';
 export const PHOTO_STICKERS: { id: PhotoStickerId; name: string }[] = [
   { id: 'heart', name: 'Heart' },
   { id: 'star', name: 'Star' },
@@ -67,6 +67,7 @@ export const PHOTO_STICKERS: { id: PhotoStickerId; name: string }[] = [
   { id: 'tower', name: 'Mini tower' },
   { id: 'macaron', name: 'Macaron' },
   { id: 'sparkle', name: 'Sparkle' },
+  { id: 'beret', name: 'Beret' },
 ];
 /** Fixed sticker spots (percent of the photo), so placing is a tap and works with a keyboard. */
 export const STICKER_SPOTS: [number, number][] = [
@@ -76,4 +77,5 @@ export const STICKER_SPOTS: [number, number][] = [
   [86, 46],
   [20, 76],
   [80, 76],
+  [50, 8],
 ];

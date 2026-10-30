@@ -195,6 +195,30 @@ test('café: rank 2 gives the apron and opens the bakery', async ({ page }) => {
   await expect(page.getByTestId('wear-outerwear.cafe-apron')).toBeVisible();
 });
 
+test('café: the toppings are big and the bakery shows four pastries', async ({ page }) => {
+  await page.goto('./?fixture=fresh&scene=town');
+  await page.evaluate(() => {
+    const g = (
+      window as unknown as {
+        __petal: {
+          getState: () => { save: { progress: { cafe: object } }; setScene: (s: string) => void };
+          setState: (s: object) => void;
+        };
+      }
+    ).__petal;
+    const save = g.getState().save;
+    g.setState({ save: { ...save, progress: { ...save.progress, cafe: { correctOrders: 30, shifts: 6, rank: 2 } } } });
+    g.getState().setScene('cafe');
+  });
+  await page.getByTestId('tab-toppings').click();
+  await page.getByTestId('jar-top.sprinkles').click();
+  await page.getByTestId('jar-top.cream').click();
+  await shot(page, '09-cafe-toppings');
+  await page.getByTestId('tab-bakery').click();
+  await expect(page.locator('[data-testid^="jar-pastry."]')).toHaveCount(4);
+  await shot(page, '09-cafe-bakery');
+});
+
 test('boutique: try on, buy, wear; furniture goes into the home', async ({ page }) => {
   await page.goto('./?fixture=fresh&scene=boutique');
   await page.getByTestId('shop-dress.sundress').click();
@@ -395,9 +419,15 @@ test('post box and album: open this week’s letter once, and see the sticker it
   await box.click({ force: true });
   await page.getByTestId('mail-open').click();
   await expect(page.getByTestId('letter')).toContainText('Grandma Rosa');
+  await expect(page.getByTestId('prize-wheel')).toBeVisible();
+  await page.getByTestId('wheel-spin').click({ force: true });
+  await expect(page.getByTestId('wheel-result')).toContainText(/closet|coins/, { timeout: 8000 });
+  await shot(page, '15-mail-wheel');
   await page.keyboard.press('Escape');
   await box.click({ force: true });
   await expect(page.getByTestId('mail-empty')).toContainText('1 letter');
+  await expect(page.getByTestId('mail-row')).toHaveCount(1);
+  await shot(page, '15-mail-history');
   await page.keyboard.press('Escape');
   await page.getByTestId('album-open').click();
   await expect(page.getByTestId('sticker-sticker.mail')).toHaveAttribute('data-earned', 'true');
@@ -524,10 +554,10 @@ test('paris trip: save for the ticket, fly, take a photo, buy a souvenir, find t
   // Photo mode.
   await page.getByTestId('paris-photo').click({ force: true });
   await page.getByTestId('pose-cheer').click();
-  await page.getByRole('tab', { name: /Prop/ }).click();
-  await page.getByTestId('prop-croissant').click();
+  await expect(page.getByRole('tab', { name: /Prop/ })).toHaveCount(0);
   await page.getByRole('tab', { name: /Stickers/ }).click();
   await page.getByTestId('pstick-heart').click();
+  await page.getByTestId('pstick-beret').click();
   await page.getByTestId('photo-shutter').click();
   await expect(page.getByTestId('photo-saved')).toContainText('first photo');
   await shot(page, '20-paris-photo-saved');

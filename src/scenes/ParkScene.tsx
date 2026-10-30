@@ -301,7 +301,7 @@ function Piano() {
               You played {won.song.name}!
             </p>
             <p style={{ fontSize: '1.2rem', fontWeight: 800, margin: 0 }}>
-              {won.coins > 0 ? `+${won.coins} coins (first time)` : 'Beautiful again!'}
+              {won.coins >= SONG_PAY ? `+${won.coins} coins (first time!)` : `+${won.coins} coins. Beautiful again!`}
             </p>
             <Button tone="primary" onClick={() => setWon(null)} testId="song-ok">
               Keep playing

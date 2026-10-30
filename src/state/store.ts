@@ -6,7 +6,7 @@ import { puzzlePay } from '../game/puzzle';
 import { CONSTELLATIONS, CREATURE_IDS, starPay, tidePay } from '../game/explore';
 import { catchPay, nextFish } from '../game/fishing';
 import { pairsPay, BOARDS } from '../game/pairs';
-import { SONG_PAY, SONGS } from '../game/piano';
+import { SONG_PAY, SONG_REPEAT, SONGS } from '../game/piano';
 import { NAILS_SHIFT_BONUS, nailsPay } from '../game/nails';
 import { POSY_SHIFT_BONUS, posyPay } from '../game/posies';
 import { OBSTACLES, skatePay, STARS } from '../game/skate';
@@ -30,8 +30,18 @@ import type { HomeSlot } from '../content/types';
 import { priceOf } from '../content/wearables';
 import { orderPay, rankFor, SHIFT_BONUS } from '../game/cafe';
 import { cookReward, isRecipeUnlocked } from '../game/cooking';
-import { letterGift, letterWaiting, nextLetter, weekIndex, type LetterDef } from '../game/mail';
-import { adopt, care } from '../game/pets';
+import {
+  letterWaiting,
+  MAX_LOG,
+  nextLetter,
+  weekIndex,
+  weeklyWheel,
+  WHEEL_COINS,
+  type LetterDef,
+  type MailLog,
+  type Wheel,
+} from '../game/mail';
+import { adopt, care, CARE_PAY } from '../game/pets';
 import { addHeart, applyEvent, fillBoard, isReady, NOTE_PAY, type GameEvent } from '../game/requests';
 import { showReward } from '../game/show';
 import { clientPay, SALON_SHIFT_BONUS } from '../game/salon';
@@ -113,13 +123,14 @@ interface GameStore {
   adoptPet: (kind: string, color: string, name: string) => void;
   setPetAccessory: (id: string | null) => void;
   /** A finished feed / wash / play. Returns the trick number learned, if any. */
-  petCared: (action: PetAction) => number | null;
+  /** Returns the newly learned trick (or null) and the coins paid for the care. */
+  petCared: (action: PetAction) => { trick: number | null; coins: number } | null;
   /** Tops the Petal Notes board up to three notes. */
   refreshBoard: () => void;
   deliverNote: (no: number) => { coins: number; hearts: number; gift: string | null; visit: boolean } | null;
   swapNote: (no: number) => void;
   /** Opens this week's letter, if one is waiting. */
-  openMail: () => { letter: LetterDef; gift: { item: string } | { coins: number } } | null;
+  openMail: () => { letter: LetterDef; wheel: Wheel; gift: { item: string } | { coins: number } } | null;
   inviteFriend: (id: string | null) => void;
   /** Wave B (game-systems §9). A finished runway walk; returns the coins paid. */
   showDone: (themeId: string, stars: 1 | 2 | 3) => { coins: number; firstStars: boolean };
@@ -319,9 +330,10 @@ export const useGame = create<GameStore>((setState, getState) => ({
     let s = getState().save;
     if (!s.progress.pet) return null;
     const r = care(s.progress.pet, action);
-    s = withEvent({ ...s, progress: { ...s.progress, pet: r.pet } }, { kind: 'pet', action });
+    const coins = CARE_PAY[action];
+    s = earn(withEvent({ ...s, progress: { ...s.progress, pet: r.pet } }, { kind: 'pet', action }), coins);
     setState({ save: touch(grown(s)) });
-    return r.newTrick;
+    return { trick: r.newTrick, coins };
   },
   refreshBoard: () => {
     const s = getState().save;
@@ -367,11 +379,28 @@ export const useGame = create<GameStore>((setState, getState) => ({
     const week = currentWeek();
     if (!letterWaiting(s.progress.mail, week)) return null;
     const letter = nextLetter(s.progress.mail.opened, LETTERS);
-    const gift = letterGift(letter, s.inventory.owned);
+    const boutique = WEARABLES.filter((w) => priceOf(w) !== null).map((w) => w.id);
+    const wheel = weeklyWheel(week, s.progress.mail.opened, boutique, s.inventory.owned);
+    const won = wheel.wedges[wheel.win];
+    // The prize is given right now, so closing the letter early never loses it.
+    const gift: { item: string } | { coins: number } = won && !s.inventory.owned[won] ? { item: won } : { coins: WHEEL_COINS };
     s = 'item' in gift ? grant(s, gift.item, Date.now()) : earn(s, gift.coins);
-    s = { ...s, progress: { ...s.progress, mail: { lastWeek: week, opened: s.progress.mail.opened + 1 } } };
+    const log: MailLog = {
+      week,
+      from: letter.from,
+      text: letter.text,
+      prize: 'item' in gift ? gift.item : null,
+      coins: 'coins' in gift ? gift.coins : 0,
+    };
+    s = {
+      ...s,
+      progress: {
+        ...s.progress,
+        mail: { lastWeek: week, opened: s.progress.mail.opened + 1, log: [log, ...s.progress.mail.log].slice(0, MAX_LOG) },
+      },
+    };
     setState({ save: touch(s) });
-    return { letter, gift };
+    return { letter, wheel, gift };
   },
   inviteFriend: (id) => {
     const s = getState().save;
@@ -593,11 +622,13 @@ export const useGame = create<GameStore>((setState, getState) => ({
   },
   songDone: (id) => {
     const pk = getState().save.progress.park;
-    if (!SONGS.some((x) => x.id === id) || pk.songs.includes(id)) return 0;
-    let s = earn(getState().save, SONG_PAY);
-    s = { ...s, progress: { ...s.progress, park: { ...pk, songs: [...pk.songs, id] } } };
+    if (!SONGS.some((x) => x.id === id)) return 0;
+    const first = !pk.songs.includes(id);
+    const coins = first ? SONG_PAY : SONG_REPEAT;
+    let s = earn(getState().save, coins);
+    s = { ...s, progress: { ...s.progress, park: { ...pk, songs: first ? [...pk.songs, id] : pk.songs } } };
     setState({ save: touch(s) });
-    return SONG_PAY;
+    return coins;
   },
   nailsServed: (clean) => {
     let s = getState().save;
