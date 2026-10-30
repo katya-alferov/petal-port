@@ -55,7 +55,17 @@ export function PhotosPage() {
               <svg viewBox="0 0 100 100" aria-hidden="true" style={got ? undefined : { opacity: 0.3 }}>
                 <SouvenirArt kind={d.art} color={got ? d.color : '#B4ABBF'} />
               </svg>
-              <span>{got ? d.name : d.price === 0 ? 'Take a photo' : 'Paris kiosk'}</span>
+              <span>
+                {got
+                  ? d.name
+                  : d.price === 0
+                    ? d.place === 'paris'
+                      ? 'Take a photo'
+                      : 'Win it on a ride'
+                    : d.place === 'newyork'
+                      ? 'New York cart'
+                      : 'Paris kiosk'}
+              </span>
             </li>
           );
         })}

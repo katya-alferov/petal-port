@@ -710,3 +710,15 @@ Wave B adds a dress-up goal, an exploration collection and more doll-style cloth
 - A new **Explorer Street** row on the map below the Fishing Dock (the map grew by 520; the airport and the runway shell moved down with it). Two places, both real gameplay and both kind: nothing is taken away.
 - **Tide Pools:** a list of 4 creatures (of 8) and 8 rocks. Tap a rock to turn it over: a listed creature, another creature (shown, not required) or bare sand. Find all 4 to finish. The list prefers creatures you have not met; a visit is always the same for the same visit number (seeded). Pay **12 + 4 per new creature**. **My finds** shows the 8-creature collection. Stickers: Tide Pool Explorer (1 visit), Sea Collector (all 8). Save: `progress.tide {visits, found[]}`.
 - **Starlight Hill:** 5 constellations (Kitty 6 stars, Heart 8, Crown 7, Gem 5, Little Boat 7). Tap the numbered stars in order; each right star plays a note and draws a line; a wrong star wobbles, and after 2 misses the next star glows. Pay **10 each time, +12 the first time per shape**. Stickers: Stargazer (1 shape), Sky Mapper (all 5). Save: `progress.sky {games, done[]}`.
+
+## 31. More cities and paid attractions (Wave I)
+
+- **Airport:** the departures board and the ticket desk now list two cities: **Paris (400 coins)** and **New York (600 coins)**. Tickets are one-time and separate. Save: `progress.travel` gains `tickets[]` (extra cities, `newyork`) and `stamps[]`; older saves default to empty.
+- **New York** (original stylized sunset street): taxi (drives off), snack cart (souvenirs: Skyline Snow Globe 45, Yellow Cab 40, Pretzel Keychain 30), street musician (plays a tune), the harbour statue far away (tap to light the torch), and a ferry button to the funfair. No photo mode there yet.
+- **Paid attractions** in the same country as the city you start from: **Storybook Kingdom** (France, a "sparkle train" button in Paris) and the **Boardwalk Funfair** (USA, "Ferry to the Funfair" in New York). A **day pass costs 150 coins** at the gate each visit; rides inside are free to replay. All art and names are original (no theme-park brands or characters).
+- Each attraction has three rides and a **passport** of stamps. A ride is finished by trying, never by being perfect: a miss only says "so close" and nothing is taken away.
+  - **Stop rides** (Carousel ring, Big Wheel photo, Strong Bell): a marker sweeps back and forth (1.8 s per sweep); tap while it is inside the glowing zone (30% of the track). 5 rounds, the zone moves each round; stars: 4+ hits = 3, 2+ = 2, else 1.
+  - **Light rides** (Fireworks, Neon Lights): watch 3, then 4, then 5 lights, repeat them; a wrong light replays the same round.
+  - **Wishing fountain:** pick a coin, toss it in, choose a wish.
+- **Prizes** (souvenirs on the shelf, never coins): Castle Snow-Dome (Carousel), Rocket Pin (Fireworks), Sky Wheel Lens (Big Wheel), Bell Ringer Teddy (Strong Bell), and a finale prize when the passport is full: Sparkle Wand and Rainbow Lollipop. When Storybook Kingdom's passport is full, the park turns to night.
+- Stickers: Big Apple Visitor, First Ride, Kingdom Guest, Funfair Fan.

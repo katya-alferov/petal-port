@@ -38,7 +38,135 @@ export function SouvenirArt({ kind, color }: { kind: string; color: string }) {
           <rect x={47} y={26} width={7} height={14} rx={3} fill={color} {...sw} />
         </g>
       );
-    default:
+    case 'snowglobe':
+      return (
+        <g>
+          <circle cx={50} cy={46} r={34} fill="#DFF3FF" {...sw} />
+          <path
+            d="M30,66 h8 v-18 h8 v18 h8 v-26 h8 v26 h8 v-12 h4 v12 Z"
+            fill={color}
+            stroke={OUTLINE}
+            strokeWidth={2.5}
+            strokeLinejoin="round"
+          />
+          {[
+            [34, 30],
+            [58, 26],
+            [44, 38],
+            [66, 40],
+          ].map(([x, y]) => (
+            <circle key={`${x}${y}`} cx={x} cy={y} r={2.2} fill="#FFFFFF" />
+          ))}
+          <path d="M28,80 h44 l6,10 h-56 Z" fill="#B692F6" {...sw} />
+        </g>
+      );
+    case 'cab':
+      return (
+        <g>
+          <path
+            d="M10,64 C10,52 18,48 28,46 L36,34 C38,30 42,30 46,30 L62,30 C66,30 70,32 72,36 L78,46 C86,48 90,54 90,64 Z"
+            fill={color}
+            {...sw}
+          />
+          <path
+            d="M40,36 L46,36 L46,46 L32,46 Z M52,36 L62,36 L68,46 L52,46 Z"
+            fill="#DFF3FF"
+            stroke={OUTLINE}
+            strokeWidth={2.5}
+            strokeLinejoin="round"
+          />
+          <rect x={44} y={22} width={14} height={8} rx={2} fill="#FFF7EC" {...sw} />
+          <circle cx={28} cy={68} r={9} fill="#5B4A6E" {...sw} />
+          <circle cx={72} cy={68} r={9} fill="#5B4A6E" {...sw} />
+          <path d="M12,56 h8 M82,56 h6" stroke={OUTLINE} strokeWidth={3} strokeLinecap="round" />
+        </g>
+      );
+    case 'pretzel':
+      return (
+        <g>
+          <path d="M50,84 C14,70 14,28 34,26 C46,24 50,36 50,44 C50,36 54,24 66,26 C86,28 86,70 50,84 Z" fill={color} {...sw} />
+          <path d="M34,44 C44,52 56,52 66,44" fill="none" stroke={OUTLINE} strokeWidth={3} />
+          {[
+            [30, 40],
+            [70, 40],
+            [50, 70],
+            [40, 62],
+            [60, 62],
+          ].map(([x, y]) => (
+            <circle key={`${x}${y}`} cx={x} cy={y} r={2} fill="#FFF7EC" />
+          ))}
+          <circle cx={50} cy={14} r={7} fill="none" stroke={OUTLINE} strokeWidth={3.5} />
+        </g>
+      );
+    case 'snowdome':
+      return (
+        <g>
+          <path d="M18,70 C14,30 30,16 50,16 C70,16 86,30 82,70 Z" fill="#DFF3FF" {...sw} />
+          <path
+            d="M34,66 L34,40 L40,34 L40,42 L46,38 L46,26 L50,20 L54,26 L54,38 L60,42 L60,34 L66,40 L66,66 Z"
+            fill={color}
+            stroke={OUTLINE}
+            strokeWidth={2.5}
+            strokeLinejoin="round"
+          />
+          <circle cx={26} cy={36} r={2.2} fill="#FFFFFF" />
+          <circle cx={76} cy={44} r={2.2} fill="#FFFFFF" />
+          <rect x={14} y={70} width={72} height={16} rx={6} fill="#FFC94A" {...sw} />
+        </g>
+      );
+    case 'rocketpin':
+      return (
+        <g>
+          <path d="M50,10 C66,26 68,52 62,70 L38,70 C32,52 34,26 50,10 Z" fill="#FFF7EC" {...sw} />
+          <circle cx={50} cy={40} r={8} fill="#8EC9FF" {...sw} />
+          <path d="M38,56 L24,78 L40,70 Z M62,56 L76,78 L60,70 Z" fill={color} {...sw} />
+          <path d="M44,74 L50,92 L56,74 Z" fill="#FFC94A" {...sw} />
+        </g>
+      );
+    case 'wand':
+      return (
+        <g>
+          <path d="M24,86 L62,40" stroke={OUTLINE} strokeWidth={13} strokeLinecap="round" />
+          <path d="M24,86 L62,40" stroke="#FFF7EC" strokeWidth={7} strokeLinecap="round" />
+          <path d="M66,12 L72,28 L88,30 L75,40 L80,56 L66,47 L52,56 L57,40 L44,30 L60,28 Z" fill={color} {...sw} />
+        </g>
+      );
+    case 'skylens':
+      return (
+        <g>
+          <circle cx={46} cy={46} r={30} fill="#DFF3FF" {...sw} />
+          <circle cx={46} cy={46} r={20} fill={color} {...sw} />
+          <path d="M34,40 C38,32 46,30 52,32" fill="none" stroke="#FFFFFF" strokeWidth={4} strokeLinecap="round" />
+          <path d="M68,68 L86,86" stroke={OUTLINE} strokeWidth={12} strokeLinecap="round" />
+          <path d="M68,68 L86,86" stroke="#FFC94A" strokeWidth={6} strokeLinecap="round" />
+        </g>
+      );
+    case 'teddy':
+      return (
+        <g>
+          <circle cx={30} cy={26} r={11} fill={color} {...sw} />
+          <circle cx={70} cy={26} r={11} fill={color} {...sw} />
+          <circle cx={50} cy={40} r={26} fill={color} {...sw} />
+          <ellipse cx={50} cy={48} rx={11} ry={8} fill="#F6D9AE" {...sw} />
+          <circle cx={40} cy={36} r={3} fill={OUTLINE} />
+          <circle cx={60} cy={36} r={3} fill={OUTLINE} />
+          <circle cx={50} cy={46} r={3} fill={OUTLINE} />
+          <path d="M34,72 C34,64 66,64 66,72 L66,88 L34,88 Z" fill={color} {...sw} />
+          <path d="M44,64 L50,72 L56,64 Z" fill="#FF7BA9" {...sw} />
+        </g>
+      );
+    case 'rainbowpop':
+      return (
+        <g>
+          <path d="M50,92 L50,56" stroke={OUTLINE} strokeWidth={10} strokeLinecap="round" />
+          <path d="M50,92 L50,56" stroke="#FFF7EC" strokeWidth={5} strokeLinecap="round" />
+          <circle cx={50} cy={34} r={26} fill="#FF7BA9" {...sw} />
+          {['#FFC94A', '#7ED6A7', '#3BB7C4', '#B692F6'].map((c, i) => (
+            <circle key={c} cx={50} cy={34} r={22 - i * 5} fill="none" stroke={c} strokeWidth={4} />
+          ))}
+        </g>
+      );
+    default: // macarons
       return (
         <g>
           <rect x={12} y={50} width={76} height={34} rx={8} fill="#FFF7EC" {...sw} />

@@ -6,7 +6,7 @@ import { SouvenirArt } from '../art/travel';
 import { SOUVENIRS } from '../content/travel';
 import { play } from '../platform/audio';
 import { useGame } from '../state/store';
-import { Sheet } from '../ui/kit';
+import { Button, Sheet } from '../ui/kit';
 import { Icon } from '../ui/icons';
 import { ActivityBar, Character } from './common';
 
@@ -55,13 +55,18 @@ export function ParisScene() {
           <Character appearance={player.appearance} outfit={player.outfit} pose="wave" title="You" />
         </div>
       </div>
-      <p className="panel" style={{ margin: '0 12px 10px', padding: '6px 12px', textAlign: 'center', fontWeight: 800 }}>
+      <p className="panel" style={{ margin: '0 12px 8px', padding: '6px 12px', textAlign: 'center', fontWeight: 800 }}>
         Tap the painted star on the path to take a photo!
       </p>
+      <div style={{ display: 'flex', justifyContent: 'center', padding: '0 12px 12px' }}>
+        <Button tone="primary" icon="star" onClick={() => (play('chime'), setScene('storybook'))} testId="paris-train">
+          Train to Storybook Kingdom
+        </Button>
+      </div>
       {kiosk && (
         <Sheet title="Souvenir kiosk" onClose={() => setKiosk(false)}>
           <div className="item-grid" style={{ marginBottom: 8 }} data-testid="kiosk-card">
-            {SOUVENIRS.filter((d) => d.price > 0).map((d) => {
+            {SOUVENIRS.filter((d) => d.price > 0 && d.place === 'paris').map((d) => {
               const own = souvenirs.includes(d.id);
               return (
                 <button

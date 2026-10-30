@@ -447,6 +447,8 @@ function sanitizeProgress(raw: unknown): Progress {
   const tr = raw.travel;
   if (isObj(tr)) {
     p.travel.ticket = tr.ticket === true;
+    if (Array.isArray(tr.tickets)) p.travel.tickets = [...new Set(tr.tickets.filter(isStr))].filter((d) => d === 'newyork');
+    if (Array.isArray(tr.stamps)) p.travel.stamps = [...new Set(tr.stamps.filter(isStr))].slice(0, 40);
     p.travel.trips = clampInt(tr.trips);
     if (Array.isArray(tr.souvenirs)) p.travel.souvenirs = [...new Set(tr.souvenirs.filter(isStr))];
     if (Array.isArray(tr.photos)) p.travel.photos = tr.photos.filter(isPhoto).slice(0, MAX_PHOTOS);

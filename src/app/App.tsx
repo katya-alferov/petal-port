@@ -13,6 +13,8 @@ import { GalleryScene } from '../scenes/GalleryScene';
 import { HomeScene } from '../scenes/HomeScene';
 import { BedroomScene } from '../scenes/BedroomScene';
 import { FishingScene } from '../scenes/FishingScene';
+import { AttractionScene } from '../scenes/AttractionScene';
+import { NewYorkScene } from '../scenes/NewYorkScene';
 import { SkyScene } from '../scenes/SkyScene';
 import { TideScene } from '../scenes/TideScene';
 import { PuzzleScene } from '../scenes/PuzzleScene';
@@ -75,6 +77,9 @@ export function App() {
         {scene === 'puzzle' && <PuzzleScene />}
         {scene === 'fishing' && <FishingScene />}
         {scene === 'tide' && <TideScene />}
+        {scene === 'newyork' && <NewYorkScene />}
+        {scene === 'storybook' && <AttractionScene id="storybook" />}
+        {scene === 'funfair' && <AttractionScene id="funfair" />}
         {scene === 'sky' && <SkyScene />}
         {scene === 'posies' && <PosiesScene />}
         {scene === 'me' && <MeScene />}

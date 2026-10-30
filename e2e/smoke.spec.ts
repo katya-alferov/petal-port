@@ -104,6 +104,9 @@ test('no serious accessibility violations on each main scene', async ({ page }) 
     'fishing',
     'tide',
     'sky',
+    'newyork',
+    'storybook',
+    'funfair',
     'sweets',
     'paris',
     'photo',
@@ -880,4 +883,103 @@ test('starlight hill: a wrong star only wobbles, the right order draws the shape
   await expect(page.getByTestId('sky-coins')).toContainText('+22');
   await page.getByTestId('sky-again').click();
   await expect(page.getByTestId('sky-progress')).toHaveText('0/6');
+});
+
+async function playStopRide(page: Page) {
+  for (let r = 0; r < 5; r++) {
+    await expect(page.getByTestId('ride-stage')).toHaveAttribute('data-inzone', 'true', { timeout: 8000 });
+    await page.getByTestId('ride-go').click({ force: true });
+    await expect(page.getByTestId('ride-status')).not.toContainText('Tap when', { timeout: 2000 });
+    if (r < 4) await page.waitForTimeout(1100);
+  }
+}
+
+async function playLights(page: Page) {
+  for (let r = 0; r < 3; r++) {
+    await expect(page.getByTestId('lights-ride')).toHaveAttribute('data-mode', 'play', { timeout: 12000 });
+    const seq = ((await page.getByTestId('lights-stage').getAttribute('data-seq')) ?? '').split(',').map(Number);
+    for (const l of seq) await page.getByTestId(`pad-${l}`).click();
+    if (r < 2) await expect(page.getByTestId('lights-ride')).toHaveAttribute('data-mode', 'watch', { timeout: 4000 });
+  }
+}
+
+test('new york and the funfair: buy a ticket, shop at the cart, pay the gate, play every ride, earn stamps and the finale', async ({
+  page,
+}) => {
+  test.setTimeout(150_000);
+  await page.goto('./?fixture=fresh&scene=airport');
+  await page.evaluate(() => {
+    const g = (window as unknown as { __petal: { getState: () => { save: { wallet: object } & object }; setState: (s: object) => void } })
+      .__petal;
+    const save = g.getState().save;
+    g.setState({ save: { ...save, wallet: { ...save.wallet, coins: 3000 } } });
+  });
+  await page.getByTestId('airport-open-desk').click();
+  await page.getByTestId('airport-buy-newyork').click();
+  await page.getByTestId('airport-fly-newyork').click();
+  await expect(page.getByTestId('newyork-art')).toBeVisible();
+  await page.getByTestId('ny-cart').click({ force: true });
+  await page.getByTestId('souvenir-souvenir.cab').click();
+  await expect(page.getByTestId('souvenir-souvenir.cab')).toContainText('Yours');
+  await page.getByTestId('sheet-close').click();
+  await shot(page, '15-new-york');
+  await page.getByTestId('ny-ferry').click();
+  // The gate: a day pass, then the hub.
+  await expect(page.getByTestId('gate-card')).toBeVisible();
+  const coinsBefore = Number(((await page.getByTestId('coin-pill').textContent()) ?? '').replace(/\D/g, ''));
+  await page.getByTestId('gate-pay').click();
+  await expect(page.getByTestId('park-line')).toBeVisible();
+  const coinsAfter = Number(((await page.getByTestId('coin-pill').textContent()) ?? '').replace(/\D/g, ''));
+  expect(coinsBefore - coinsAfter).toBe(150);
+  await shot(page, '16-funfair-hub');
+  // Big wheel, strong bell, neon lights.
+  await page.getByTestId('ride-wheel').dispatchEvent('click');
+  await shot(page, '17-wheel-ride');
+  await playStopRide(page);
+  await expect(page.getByTestId('ride-done')).toBeVisible({ timeout: 8000 });
+  await expect(page.getByTestId('prize-souvenir.skylens')).toBeVisible();
+  await page.getByTestId('ride-back').click();
+  await page.getByTestId('ride-bell').dispatchEvent('click');
+  await playStopRide(page);
+  await expect(page.getByTestId('ride-done')).toBeVisible({ timeout: 8000 });
+  await page.getByTestId('ride-back').click();
+  await page.getByTestId('ride-neon').dispatchEvent('click');
+  await playLights(page);
+  await expect(page.getByTestId('ride-done')).toBeVisible({ timeout: 8000 });
+  await expect(page.getByTestId('prize-souvenir.rainbowpop')).toBeVisible();
+  await shot(page, '18-funfair-finale');
+  await page.getByTestId('ride-back').click();
+  for (const r of ['wheel', 'bell', 'neon']) await expect(page.getByTestId(`stamp-${r}`)).toHaveAttribute('data-got', 'true');
+});
+
+test('storybook kingdom: the train from Paris, a wrong light only replays, the fountain wish gives a stamp', async ({ page }) => {
+  test.setTimeout(150_000);
+  await page.goto('./?fixture=fresh&scene=paris');
+  await page.evaluate(() => {
+    const g = (window as unknown as { __petal: { getState: () => { save: { wallet: object } & object }; setState: (s: object) => void } })
+      .__petal;
+    const save = g.getState().save;
+    g.setState({ save: { ...save, wallet: { ...save.wallet, coins: 3000 } } });
+  });
+  await page.getByTestId('paris-train').click();
+  await page.getByTestId('gate-pay').click();
+  await page.getByTestId('ride-fireworks').dispatchEvent('click');
+  await expect(page.getByTestId('lights-ride')).toHaveAttribute('data-mode', 'play', { timeout: 12000 });
+  const seq = ((await page.getByTestId('lights-stage').getAttribute('data-seq')) ?? '').split(',').map(Number);
+  const wrong = (seq[0] + 1) % 4;
+  await page.getByTestId(`pad-${wrong}`).click();
+  await expect(page.getByTestId('lights-status')).toContainText('Oops');
+  await expect(page.getByTestId('lights-ride')).toHaveAttribute('data-mode', 'play', { timeout: 12000 });
+  await playLights(page);
+  await expect(page.getByTestId('ride-done')).toBeVisible({ timeout: 8000 });
+  await expect(page.getByTestId('prize-souvenir.rocketpin')).toBeVisible();
+  await page.getByTestId('ride-back').click();
+  await page.getByTestId('ride-fountain').dispatchEvent('click');
+  await page.getByTestId('coin-1').click();
+  await page.getByTestId('wish-toss').click();
+  await page.getByTestId('wish-2').click();
+  await expect(page.getByTestId('ride-done')).toBeVisible({ timeout: 8000 });
+  await page.getByTestId('ride-back').click();
+  await expect(page.getByTestId('stamp-fountain')).toHaveAttribute('data-got', 'true');
+  await expect(page.getByTestId('stamp-fireworks')).toHaveAttribute('data-got', 'true');
 });

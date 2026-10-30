@@ -1,7 +1,8 @@
 // Airport (game-systems §7.1): ticket desk, departures board and luggage trolley. The ticket is a
 // one-time 400 coin goal; Fly! is free once it is yours.
 import { useState } from 'react';
-import { PARIS_TICKET } from '../game/travel';
+import { hasTicket, PARIS_TICKET, ticketPrice } from '../game/travel';
+import { NEWYORK_TICKET, type DestId } from '../game/trips';
 import { play } from '../platform/audio';
 import { useGame } from '../state/store';
 import { Button, Sheet } from '../ui/kit';
@@ -16,12 +17,23 @@ export function AirportScene() {
   const coins = useGame((s) => s.save.wallet.coins);
   const travel = useGame((s) => s.save.progress.travel);
   const buyTicket = useGame((s) => s.buyTicket);
+  const flyTo = useGame((s) => s.flyTo);
   const flyToParis = useGame((s) => s.flyToParis);
   const showToast = useGame((s) => s.showToast);
   const [desk, setDesk] = useState(false);
   const [board, setBoard] = useState(false);
   const [trolley, setTrolley] = useState(false);
   const missing = Math.max(0, PARIS_TICKET - coins);
+  const nyMissing = Math.max(0, NEWYORK_TICKET - coins);
+  const cities: { id: DestId; name: string; line: string; testSuffix: string }[] = [
+    { id: 'paris', name: 'Paris, France', line: 'Cafés, a tower and a sparkle train to Storybook Kingdom.', testSuffix: '' },
+    {
+      id: 'newyork',
+      name: 'New York, USA',
+      line: 'Skyscrapers, yellow cabs and a ferry to the Boardwalk Funfair.',
+      testSuffix: '-newyork',
+    },
+  ];
 
   return (
     <section className="scene" aria-label="Airport" style={{ background: 'linear-gradient(#BFE6FF, #E7F6FF 55%, #FFF0D6)' }}>
@@ -44,7 +56,7 @@ export function AirportScene() {
             role="button"
             tabIndex={0}
 
-            aria-label="PARIS ON TIME"
+            aria-label="DEPARTURES"
             data-testid="airport-board"
             style={{ cursor: 'pointer' }}
             onClick={() => (play('pop'), setBoard(true))}
@@ -61,7 +73,7 @@ export function AirportScene() {
               fontSize={20}
               fill="#FFE08A"
             >
-              PARIS ON TIME
+              DEPARTURES
             </text>
           </g>
           <g
@@ -111,9 +123,11 @@ export function AirportScene() {
         style={{ margin: '0 12px', padding: '6px 12px', textAlign: 'center', fontWeight: 800 }}
         data-testid="airport-line"
       >
-        {travel.ticket
-          ? 'You have a ticket to Paris!'
-          : `A Paris ticket costs ${PARIS_TICKET} coins. ${missing > 0 ? `${missing} to go.` : 'You can buy it now!'}`}
+        {!travel.ticket
+          ? `A Paris ticket costs ${PARIS_TICKET} coins. ${missing > 0 ? `${missing} to go.` : 'You can buy it now!'}`
+          : !hasTicket(travel, 'newyork')
+            ? `You can fly to Paris! A New York ticket costs ${NEWYORK_TICKET} coins${nyMissing > 0 ? `, ${nyMissing} to go.` : '. You can buy it now!'}`
+            : 'You have tickets to Paris and New York!'}
       </p>
       <div style={{ display: 'flex', justifyContent: 'center', padding: '10px 12px 14px' }}>
         <Button tone="primary" icon="star" onClick={() => (play('chime'), setDesk(true))} testId="airport-open-desk">
@@ -122,44 +136,57 @@ export function AirportScene() {
       </div>
       {desk && (
         <Sheet title="Ticket desk" onClose={() => setDesk(false)}>
-          <div style={{ display: 'grid', gap: 10, justifyItems: 'center', textAlign: 'center' }} data-testid="ticket-card">
-            <p className="display" style={{ fontSize: '1.4rem', margin: 0 }}>
-              One ticket to Paris
-            </p>
-            <span className="price-tag">
-              <Icon name="coin" />
-              {PARIS_TICKET}
-            </span>
-            {travel.ticket ? (
-              <>
-                <p style={{ margin: 0 }}>Your ticket is stamped. Ready to fly?</p>
-                <Button tone="primary" icon="star" testId="airport-fly" onClick={() => (play('chime'), setDesk(false), flyToParis())}>
-                  Fly to Paris!
-                </Button>
-              </>
-            ) : (
-              <>
-                <p style={{ margin: 0 }}>
-                  {missing > 0
-                    ? `Earn ${missing} more coins at the café, salon, kitchen or stage. Nothing runs out, so take your time.`
-                    : 'You have enough coins!'}
-                </p>
-                <Button
-                  tone="primary"
-                  icon="coin"
-                  disabledReason={missing > 0 ? `You need ${missing} more coins.` : undefined}
-                  testId="airport-buy"
-                  onClick={() => {
-                    if (buyTicket()) {
-                      play('chime');
-                      showToast('Your ticket to Paris!', 'sparkle');
-                    }
-                  }}
+          <div style={{ display: 'grid', gap: 12 }} data-testid="ticket-card">
+            {cities.map((c) => {
+              const own = hasTicket(travel, c.id);
+              const price = ticketPrice(c.id);
+              const need = Math.max(0, price - coins);
+              return (
+                <div
+                  key={c.id}
+                  className="panel"
+                  style={{ display: 'grid', gap: 8, justifyItems: 'center', textAlign: 'center' }}
+                  data-testid={`dest-${c.id}`}
                 >
-                  Buy the ticket
-                </Button>
-              </>
-            )}
+                  <p className="display" style={{ fontSize: '1.3rem', margin: 0 }}>
+                    {c.name}
+                  </p>
+                  <p style={{ margin: 0 }}>{c.line}</p>
+                  <span className="price-tag">
+                    <Icon name="coin" />
+                    {price}
+                  </span>
+                  {own ? (
+                    <Button
+                      tone="primary"
+                      icon="star"
+                      testId={`airport-fly${c.testSuffix}`}
+                      onClick={() => (play('chime'), setDesk(false), c.id === 'paris' ? flyToParis() : flyTo(c.id))}
+                    >
+                      {c.id === 'paris' ? 'Fly to Paris!' : 'Fly to New York!'}
+                    </Button>
+                  ) : (
+                    <Button
+                      tone="primary"
+                      icon="coin"
+                      disabledReason={need > 0 ? `You need ${need} more coins.` : undefined}
+                      testId={`airport-buy${c.testSuffix}`}
+                      onClick={() => {
+                        if (buyTicket(c.id)) {
+                          play('chime');
+                          showToast(`Your ticket to ${c.id === 'paris' ? 'Paris' : 'New York'}!`, 'sparkle');
+                        }
+                      }}
+                    >
+                      Buy the ticket
+                    </Button>
+                  )}
+                </div>
+              );
+            })}
+            <p style={{ margin: 0, textAlign: 'center', fontSize: '0.95rem' }}>
+              Earn coins at the café, salon, kitchen or stage. Nothing runs out, so take your time.
+            </p>
           </div>
         </Sheet>
       )}
@@ -169,7 +196,10 @@ export function AirportScene() {
             <li className="panel" style={{ padding: '6px 12px' }}>
               PARIS: ON TIME
             </li>
-            {['…', '…', '…'].map((x, i) => (
+            <li className="panel" style={{ padding: '6px 12px' }}>
+              NEW YORK: ON TIME
+            </li>
+            {['…', '…'].map((x, i) => (
               <li key={i} className="panel" style={{ padding: '6px 12px', opacity: 0.5 }}>
                 {x} (a new place is coming)
               </li>

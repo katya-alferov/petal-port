@@ -13,7 +13,8 @@ import { OBSTACLES, skatePay, STARS } from '../game/skate';
 import { addDesign, SWEET_SHIFT_BONUS, sweetPay, type Cupcake } from '../game/sweets';
 import { BURGER_SHIFT_BONUS, burgerPay } from '../game/burger';
 import { souvenir } from '../content/travel';
-import { addPhoto, buySouvenir as doBuySouvenir, buyTicket as doBuyTicket, removePhoto, type PhotoRecipe } from '../game/travel';
+import { ATTRACTION_FEE, attraction, stampRide, type AttractionId, type DestId } from '../game/trips';
+import { addPhoto, hasTicket, buySouvenir as doBuySouvenir, buyTicket as doBuyTicket, removePhoto, type PhotoRecipe } from '../game/travel';
 import { WINDOW_VIEWS } from '../content/views';
 import { viewUnlocked } from '../game/views';
 import { create } from 'zustand';
@@ -59,6 +60,9 @@ export type SceneId =
   | 'burger'
   | 'airport'
   | 'paris'
+  | 'newyork'
+  | 'storybook'
+  | 'funfair'
   | 'photo'
   | 'title'
   | 'town'
@@ -152,8 +156,14 @@ interface GameStore {
   posyShiftDone: () => number;
   plantSeed: (bed: number, seed: string) => void;
   /** Wave D (game-systems §11). Each returns whether it worked. */
-  buyTicket: () => boolean;
+  buyTicket: (dest?: DestId) => boolean;
   flyToParis: () => void;
+  /** Wave I (game-systems §31): fly to a city you hold a ticket for. */
+  flyTo: (dest: DestId) => void;
+  /** Pay the gate fee of an attraction; returns whether it worked. */
+  enterAttraction: (id: AttractionId) => boolean;
+  /** A ride was played to the end: stamps it and returns the prizes (souvenir ids) just earned. */
+  finishRide: (id: AttractionId, ride: string) => { first: boolean; prize: string | null; finale: string | null };
   buySouvenir: (id: string) => boolean;
   takePhoto: (photo: PhotoRecipe) => { first: boolean } | null;
   deletePhoto: (index: number) => void;
@@ -385,8 +395,8 @@ export const useGame = create<GameStore>((setState, getState) => ({
     setState({ save: touch({ ...s, progress: { ...s.progress, shells } }) });
     return shells.length;
   },
-  buyTicket: () => {
-    const next = doBuyTicket(getState().save);
+  buyTicket: (dest = 'paris') => {
+    const next = doBuyTicket(getState().save, dest);
     if (!next) return false;
     setState({ save: touch(next) });
     return true;
@@ -397,6 +407,29 @@ export const useGame = create<GameStore>((setState, getState) => ({
     const t = s.progress.travel;
     setState({ save: touch({ ...s, progress: { ...s.progress, travel: { ...t, trips: t.trips + 1 } } }) });
     getState().setScene('paris');
+  },
+  flyTo: (dest) => {
+    const s = getState().save;
+    const t = s.progress.travel;
+    if (!hasTicket(t, dest)) return;
+    setState({ save: touch({ ...s, progress: { ...s.progress, travel: { ...t, trips: t.trips + 1 } } }) });
+    getState().setScene(dest === 'paris' ? 'paris' : 'newyork');
+  },
+  enterAttraction: (id) => {
+    const s = getState().save;
+    if (!attraction(id) || s.wallet.coins < ATTRACTION_FEE) return false;
+    setState({ save: touch({ ...s, wallet: { ...s.wallet, coins: s.wallet.coins - ATTRACTION_FEE } }) });
+    return true;
+  },
+  finishRide: (id, ride) => {
+    const s = getState().save;
+    const t = s.progress.travel;
+    const r = stampRide(t.stamps, id, ride);
+    const gained = [r.prize, r.finale].filter((x): x is string => x !== null && !t.souvenirs.includes(x));
+    let next = { ...s, progress: { ...s.progress, travel: { ...t, stamps: r.stamps, souvenirs: [...t.souvenirs, ...gained] } } };
+    if (r.first) next = grown(next);
+    setState({ save: touch(next) });
+    return { first: r.first, prize: r.prize, finale: r.finale };
   },
   buySouvenir: (id) => {
     const price = souvenir(id)?.price ?? 0;

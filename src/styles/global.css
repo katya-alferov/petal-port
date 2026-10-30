@@ -2558,3 +2558,219 @@ g[role='button']:focus-visible {
 .sky-star[data-wobble='true'] {
   animation: skate-bump 0.5s ease-in-out;
 }
+
+/* Trips beyond Paris (game-systems §31) */
+.ny-cab-go {
+  animation: ny-cab 1.6s ease-in forwards;
+}
+@keyframes ny-cab {
+  to {
+    transform: translateX(420px);
+  }
+}
+.passport {
+  display: flex;
+  gap: 6px;
+  justify-content: center;
+  flex-wrap: wrap;
+  margin: 0 12px;
+  padding: 6px 10px;
+  font-weight: 800;
+}
+.stamp[data-got='true'] {
+  color: #1f7a4d;
+}
+.park-stage {
+  position: relative;
+  flex: 1;
+  min-height: 0;
+  overflow: hidden;
+}
+.park-stage > svg {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+}
+.ride-wrap {
+  flex: 1;
+  min-height: 0;
+  overflow-y: auto;
+  display: grid;
+  align-content: start;
+  justify-items: center;
+}
+.ride-title {
+  margin: 4px 0;
+  font-size: 1.4rem;
+}
+.ride {
+  width: 100%;
+  display: grid;
+  gap: 8px;
+  justify-items: center;
+  padding: 0 12px 12px;
+}
+.ride-art {
+  width: 100%;
+  max-width: 380px;
+}
+.ride-art > svg {
+  width: 100%;
+  height: auto;
+  display: block;
+}
+.ride-dots {
+  display: flex;
+  gap: 8px;
+}
+.ride-dot {
+  width: 18px;
+  height: 18px;
+  border-radius: 50%;
+  border: 3px solid var(--outline, #5b4a6e);
+  background: #fff7ec;
+}
+.ride-dot[data-state='hit'] {
+  background: #ffc94a;
+}
+.ride-dot[data-state='miss'] {
+  background: #d9d3e0;
+}
+.ride-dot[data-state='now'] {
+  box-shadow: 0 0 0 4px rgba(255, 201, 74, 0.6);
+}
+.ride-status {
+  margin: 0;
+  width: 100%;
+  max-width: 380px;
+  text-align: center;
+  font-weight: 800;
+}
+.ride-foot {
+  display: flex;
+  gap: 8px;
+  justify-content: center;
+  padding-top: 4px;
+}
+.ride-pop {
+  animation: ride-pop 0.5s ease-out;
+}
+@keyframes ride-pop {
+  50% {
+    transform: scale(1.4);
+  }
+}
+.ride-ring {
+  animation: ride-ring 0.6s ease-in-out;
+}
+@keyframes ride-ring {
+  25% {
+    transform: translate(110px, 34px) rotate(-14deg);
+  }
+  75% {
+    transform: translate(110px, 34px) rotate(14deg);
+  }
+}
+.pads {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 10px;
+  width: 100%;
+  max-width: 320px;
+}
+.pad {
+  min-height: 72px;
+  border-radius: 20px;
+  border: 4px solid var(--outline, #5b4a6e);
+  font: 800 2rem var(--font-display, inherit);
+  color: var(--ink);
+  cursor: pointer;
+  transition: transform 0.1s;
+}
+.pad[data-lit='true'] {
+  transform: scale(1.08);
+  box-shadow: 0 0 0 6px rgba(255, 255, 255, 0.8);
+}
+.pad[aria-disabled='true'] {
+  opacity: 0.7;
+}
+.burst {
+  animation: burst 0.45s ease-out;
+}
+@keyframes burst {
+  from {
+    transform: scale(0.3);
+    opacity: 0.2;
+  }
+}
+.coin-row,
+.wish-row {
+  display: flex;
+  gap: 12px;
+  justify-content: center;
+  flex-wrap: wrap;
+}
+.coin-pick {
+  width: 60px;
+  height: 60px;
+  border-radius: 50%;
+  border: 4px solid var(--outline, #5b4a6e);
+  cursor: pointer;
+}
+.coin-pick[aria-pressed='true'] {
+  box-shadow: 0 0 0 5px #ffc94a;
+  transform: scale(1.08);
+}
+.wish-card {
+  min-height: 56px;
+  padding: 6px 14px;
+  border-radius: 16px;
+  border: 3px solid var(--outline, #5b4a6e);
+  background: #fff7ec;
+  font: 800 1rem var(--font-body, inherit);
+  color: var(--ink);
+  cursor: pointer;
+}
+.wish-card[aria-pressed='true'] {
+  background: #ffc94a;
+}
+.coin-arc {
+  animation: coin-arc 1s ease-in forwards;
+}
+@keyframes coin-arc {
+  to {
+    transform: translate(120px, 40px);
+    opacity: 0.2;
+  }
+}
+.ripples ellipse {
+  animation: ripple 1.2s ease-out infinite;
+  transform-origin: 180px 190px;
+}
+@keyframes ripple {
+  from {
+    transform: scale(0.6);
+    opacity: 1;
+  }
+  to {
+    transform: scale(1.1);
+    opacity: 0;
+  }
+}
+.wish-star {
+  animation: wish-twinkle 1s ease-in-out infinite alternate;
+}
+@keyframes wish-twinkle {
+  to {
+    opacity: 0.4;
+  }
+}
+.prize {
+  display: grid;
+  justify-items: center;
+}
+.prize svg {
+  width: 72px;
+  height: 72px;
+}

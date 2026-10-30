@@ -42,6 +42,19 @@ import {
   tap,
   trick,
 } from './skate';
+import {
+  ATTRACTIONS,
+  inZone,
+  LIGHT_ROUNDS,
+  lightSequence,
+  markerAt,
+  NEWYORK_TICKET,
+  stampRide,
+  STOP_ROUNDS,
+  SWEEP_SECONDS,
+  ZONE_WIDTH,
+  zoneStart,
+} from './trips';
 import { CONSTELLATIONS, CREATURE_IDS, ROCKS, starPay, TARGETS, tidePay, tidePools } from './explore';
 import { nextGoals } from './goals';
 import { addDesign, checkCupcake, designKey, MAX_DESIGNS, sweetOrders, sweetPay } from './sweets';
@@ -833,5 +846,76 @@ describe('Explore places (§30)', () => {
     const q = (load(JSON.stringify(raw), SAVE_CONTEXT) as { save: { progress: { tide: unknown; sky: unknown } } }).save.progress;
     expect(q.tide).toEqual({ visits: 2, found: ['crab'] });
     expect(q.sky).toEqual({ games: 1, done: ['heart'] });
+  });
+});
+
+describe('Trips beyond Paris (§31)', () => {
+  it('the stop marker sweeps there and back, and every glowing zone can be hit', () => {
+    expect(markerAt(0)).toBe(0);
+    expect(markerAt(SWEEP_SECONDS)).toBeCloseTo(1);
+    expect(markerAt(SWEEP_SECONDS * 2)).toBeCloseTo(0);
+    for (let seed = 1; seed < 40; seed++)
+      for (let r = 0; r < STOP_ROUNDS; r++) {
+        const z = zoneStart(seed, r);
+        expect(z).toBeGreaterThanOrEqual(0.1);
+        expect(z + ZONE_WIDTH).toBeLessThanOrEqual(0.9);
+        expect(inZone(markerAt((z + ZONE_WIDTH / 2) * SWEEP_SECONDS), z)).toBe(true);
+        expect(inZone(markerAt(0), z)).toBe(false);
+      }
+  });
+  it('light sequences grow from 3 to 5 and each round starts like the one before', () => {
+    for (let seed = 1; seed < 20; seed++) {
+      const rounds = Array.from({ length: LIGHT_ROUNDS }, (_, r) => lightSequence(seed, r));
+      expect(rounds.map((r) => r.length)).toEqual([3, 4, 5]);
+      expect(rounds[1].slice(0, 3)).toEqual(rounds[0]);
+      expect(rounds[2].slice(0, 4)).toEqual(rounds[1]);
+      expect(rounds[2].every((l) => l >= 0 && l < 4)).toBe(true);
+    }
+  });
+  it('a ride stamps once, gives its prize once, and the last stamp gives the finale once', () => {
+    const a = ATTRACTIONS[0];
+    let stamps: string[] = [];
+    const out: { prize: string | null; finale: string | null; first: boolean }[] = [];
+    for (const r of [...a.rides, a.rides[0]]) {
+      const x = stampRide(stamps, a.id, r.id);
+      stamps = x.stamps;
+      out.push(x);
+    }
+    expect(stamps).toHaveLength(a.rides.length);
+    expect(out[0].prize).toBe('souvenir.snowdome');
+    expect(out[a.rides.length - 1].finale).toBe('souvenir.wand');
+    expect(out[a.rides.length].first).toBe(false);
+    expect(out[a.rides.length].prize).toBeNull();
+    expect(out[a.rides.length].finale).toBeNull();
+  });
+  it('each attraction starts from a different city and has three rides', () => {
+    expect(ATTRACTIONS.map((x) => x.from)).toEqual(['paris', 'newyork']);
+    for (const a of ATTRACTIONS) expect(a.rides).toHaveLength(3);
+  });
+  it('a New York ticket costs 600, once, and is separate from the Paris one', () => {
+    const rich = () => {
+      const s = newSave(SAVE_CONTEXT, 1);
+      s.wallet.coins = 2000;
+      return s;
+    };
+    const s = buyTicket(rich(), 'newyork')!;
+    expect(s.wallet.coins).toBe(2000 - NEWYORK_TICKET);
+    expect(s.progress.travel.tickets).toEqual(['newyork']);
+    expect(s.progress.travel.ticket).toBe(false);
+    expect(buyTicket(s, 'newyork')).toBeNull();
+    const poor = newSave(SAVE_CONTEXT, 1);
+    poor.wallet.coins = 599;
+    expect(buyTicket(poor, 'newyork')).toBeNull();
+  });
+  it('old saves get no extra tickets or stamps, and bad ones are dropped', () => {
+    const raw = JSON.parse(JSON.stringify(newSave(SAVE_CONTEXT, 1)));
+    raw.progress.travel = { ticket: true, trips: 1, souvenirs: [], photos: [] };
+    const t = sanitize(raw, SAVE_CONTEXT).progress.travel;
+    expect(t.tickets).toEqual([]);
+    expect(t.stamps).toEqual([]);
+    raw.progress.travel = { ticket: true, tickets: ['newyork', 'mars'], stamps: ['funfair.wheel'], trips: 1, souvenirs: [], photos: [] };
+    const u = sanitize(raw, SAVE_CONTEXT).progress.travel;
+    expect(u.tickets).toEqual(['newyork']);
+    expect(u.stamps).toEqual(['funfair.wheel']);
   });
 });
