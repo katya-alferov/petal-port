@@ -102,6 +102,8 @@ test('no serious accessibility violations on each main scene', async ({ page }) 
     'studio',
     'puzzle',
     'fishing',
+    'tide',
+    'sky',
     'sweets',
     'paris',
     'photo',
@@ -281,7 +283,21 @@ test('town: every place opens a card; the airport opens', async ({ page }) => {
     await place.evaluate((e) => e.scrollIntoView({ block: 'center' }));
     await place.click({ force: true });
   };
-  for (const id of ['cafe', 'boutique', 'home', 'park', 'airport', 'salon', 'garden', 'burger', 'sweets', 'dance', 'skate']) {
+  for (const id of [
+    'cafe',
+    'boutique',
+    'home',
+    'park',
+    'airport',
+    'salon',
+    'garden',
+    'burger',
+    'sweets',
+    'dance',
+    'skate',
+    'tide',
+    'sky',
+  ]) {
     await tapPlace(id);
     await expect(page.getByRole('dialog'), id).toBeVisible();
     await page.keyboard.press('Escape');
@@ -836,4 +852,32 @@ test('fishing dock: an early reel only explains, a reel at the splash catches a 
   expect((await coinsOf(page)) - start).toBe(16);
   await page.getByTestId('fish-tank').click();
   await expect(page.getByTestId('tank').locator('[data-have="true"]')).toHaveCount(1);
+});
+
+test('tide pools: turn over rocks until the whole list is found, then it pays and the finds are saved', async ({ page }) => {
+  await page.goto('./?fixture=fresh&scene=tide');
+  const rocks = page.locator('[data-testid^="rock-"]');
+  await expect(rocks).toHaveCount(8);
+  for (let i = 0; i < 8; i++) {
+    if (await page.getByTestId('tide-done').isVisible()) break;
+    await page.getByTestId(`rock-${i}`).click();
+  }
+  await expect(page.getByTestId('tide-done')).toBeVisible();
+  await expect(page.getByTestId('tide-coins')).toContainText(/\+(28|32|36)/);
+  await page.getByTestId('tide-again').click();
+  await expect(page.getByTestId('tide-progress')).toHaveText('0/4');
+  await page.getByTestId('tide-book').click();
+  await expect(page.getByTestId('tide-book-grid')).toBeVisible();
+});
+
+test('starlight hill: a wrong star only wobbles, the right order draws the shape and pays', async ({ page }) => {
+  await page.goto('./?fixture=fresh&scene=sky');
+  await page.getByTestId('sky-pick-kitty').click();
+  await page.getByTestId('star-3').click();
+  await expect(page.getByTestId('sky-note')).toContainText('Tap star number 1');
+  for (let i = 0; i < 6; i++) await page.getByTestId(`star-${i}`).click();
+  await expect(page.getByTestId('sky-done')).toBeVisible();
+  await expect(page.getByTestId('sky-coins')).toContainText('+22');
+  await page.getByTestId('sky-again').click();
+  await expect(page.getByTestId('sky-progress')).toHaveText('0/6');
 });

@@ -2,6 +2,7 @@
 // Conditions only look at counters that never go down, so a sticker can never be lost.
 import { PUZZLES } from './puzzle';
 import { changedParts } from './bedroom';
+import { CONSTELLATIONS, CREATURE_IDS } from './explore';
 import { careCount, tricksKnown } from './pets';
 import type { SaveGame } from './save';
 
@@ -34,6 +35,10 @@ export type StickerCond =
   | { kind: 'skateRuns'; n: number }
   | { kind: 'skatePerfect' }
   | { kind: 'skateSky' }
+  | { kind: 'tideVisits'; n: number }
+  | { kind: 'tideAll' }
+  | { kind: 'skyGames'; n: number }
+  | { kind: 'skyAll' }
   | { kind: 'skateTricks'; n: number }
   | { kind: 'nailShifts'; n: number }
   | { kind: 'pairsGames'; n: number }
@@ -122,6 +127,14 @@ export function meets(save: SaveGame, c: StickerCond, facts: StickerFacts): bool
       return p.posies.shifts >= c.n;
     case 'skatePerfect':
       return p.skate.best >= 8;
+    case 'tideVisits':
+      return p.tide.visits >= c.n;
+    case 'tideAll':
+      return CREATURE_IDS.every((x) => p.tide.found.includes(x));
+    case 'skyGames':
+      return p.sky.games >= c.n;
+    case 'skyAll':
+      return CONSTELLATIONS.every((k) => p.sky.done.includes(k.id));
     case 'skateSky':
       return p.skate.stars >= 6;
     case 'skateTricks':

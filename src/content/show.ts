@@ -103,7 +103,7 @@ export const SHELLS: ShellDef[] = [
     color: '#FF8A65',
     scene: 'town',
     x: 1110,
-    y: 6380,
+    y: 6900,
     hint: 'Where the planes take off',
   },
   { id: 'shell.home', name: 'Cozy Scallop', kind: 'scallop', color: '#7ED6A7', scene: 'home', x: 90, y: 62, hint: 'Somewhere at home' },

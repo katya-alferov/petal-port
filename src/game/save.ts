@@ -1,4 +1,5 @@
 // SaveGame model + validate / sanitize / migrate (data-model §3, §5.4). Pure: no DOM, storage or clock.
+import { CONSTELLATIONS, CREATURE_IDS } from './explore';
 import { FISH_IDS } from './fishing';
 import { MAX_WORKS, type Work } from './studio';
 import { BEDROOM_PARTS, type BedroomLook } from './bedroom';
@@ -109,6 +110,9 @@ export interface Progress {
   studio: { made: string[]; works: Work[] };
   puzzle: { games: number; done: string[] };
   fishing: { catches: number; fish: string[] };
+  /** Wave H (game-systems §30): Tide Pools visits and creatures found; Starlight Hill games and constellations drawn. */
+  tide: { visits: number; found: string[] };
+  sky: { games: number; done: string[] };
   /** Wave E (game-systems §18, §19): Glow Nails clients and shifts, Petal Posies bouquets and shifts. */
   nails: { clients: number; shifts: number };
   posies: { bouquets: number; shifts: number };
@@ -186,6 +190,8 @@ export function newProgress(): Progress {
     studio: { made: [], works: [] },
     puzzle: { games: 0, done: [] },
     fishing: { catches: 0, fish: [] },
+    tide: { visits: 0, found: [] },
+    sky: { games: 0, done: [] },
     nails: { clients: 0, shifts: 0 },
     posies: { bouquets: 0, shifts: 0 },
     garden: { beds: Array.from({ length: GARDEN_BEDS }, () => null), bloomed: [], picked: 0 },
@@ -396,6 +402,20 @@ function sanitizeProgress(raw: unknown): Progress {
     p.fishing = {
       catches: clampInt(fs.catches),
       fish: Array.isArray(fs.fish) ? [...new Set(fs.fish.filter(isStr))].filter((f) => (FISH_IDS as readonly string[]).includes(f)) : [],
+    };
+  const td = raw.tide;
+  if (isObj(td))
+    p.tide = {
+      visits: clampInt(td.visits),
+      found: Array.isArray(td.found)
+        ? [...new Set(td.found.filter(isStr))].filter((c) => (CREATURE_IDS as readonly string[]).includes(c))
+        : [],
+    };
+  const sy = raw.sky;
+  if (isObj(sy))
+    p.sky = {
+      games: clampInt(sy.games),
+      done: Array.isArray(sy.done) ? [...new Set(sy.done.filter(isStr))].filter((c) => CONSTELLATIONS.some((k) => k.id === c)) : [],
     };
   const pk = raw.park;
   if (isObj(pk))

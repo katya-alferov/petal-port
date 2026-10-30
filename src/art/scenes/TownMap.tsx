@@ -8,6 +8,8 @@ export type PlaceId =
   | 'studio'
   | 'puzzle'
   | 'fishing'
+  | 'tide'
+  | 'sky'
   | 'nails'
   | 'posies'
   | 'dance'
@@ -29,7 +31,7 @@ export type PlaceId =
 
 export const MAP_W = 1170;
 /** Sparkle Street (Glam Salon and Petal Garden) sits between the harbour and the airport. */
-const STREET = 3260;
+const STREET = 3780;
 export const MAP_H = 3200 + STREET;
 
 /** Where each place sits, so the scene can scroll to it. */
@@ -53,6 +55,8 @@ export const PLACE_Y: Record<PlaceId, number> = {
   studio: 5060,
   puzzle: 5060,
   fishing: 5580,
+  tide: 6030,
+  sky: 6030,
   posies: 4540,
   airport: 2860 + STREET,
 };
@@ -616,7 +620,7 @@ export function TownMap({
       </g>
 
       {/* Sparkle Street: a pink-and-lilac row of new places (game-systems §10) */}
-      <path d="M0,2740 C300,2715 800,2735 1170,2712 L1170,6800 L0,6800 Z" fill="#B8E6C4" stroke={OUTLINE} strokeWidth={5} />
+      <path d="M0,2740 C300,2715 800,2735 1170,2712 L1170,7320 L0,7320 Z" fill="#B8E6C4" stroke={OUTLINE} strokeWidth={5} />
       <path d="M0,3190 L1170,3190 L1170,3240 L0,3240 Z" fill="#F2E3D2" stroke={OUTLINE} strokeWidth={4} />
       <path d="M0,3215 L1170,3215" stroke="#FFFFFF" strokeWidth={8} strokeDasharray="44 36" />
 
@@ -978,6 +982,76 @@ export function TownMap({
           <circle cx={782} cy={3984} r={5} fill={OUTLINE} />
           <path d="M830,4120 L1010,4120 L990,4170 L850,4170 Z" fill="#FF8A65" stroke={OUTLINE} strokeWidth={5} strokeLinejoin="round" />
           <Sign x={585} y={4270} label="Fishing Dock" color="#5BB8F0" />
+        </g>
+      </Place>
+
+      {/* Explorer Street: Tide Pools and Starlight Hill (game-systems §30) */}
+      <g transform="translate(0 1670)">
+        <path d="M0,4210 L1170,4210 L1170,4260 L0,4260 Z" fill="#F2E3D2" stroke={OUTLINE} strokeWidth={4} />
+        <path d="M0,4235 L1170,4235" stroke="#FFFFFF" strokeWidth={8} strokeDasharray="44 36" />
+      </g>
+      <Place
+        id="tide"
+        hit={[90, 5910, 480, 420]}
+        label="Tide Pools"
+        onTap={onTap}
+        badge={badges.tide && <Badge x={560} y={5990} kind={badges.tide} />}
+      >
+        <g transform="translate(0 2080)">
+          <path d="M120,4190 C100,3990 200,3890 340,3890 C480,3890 580,3990 560,4190 Z" fill="#F2D9A8" stroke={OUTLINE} strokeWidth={5} />
+          <ellipse cx={250} cy={4070} rx={90} ry={44} fill="#5CC6D0" stroke={OUTLINE} strokeWidth={5} />
+          <ellipse cx={430} cy={4120} rx={70} ry={34} fill="#5CC6D0" stroke={OUTLINE} strokeWidth={5} />
+          <path
+            d="M200,4060 C230,4050 260,4064 290,4056 M400,4116 C420,4110 440,4120 460,4114"
+            stroke="#BDEBF0"
+            strokeWidth={6}
+            strokeLinecap="round"
+            fill="none"
+          />
+          <path d="M150,4170 C140,4120 190,4110 210,4150 C220,4180 160,4190 150,4170 Z" fill="#B7B0C4" stroke={OUTLINE} strokeWidth={5} />
+          <path d="M470,4180 C460,4130 520,4120 540,4160 C546,4190 480,4196 470,4180 Z" fill="#B7B0C4" stroke={OUTLINE} strokeWidth={5} />
+          <path d="M330,4180 C320,4150 350,4140 366,4160 C374,4184 340,4192 330,4180 Z" fill="#B7B0C4" stroke={OUTLINE} strokeWidth={5} />
+          <path
+            d="M340,3990 L352,3960 L364,3990 L394,3992 L370,4010 L378,4040 L352,4022 L326,4040 L334,4010 L310,3992 Z"
+            fill="#FF9E57"
+            stroke={OUTLINE}
+            strokeWidth={4}
+            strokeLinejoin="round"
+          />
+          <Sign x={340} y={4270} label="Tide Pools" color="#3BB7C4" />
+        </g>
+      </Place>
+      <Place
+        id="sky"
+        hit={[620, 5910, 500, 420]}
+        label="Starlight Hill"
+        onTap={onTap}
+        badge={badges.sky && <Badge x={1090} y={5990} kind={badges.sky} />}
+      >
+        <g transform="translate(0 2080)">
+          <path d="M620,4200 C640,4000 780,3930 870,3930 C960,3930 1100,4000 1120,4200 Z" fill="#7BC595" stroke={OUTLINE} strokeWidth={5} />
+          <Shaded d="M800,4000 C800,3900 940,3900 940,4000 L940,4090 L800,4090 Z" shade={LILAC} depth={8} />
+          <path d="M800,4000 C800,3900 940,3900 940,4000 Z" fill="#8F7AE0" stroke={OUTLINE} strokeWidth={5} />
+          <path d="M850,3990 L900,3990" stroke="#FFE08A" strokeWidth={8} strokeLinecap="round" />
+          <path d="M910,4060 L990,4020" stroke={OUTLINE} strokeWidth={14} strokeLinecap="round" />
+          <path d="M910,4060 L990,4020" stroke="#FFC94A" strokeWidth={7} strokeLinecap="round" />
+          <path d="M910,4090 L940,4130 M900,4090 L880,4130" stroke={OUTLINE} strokeWidth={6} strokeLinecap="round" />
+          {[
+            [700, 3980],
+            [740, 3930],
+            [1040, 3950],
+            [1080, 4010],
+          ].map(([x, y]) => (
+            <path
+              key={`${x}${y}`}
+              d={`M${x},${y - 14} L${x + 5},${y - 4} L${x + 15},${y} L${x + 5},${y + 4} L${x},${y + 14} L${x - 5},${y + 4} L${x - 15},${y} L${x - 5},${y - 4} Z`}
+              fill="#FFC94A"
+              stroke={OUTLINE}
+              strokeWidth={3}
+              strokeLinejoin="round"
+            />
+          ))}
+          <Sign x={870} y={4270} label="Starlight Hill" color="#8F7AE0" />
         </g>
       </Place>
 

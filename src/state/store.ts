@@ -3,6 +3,7 @@ import { type BedroomPart, withPart } from '../game/bedroom';
 import { DANCE_SHIFT_BONUS, dancePay } from '../game/dance';
 import { addWork, hangCoins } from '../game/studio';
 import { puzzlePay } from '../game/puzzle';
+import { CONSTELLATIONS, CREATURE_IDS, starPay, tidePay } from '../game/explore';
 import { catchPay, nextFish } from '../game/fishing';
 import { pairsPay, BOARDS } from '../game/pairs';
 import { SONG_PAY, SONGS } from '../game/piano';
@@ -46,6 +47,8 @@ export type SceneId =
   | 'studio'
   | 'puzzle'
   | 'fishing'
+  | 'tide'
+  | 'sky'
   | 'park'
   | 'nails'
   | 'posies'
@@ -138,6 +141,10 @@ interface GameStore {
   hangPicture: (pic: string, colors: string[]) => number;
   puzzleDone: (pic: string, size: number) => number;
   catchFish: () => { fish: string; coins: number; isNew: boolean };
+  /** Finished a Tide Pools visit: `found` is every creature met this visit. Returns the coins paid. */
+  tideDone: (found: string[]) => number;
+  /** Finished drawing a constellation. Returns the coins paid. */
+  skyDone: (id: string) => number;
   songDone: (id: string) => number;
   nailsServed: (clean: boolean) => number;
   nailsShiftDone: () => number;
@@ -506,6 +513,28 @@ export const useGame = create<GameStore>((setState, getState) => ({
       ...s,
       progress: { ...s.progress, puzzle: { games: pz.games + 1, done: pz.done.includes(key) ? pz.done : [...pz.done, key] } },
     });
+    setState({ save: touch(s) });
+    return coins;
+  },
+  tideDone: (found) => {
+    let s = getState().save;
+    const td = s.progress.tide;
+    const mine = [...new Set(found.filter((c) => (CREATURE_IDS as readonly string[]).includes(c)))];
+    const fresh = mine.filter((c) => !td.found.includes(c));
+    const coins = tidePay(fresh.length);
+    s = earn(s, coins);
+    s = grown({ ...s, progress: { ...s.progress, tide: { visits: td.visits + 1, found: [...td.found, ...fresh] } } });
+    setState({ save: touch(s) });
+    return coins;
+  },
+  skyDone: (id) => {
+    if (!CONSTELLATIONS.some((c) => c.id === id)) return 0;
+    let s = getState().save;
+    const sy = s.progress.sky;
+    const first = !sy.done.includes(id);
+    const coins = starPay(first);
+    s = earn(s, coins);
+    s = grown({ ...s, progress: { ...s.progress, sky: { games: sy.games + 1, done: first ? [...sy.done, id] : sy.done } } });
     setState({ save: touch(s) });
     return coins;
   },

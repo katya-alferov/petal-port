@@ -704,3 +704,9 @@ Wave B adds a dress-up goal, an exploration collection and more doll-style cloth
 - **Spin trick** (our own feature): any obstacle cleared while 1.05 hops high or more is a trick; the skater spins in the air on a double jump.
 - Pay: 20 + 3 per obstacle + 10 perfect + **2 per star + 2 per trick** (max 82). Stickers: Sky Catcher (all 6 stars in a run), Trick Star (10 tricks in total). Save: `progress.skate {runs, best, stars, tricks}` (old saves default to 0).
 - **Recipes:** Grilled Cheese (add bread, cheese, butter, cook, decorate; unlocks after the omelette) and Choco Cookies (flour, butter, egg, chocolate; mix, pour, cook, decorate; unlocks after waffles). Stickers: Melty Cheese, Cookie Baker.
+
+## 30. Explore places: Tide Pools and Starlight Hill (Wave H)
+
+- A new **Explorer Street** row on the map below the Fishing Dock (the map grew by 520; the airport and the runway shell moved down with it). Two places, both real gameplay and both kind: nothing is taken away.
+- **Tide Pools:** a list of 4 creatures (of 8) and 8 rocks. Tap a rock to turn it over: a listed creature, another creature (shown, not required) or bare sand. Find all 4 to finish. The list prefers creatures you have not met; a visit is always the same for the same visit number (seeded). Pay **12 + 4 per new creature**. **My finds** shows the 8-creature collection. Stickers: Tide Pool Explorer (1 visit), Sea Collector (all 8). Save: `progress.tide {visits, found[]}`.
+- **Starlight Hill:** 5 constellations (Kitty 6 stars, Heart 8, Crown 7, Gem 5, Little Boat 7). Tap the numbered stars in order; each right star plays a note and draws a line; a wrong star wobbles, and after 2 misses the next star glows. Pay **10 each time, +12 the first time per shape**. Stickers: Stargazer (1 shape), Sky Mapper (all 5). Save: `progress.sky {games, done[]}`.

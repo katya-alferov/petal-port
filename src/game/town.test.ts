@@ -42,6 +42,7 @@ import {
   tap,
   trick,
 } from './skate';
+import { CONSTELLATIONS, CREATURE_IDS, ROCKS, starPay, TARGETS, tidePay, tidePools } from './explore';
 import { nextGoals } from './goals';
 import { addDesign, checkCupcake, designKey, MAX_DESIGNS, sweetOrders, sweetPay } from './sweets';
 import { SWEET_MENU } from '../content/sweets';
@@ -784,5 +785,53 @@ describe('Art Studio, Puzzle Shop and Fishing Dock (§24 to §26)', () => {
     const out = sanitize(bad, SAVE_CONTEXT);
     expect(out.progress.fishing.fish).toEqual(['minnow']);
     expect(out.progress.studio.works).toEqual([]);
+  });
+});
+
+describe('Explore places (§30)', () => {
+  it('a tide pool visit hides the 4 listed creatures under different rocks, and is the same every time', () => {
+    for (let v = 1; v <= 20; v++) {
+      const p = tidePools(v, []);
+      expect(p.rocks).toHaveLength(ROCKS);
+      expect(new Set(p.targets).size).toBe(TARGETS);
+      for (const t of p.targets) expect(p.rocks.filter((r) => r === t)).toHaveLength(1);
+      expect(p.rocks.filter((r) => r === null).length).toBe(ROCKS - TARGETS - 2);
+      expect(tidePools(v, [])).toEqual(p);
+    }
+  });
+  it('the list prefers creatures you have not met yet', () => {
+    const have = CREATURE_IDS.slice(0, 4);
+    for (let v = 1; v <= 10; v++) expect(tidePools(v, have).targets.every((t) => !have.includes(t))).toBe(true);
+  });
+  it('pays 12 plus 4 for each new creature, and 10 plus 12 the first time for a constellation', () => {
+    expect(tidePay(0)).toBe(12);
+    expect(tidePay(3)).toBe(24);
+    expect(starPay(false)).toBe(10);
+    expect(starPay(true)).toBe(22);
+  });
+  it('constellations have distinct stars inside the sky', () => {
+    expect(CONSTELLATIONS.length).toBe(5);
+    for (const c of CONSTELLATIONS) {
+      expect(new Set(c.stars.map(([x, y]) => `${x},${y}`)).size).toBe(c.stars.length);
+      for (const [x, y] of c.stars) {
+        expect(x).toBeGreaterThanOrEqual(8);
+        expect(x).toBeLessThanOrEqual(92);
+        expect(y).toBeGreaterThanOrEqual(8);
+        expect(y).toBeLessThanOrEqual(92);
+      }
+    }
+  });
+  it('old saves get empty tide and sky records, and bad ids are dropped', () => {
+    const raw = JSON.parse(JSON.stringify(newSave(SAVE_CONTEXT, 1)));
+    delete raw.progress.tide;
+    delete raw.progress.sky;
+    const p = (load(JSON.stringify(raw), SAVE_CONTEXT) as { save: { progress: { tide: unknown; sky: unknown } } }).save.progress;
+    expect(p.tide).toEqual({ visits: 0, found: [] });
+    expect(p.sky).toEqual({ games: 0, done: [] });
+    raw.progress.tide = { visits: 2, found: ['crab', 'dragon'] };
+    raw.progress.sky = { games: 1, done: ['heart', 'nope'] };
+    const q = (load(JSON.stringify(raw), SAVE_CONTEXT) as { save: { progress: { tide: unknown; sky: unknown } } }).save.progress;
+    expect(q.tide).toEqual({ visits: 2, found: ['crab'] });
+    expect(q.sky).toEqual({ games: 1, done: ['heart'] });
   });
 });
