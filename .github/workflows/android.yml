@@ -1,0 +1,55 @@
+name: Android app (Google Play)
+
+# Builds the Google Play package (.aab) and a test install file (.apk) for the Trusted Web Activity in android/.
+# The game itself updates through GitHub Pages, so this only needs to run when android/ changes
+# (new versionCode, icon, colours) or by hand from the Actions tab ("Run workflow").
+on:
+  workflow_dispatch:
+  push:
+    paths:
+      - 'android/**'
+      - '.github/workflows/android.yml'
+
+permissions:
+  contents: read
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    env:
+      ANDROID_KEY_PASSWORD: ${{ secrets.ANDROID_KEY_PASSWORD }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: 17
+      - uses: gradle/actions/setup-gradle@v4
+        with:
+          gradle-version: '8.14.3'
+
+      # The upload key lives in the repo only in encrypted form; the ANDROID_KEY_PASSWORD secret unlocks it.
+      # Without the secret the build still runs, unsigned, as a compile check.
+      - name: Unlock the upload key
+        if: env.ANDROID_KEY_PASSWORD != ''
+        run: |
+          openssl enc -d -aes-256-cbc -pbkdf2 -iter 600000 \
+            -in android/upload-keystore.jks.enc -out "$RUNNER_TEMP/upload.jks" -pass env:ANDROID_KEY_PASSWORD
+          echo "ANDROID_KEYSTORE_FILE=$RUNNER_TEMP/upload.jks" >> "$GITHUB_ENV"
+
+      - name: Build
+        run: gradle -p android --no-daemon bundleRelease assembleRelease
+
+      - name: Collect files
+        run: |
+          mkdir -p out
+          cp android/app/build/outputs/bundle/release/*.aab out/petalport.aab
+          cp android/app/build/outputs/apk/release/*.apk out/petalport.apk
+          if [ -n "$ANDROID_KEYSTORE_FILE" ]; then echo "Signed with the upload key." > out/README.txt; else echo "UNSIGNED compile check. Add the ANDROID_KEY_PASSWORD secret to get a file Google Play accepts." > out/README.txt; fi
+          rm -f "$RUNNER_TEMP/upload.jks"
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: petalport-android
+          path: out/
+          retention-days: 30

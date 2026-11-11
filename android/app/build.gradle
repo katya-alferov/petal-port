@@ -1,0 +1,70 @@
+// Petalport for Google Play: a Trusted Web Activity that opens the live GitHub Pages game full screen.
+// The game itself is the web app in ../src; this wrapper only changes when the store package changes.
+plugins {
+    id 'com.android.application'
+}
+
+def twa = [
+    host            : 'katya-alferov.github.io',
+    startPath       : '/petal-port/',
+    name            : 'Petalport',
+    themeColor      : '#3BB7C4',
+    navColor        : '#FFF7EC',
+    backgroundColor : '#FFF7EC',
+]
+
+android {
+    namespace 'io.github.katya_alferov.petalport'
+    compileSdk 36
+
+    defaultConfig {
+        applicationId 'io.github.katya_alferov.petalport'
+        minSdk 23
+        targetSdk 36
+        // Raise versionCode by one for every upload to Google Play.
+        versionCode 1
+        versionName '0.2.0'
+
+        resValue 'string', 'appName', twa.name
+        resValue 'string', 'launcherName', twa.name
+        resValue 'string', 'hostName', twa.host
+        resValue 'string', 'launchUrl', "https://${twa.host}${twa.startPath}"
+        resValue 'string', 'providerAuthority', 'io.github.katya_alferov.petalport.fileprovider'
+        resValue 'color', 'colorPrimary', twa.themeColor
+        resValue 'color', 'navigationColor', twa.navColor
+        resValue 'color', 'backgroundColor', twa.backgroundColor
+        // Digital Asset Links: proves this app and the website belong together, so no browser bar is shown.
+        resValue 'string', 'assetStatements',
+            "[{\"relation\": [\"delegate_permission/common.handle_all_urls\"], \"target\": {\"namespace\": \"web\", \"site\": \"https://${twa.host}\"}}]"
+    }
+
+    signingConfigs {
+        release {
+            // Filled in by .github/workflows/android.yml from the encrypted upload key and the
+            // ANDROID_KEY_PASSWORD repository secret. Without them the build is unsigned (a compile check only).
+            def store = System.getenv('ANDROID_KEYSTORE_FILE')
+            if (store) {
+                storeFile file(store)
+                storePassword System.getenv('ANDROID_KEY_PASSWORD')
+                keyAlias 'upload'
+                keyPassword System.getenv('ANDROID_KEY_PASSWORD')
+            }
+        }
+    }
+
+    buildTypes {
+        release {
+            minifyEnabled false
+            if (System.getenv('ANDROID_KEYSTORE_FILE')) signingConfig signingConfigs.release
+        }
+    }
+
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_17
+        targetCompatibility JavaVersion.VERSION_17
+    }
+}
+
+dependencies {
+    implementation 'com.google.androidbrowserhelper:androidbrowserhelper:2.6.2'
+}

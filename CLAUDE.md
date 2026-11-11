@@ -62,6 +62,7 @@ Acceptance criteria pass with the named test type; works at 375×667, 390×844 a
 Runtime: react, react-dom, zustand, idb-keyval, motion, @fontsource/fredoka, @fontsource/nunito.
 Dev: vite, typescript, @vitejs/plugin-react, vite-plugin-pwa, vitest, @testing-library/react, jsdom, @playwright/test, @axe-core/playwright, eslint, prettier.
 CI/hosting: GitHub Actions + GitHub Pages (free for public repos). The repo is public, so never commit secrets or personal data.
+Android / Google Play (owner-approved Nov 2026, Play only, $25 one-time): `android/` is a Trusted Web Activity wrapper (Gradle, `com.google.androidbrowserhelper`) that opens the Pages URL; built by `.github/workflows/android.yml`. Store assets, listing and the step-by-step guide live in `store/` (`store/GOOGLE-PLAY.md`). The privacy policy is `public/privacy.html`; update it and the Play Data safety form before any data collection (e.g. cloud save) ships. The upload key is committed only encrypted (`android/upload-keystore.jks.enc`, unlocked by the `ANDROID_KEY_PASSWORD` secret); the plain key and password are in the private project files.
 Adding anything else needs the owner's OK and an update here.
 
 ## Working with the owner

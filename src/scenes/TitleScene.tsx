@@ -59,6 +59,10 @@ export function TitleScene({ onOpenDebug }: { onOpenDebug: () => void }) {
         </button>
         <div style={{ height: 'max(14px, env(safe-area-inset-bottom))' }} />
       </div>
+      {/* Grown-ups: the privacy policy (required by Google Play to be reachable inside the app). Same-origin, precached, works offline. */}
+      <a className="version-tag privacy-tag" href="./privacy.html" data-testid="privacy-link" aria-label="Privacy policy for grown-ups">
+        Privacy
+      </a>
       {/* Grown-ups only: a quiet version tag; press and hold opens the debug log. */}
       <button
         type="button"

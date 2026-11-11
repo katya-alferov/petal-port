@@ -1341,6 +1341,13 @@ body {
   font: 700 0.8125rem/44px var(--font-body, inherit);
   -webkit-touch-callout: none;
 }
+.privacy-tag {
+  right: auto;
+  left: max(6px, env(safe-area-inset-left));
+  display: inline-flex;
+  align-items: center;
+  text-decoration: underline;
+}
 
 /* Secret shells (game-systems §9.2): small, shiny, gently twinkling so they read as treasure. */
 .shell-btn {

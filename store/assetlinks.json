@@ -1,0 +1,12 @@
+[
+  {
+    "relation": ["delegate_permission/common.handle_all_urls"],
+    "target": {
+      "namespace": "android_app",
+      "package_name": "io.github.katya_alferov.petalport",
+      "sha256_cert_fingerprints": [
+        "ED:7D:4B:22:78:61:71:8E:C7:A7:7A:51:E7:28:2B:3A:E3:56:8C:B5:8C:8B:E7:98:8D:83:2C:B2:05:B4:59:18"
+      ]
+    }
+  }
+]
