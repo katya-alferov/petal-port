@@ -28,8 +28,13 @@ export default defineConfig(({ mode }) => {
       VitePWA({
         registerType: 'prompt',
         injectRegister: false,
-        includeAssets: ['favicon.svg', 'apple-touch-icon.png'],
+        includeAssets: ['favicon.svg', 'apple-touch-icon.png', 'privacy.html'],
         manifest: {
+          id: './',
+          start_url: './',
+          scope: './',
+          lang: 'en',
+          categories: ['games', 'kids', 'entertainment'],
           name: 'Petalport',
           short_name: 'Petalport',
           description: 'A pocket seaside town: dress up, decorate, cook and travel. Offline, no ads, no chat.',
@@ -40,7 +45,7 @@ export default defineConfig(({ mode }) => {
           icons: [
             { src: 'icon-192.png', sizes: '192x192', type: 'image/png' },
             { src: 'icon-512.png', sizes: '512x512', type: 'image/png' },
-            { src: 'icon-512.png', sizes: '512x512', type: 'image/png', purpose: 'maskable' },
+            { src: 'icon-maskable-512.png', sizes: '512x512', type: 'image/png', purpose: 'maskable' },
           ],
         },
         workbox: { globPatterns: ['**/*.{js,css,html,svg,png,woff2}'] },
